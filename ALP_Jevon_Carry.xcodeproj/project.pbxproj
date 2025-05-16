@@ -1,0 +1,555 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		CF2C9E302DD6DDBB00208ECF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF2C9E1A2DD6DDB900208ECF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF2C9E212DD6DDB900208ECF;
+			remoteInfo = ALP_Jevon_Carry;
+		};
+		CF2C9E3A2DD6DDBB00208ECF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF2C9E1A2DD6DDB900208ECF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF2C9E212DD6DDB900208ECF;
+			remoteInfo = ALP_Jevon_Carry;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Jevon_Carry.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		CF2C9E242DD6DDB900208ECF /* ALP_Jevon_Carry */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ALP_Jevon_Carry;
+			sourceTree = "<group>";
+		};
+		CF2C9E322DD6DDBB00208ECF /* ALP_Jevon_CarryTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ALP_Jevon_CarryTests;
+			sourceTree = "<group>";
+		};
+		CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ALP_Jevon_CarryUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CF2C9E1F2DD6DDB900208ECF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E2C2DD6DDBB00208ECF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E362DD6DDBB00208ECF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CF2C9E192DD6DDB900208ECF = {
+			isa = PBXGroup;
+			children = (
+				CF2C9E242DD6DDB900208ECF /* ALP_Jevon_Carry */,
+				CF2C9E322DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
+				CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
+				CF2C9E232DD6DDB900208ECF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CF2C9E232DD6DDB900208ECF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */,
+				CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */,
+				CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF2C9E432DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_Carry" */;
+			buildPhases = (
+				CF2C9E1E2DD6DDB900208ECF /* Sources */,
+				CF2C9E1F2DD6DDB900208ECF /* Frameworks */,
+				CF2C9E202DD6DDB900208ECF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CF2C9E242DD6DDB900208ECF /* ALP_Jevon_Carry */,
+			);
+			name = ALP_Jevon_Carry;
+			packageProductDependencies = (
+			);
+			productName = ALP_Jevon_Carry;
+			productReference = CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CF2C9E2E2DD6DDBB00208ECF /* ALP_Jevon_CarryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF2C9E462DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_CarryTests" */;
+			buildPhases = (
+				CF2C9E2B2DD6DDBB00208ECF /* Sources */,
+				CF2C9E2C2DD6DDBB00208ECF /* Frameworks */,
+				CF2C9E2D2DD6DDBB00208ECF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF2C9E312DD6DDBB00208ECF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CF2C9E322DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
+			);
+			name = ALP_Jevon_CarryTests;
+			packageProductDependencies = (
+			);
+			productName = ALP_Jevon_CarryTests;
+			productReference = CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CF2C9E382DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CF2C9E492DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_CarryUITests" */;
+			buildPhases = (
+				CF2C9E352DD6DDBB00208ECF /* Sources */,
+				CF2C9E362DD6DDBB00208ECF /* Frameworks */,
+				CF2C9E372DD6DDBB00208ECF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CF2C9E3B2DD6DDBB00208ECF /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
+			);
+			name = ALP_Jevon_CarryUITests;
+			packageProductDependencies = (
+			);
+			productName = ALP_Jevon_CarryUITests;
+			productReference = CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CF2C9E1A2DD6DDB900208ECF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					CF2C9E212DD6DDB900208ECF = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					CF2C9E2E2DD6DDBB00208ECF = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = CF2C9E212DD6DDB900208ECF;
+					};
+					CF2C9E382DD6DDBB00208ECF = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = CF2C9E212DD6DDB900208ECF;
+					};
+				};
+			};
+			buildConfigurationList = CF2C9E1D2DD6DDB900208ECF /* Build configuration list for PBXProject "ALP_Jevon_Carry" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CF2C9E192DD6DDB900208ECF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = CF2C9E232DD6DDB900208ECF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */,
+				CF2C9E2E2DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
+				CF2C9E382DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CF2C9E202DD6DDB900208ECF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E2D2DD6DDBB00208ECF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E372DD6DDBB00208ECF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CF2C9E1E2DD6DDB900208ECF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E2B2DD6DDBB00208ECF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CF2C9E352DD6DDBB00208ECF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CF2C9E312DD6DDBB00208ECF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */;
+			targetProxy = CF2C9E302DD6DDBB00208ECF /* PBXContainerItemProxy */;
+		};
+		CF2C9E3B2DD6DDBB00208ECF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */;
+			targetProxy = CF2C9E3A2DD6DDBB00208ECF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CF2C9E412DD6DDBB00208ECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CF2C9E422DD6DDBB00208ECF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CF2C9E442DD6DDBB00208ECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-Carry";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CF2C9E452DD6DDBB00208ECF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-Carry";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CF2C9E472DD6DDBB00208ECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-CarryTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ALP_Jevon_Carry.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ALP_Jevon_Carry";
+			};
+			name = Debug;
+		};
+		CF2C9E482DD6DDBB00208ECF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-CarryTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ALP_Jevon_Carry.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ALP_Jevon_Carry";
+			};
+			name = Release;
+		};
+		CF2C9E4A2DD6DDBB00208ECF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-CarryUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ALP_Jevon_Carry;
+			};
+			name = Debug;
+		};
+		CF2C9E4B2DD6DDBB00208ECF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "tes.ALP-Jevon-CarryUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ALP_Jevon_Carry;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CF2C9E1D2DD6DDB900208ECF /* Build configuration list for PBXProject "ALP_Jevon_Carry" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF2C9E412DD6DDBB00208ECF /* Debug */,
+				CF2C9E422DD6DDBB00208ECF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF2C9E432DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_Carry" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF2C9E442DD6DDBB00208ECF /* Debug */,
+				CF2C9E452DD6DDBB00208ECF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF2C9E462DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_CarryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF2C9E472DD6DDBB00208ECF /* Debug */,
+				CF2C9E482DD6DDBB00208ECF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CF2C9E492DD6DDBB00208ECF /* Build configuration list for PBXNativeTarget "ALP_Jevon_CarryUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF2C9E4A2DD6DDBB00208ECF /* Debug */,
+				CF2C9E4B2DD6DDBB00208ECF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CF2C9E1A2DD6DDB900208ECF /* Project object */;
+}
