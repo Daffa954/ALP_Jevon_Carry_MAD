@@ -6,12 +6,24 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseAppCheck
 
 @main
 struct ALP_Jevon_CarryApp: App {
+   
+    @StateObject private var authViewModel = AuthViewModel()
+    init(){
+        FirebaseApp.configure()
+        #if DEBUG
+        let providerFactory = AppCheckDebugProviderFactory()
+        AppCheck.setAppCheckProviderFactory(providerFactory)
+        #endif
+    }
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           SplashScreenView()
+                .environmentObject(authViewModel)
         }
     }
 }
