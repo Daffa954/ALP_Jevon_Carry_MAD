@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CF06F8C12DDEAE79009D505E /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = CF06F8C02DDEAE70009D505E /* .gitignore */; };
 		CF1621DF2DD72E0600DC6BE0 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621DE2DD72E0600DC6BE0 /* FirebaseAnalytics */; };
 		CF1621E12DD72E0600DC6BE0 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621E02DD72E0600DC6BE0 /* FirebaseAppCheck */; };
 		CF1621E32DD72E0600DC6BE0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621E22DD72E0600DC6BE0 /* FirebaseAuth */; };
@@ -32,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CF06F8C02DDEAE70009D505E /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Jevon_Carry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +90,7 @@
 		CF2C9E192DD6DDB900208ECF = {
 			isa = PBXGroup;
 			children = (
+				CF06F8C02DDEAE70009D505E /* .gitignore */,
 				CF2C9E242DD6DDB900208ECF /* ALP_Jevon_Carry */,
 				CF2C9E322DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
 				CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
@@ -233,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF06F8C12DDEAE79009D505E /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
