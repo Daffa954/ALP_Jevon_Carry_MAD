@@ -11,32 +11,32 @@ struct SplashScreenView: View {
     @State private var isActive = false
     
     var body: some View {
-        if isActive {
-           MainView()
-        } else {
+//        if isActive {
+//           MainView()
+//        } else {
             VStack {
                 Spacer()
-                Image(systemName: "bolt.fill") // Ganti dengan logo aplikasi
+                Image("logo")
                     .resizable()
                     .frame(width: 200, height: 200)
-                    .foregroundColor(.yellow)
+                    
                 Text("Jevon Care")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .padding(.top, 20)
+                    .padding(.top, -20)
                     .foregroundColor(.white)
                 
                 Spacer()
                 Text("By Jevon Carry Group")
                     .font(.title3)
                     .fontWeight(.medium)
-                    .padding(.bottom, 30)
+                    .padding(.bottom, 50)
                     .foregroundColor(.white)
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color("color1")) // Ubah di sini, misalnya .blue, .gray, atau Color(hex: ...)
-                .ignoresSafeArea() // Supaya background penuh hingga ke safe area
+                .background(Color("color1"))
+                .ignoresSafeArea()
             .onAppear {
                 // Waktu tampil splash screen dalam detik
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -46,7 +46,7 @@ struct SplashScreenView: View {
                 }
             }
         }
-    }
+//    }
 }
 
 #Preview {
