@@ -28,7 +28,7 @@ struct SplashScreenView: View {
                 
                 Spacer()
                 Text("By Jevon Carry Group")
-                    .font(.title3)
+                    .font(.callout)
                     .fontWeight(.medium)
                     .padding(.bottom, 50)
                     .foregroundColor(.white)
