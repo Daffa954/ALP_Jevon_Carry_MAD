@@ -14,7 +14,7 @@ struct JournalView: View {
                 Text("My Journal")
                     .font(.title)
                     .fontWeight(.bold)
-                Spacer()
+               
             }
             
             Spacer()

@@ -11,10 +11,10 @@ import CoreML
 class CoreMLService {
     static let shared = CoreMLService()
     
-    private let model: EmotionFix?
+    private let model: EmotionClassifierV5?
 
     init() {
-        model = try? EmotionFix(configuration: MLModelConfiguration())
+        model = try? EmotionClassifierV5(configuration: MLModelConfiguration())
     }
 
     func classifyEmotion(from text: String) -> String {
