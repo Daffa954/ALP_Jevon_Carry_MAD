@@ -31,14 +31,20 @@ struct LoginRegisterSheet: View {
             VStack(spacing: 20) {
                 // Header
                 if registerClicked {
-                    Image("Image1").resizable().frame(maxWidth: .infinity, maxHeight: .infinity)
+                    Image("Image1").resizable()
+                        .scaledToFit()
+                        .frame(width: 200)
+                        .padding(.top, 20)
 
+                }
+                
+                if !registerClicked {
+                    Spacer()
                 }
                 
                 Text(registerClicked ? "Login" : "Register")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .padding(.top)
                     
                 
                 // Form Fields
@@ -114,7 +120,7 @@ struct LoginRegisterSheet: View {
                 }) {
                     Text(registerClicked ? "Login" : "Register")
                         .frame(maxWidth: .infinity)
-                        .frame(height: 50)
+                        .frame(height: 32)
                 }
                 .buttonStyle(.borderedProminent)
                 .padding(.horizontal)
@@ -137,8 +143,7 @@ struct LoginRegisterSheet: View {
            
         }
         .interactiveDismissDisabled(true)
-        .padding(.horizontal, 20)
-    }
+        .padding(.horizontal, 20)    }
 }
 
 // Custom Text Field Component

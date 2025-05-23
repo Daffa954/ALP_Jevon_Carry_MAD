@@ -11,9 +11,9 @@ struct SplashScreenView: View {
     @State private var isActive = false
     
     var body: some View {
-//        if isActive {
-//           MainView()
-//        } else {
+        if isActive {
+           MainView()
+        } else {
             VStack {
                 Spacer()
                 Image("logo")
@@ -46,7 +46,7 @@ struct SplashScreenView: View {
                 }
             }
         }
-//    }
+    }
 }
 
 #Preview {
