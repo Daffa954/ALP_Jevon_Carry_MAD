@@ -10,9 +10,13 @@ import SwiftUI
 struct QuizView: View {
     var body: some View {
         VStack{
-            Text("My Journal")
+            Text("Check Your Condition")
                 .font(.title)
                 .fontWeight(.bold)
+            
+            
+            
+            Spacer()
         }
     }
 }

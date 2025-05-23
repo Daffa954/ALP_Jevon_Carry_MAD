@@ -17,20 +17,22 @@ struct MainView: View {
                     Label("Home", systemImage: "house")
                     
                 }
-            JournalView()
-                .tabItem{
-                    Label("Journal", systemImage: "book")
-                }
+            
             
             SchedulleView().tabItem{
                 Label("Breathing", systemImage: "lungs.fill")
             }
             
             QuizView().tabItem {
-                Label("Check Your Mental Health", systemImage: "list.bullet.clipboard")
+                Label("Check", systemImage: "list.bullet.clipboard")
             }
             
-            UserProfileView()
+            JournalView()
+                .tabItem{
+                    Label("Journal", systemImage: "book")
+                }
+            
+            UserProfileView(showLogin: $showAuthSheet)
                 .tabItem{
                     Label("Profile", systemImage: "person.circle")
                 }
