@@ -26,6 +26,10 @@ struct MainView: View {
                 Label("Breathing", systemImage: "lungs.fill")
             }
             
+            QuizView().tabItem {
+                Label("Check Your Mental Health", systemImage: "list.bullet.clipboard")
+            }
+            
             UserProfileView()
                 .tabItem{
                     Label("Profile", systemImage: "person.circle")
