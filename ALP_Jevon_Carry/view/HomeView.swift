@@ -13,7 +13,7 @@ struct RoundedCorner: Shape {
 struct HomeView: View {
 
     var headerImage: Image {
-        return Image("Image1") // Make sure "Image1" is in your Assets.xcassets
+        return Image("Image1")
     }
     
     let cornerRadius: CGFloat = 30 // Define corner radius for consistency
@@ -46,8 +46,8 @@ struct HomeView: View {
                             .frame(width: 100, height: 100)
                             .padding(.trailing, 10)
                     }
-                    .padding(.top, 45)
-                    .padding(.bottom, 25)
+                    .padding(.top, 70)
+                    .padding(.bottom, 32)
                     .padding(.horizontal, 20)
                     .background(Color("color1")) // This header will blend with the ZStack background
                     // No clipShape on blue header means square bottom corners
@@ -82,14 +82,14 @@ struct HomeView: View {
 
                         // MARK: - Let See Others Result Section
                         VStack(alignment: .leading, spacing: 20) {
-                            Text("Lets See Others Result")
+                            Text("Take a Quiz")
                                 .font(.system(size: 22, weight: .medium))
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding(.bottom, 10)
 
                             ResultCard(title: "Daily Mood", themeColor: Color("color1"))
-                            ResultCard(title: "Mood Analysis", themeColor: Color("color1"))
-                            ResultCard(title: "Journaling", themeColor: Color("color1"))
+                            ResultCard(title: "Daily Mood", themeColor: Color("color1"))
+                            
                         }
                         
                         Spacer()
@@ -97,6 +97,7 @@ struct HomeView: View {
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
                     .background(Color.white)
+                    .frame(minHeight: UIScreen.main.bounds.height)
                     .clipShape(RoundedCorner(radius: cornerRadius, corners: .allCorners))
                     // No .offset() here, so it sits directly below the blue header
                     
@@ -122,17 +123,7 @@ struct ResultCard: View {
                     .font(.system(size: 17, weight: .medium))
                     .foregroundColor(Color(UIColor.darkGray))
             }
-            Button(action: {
-                print("\(title) - See Detail tapped")
-            }) {
-                Text("See Detail")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(themeColor)
-                    .clipShape(RoundedRectangle(cornerRadius: 25))
-            }
+            
         }
     }
 }
