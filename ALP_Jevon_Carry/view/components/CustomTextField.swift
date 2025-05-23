@@ -15,9 +15,9 @@ struct CustomTextField: View {
         TextField(placeholder, text: $text)
             .padding()
             .background(Color(.systemGray6))
-            .cornerRadius(15)
+            .cornerRadius(8)
             .overlay(
-                RoundedRectangle(cornerRadius: 15)
+                RoundedRectangle(cornerRadius: 8)
                     .stroke(Color(.systemGray4), lineWidth: 1)
             )
     }
@@ -32,12 +32,12 @@ struct HobbyChip: View {
         Button(action: action) {
             Text(hobby)
                 .font(.subheadline)
-                .frame(width: 100, height: 36) // Ukuran seragam
-                .background(isSelected ? Color.blue : Color(.systemGray5))
+                .frame(width: 104, height: 36) // Ukuran seragam
+                .background(isSelected ? Color.blue : Color.gray.opacity(0.1))
                 .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(15)
+                .cornerRadius(20)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 15)
+                    RoundedRectangle(cornerRadius: 20)
                         .stroke(isSelected ? Color.blue : Color(.systemGray3), lineWidth: 1)
                 )
         }
@@ -69,10 +69,12 @@ struct CustomSecureField: View {
         }
         .padding()
         .background(Color(.systemGray6))
-        .cornerRadius(15)
+        .cornerRadius(8)
         .overlay(
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 8)
                 .stroke(Color(.systemGray4), lineWidth: 1)
         )
     }
 }
+
+

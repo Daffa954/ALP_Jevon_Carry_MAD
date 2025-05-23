@@ -39,7 +39,7 @@ struct SplashScreenView: View {
                 .ignoresSafeArea()
             .onAppear {
                 // Waktu tampil splash screen dalam detik
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.4) {
                     withAnimation {
                         self.isActive = true
                     }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct JournalView: View {
+    
+    
     var body: some View {
         VStack{
             HStack{
@@ -16,6 +18,23 @@ struct JournalView: View {
                     .fontWeight(.bold)
                
             }
+            
+            ZStack{
+                Rectangle()
+                    .frame(height: 220)
+                    .cornerRadius(20)
+                    .padding(.top)
+                Text("Buat Grafik / History")
+                    .foregroundStyle(.white)
+                    .font(.title)
+            }
+            
+            HStack{
+                Rectangle()
+                    .foregroundStyle(.yellow)
+            }
+            
+            
             
             Spacer()
         }.padding()

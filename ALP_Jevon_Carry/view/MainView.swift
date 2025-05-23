@@ -15,15 +15,23 @@ struct MainView: View {
             JournalView().tabItem{
                     Label("Home", systemImage: "house")
                 }
-            JournalView().tabItem{
-                    Label("Journal", systemImage: "book")
-                }
+            
             
             SchedulleView().tabItem{
                 Label("Breathing", systemImage: "lungs.fill")
             }
             
-            UserProfileView().tabItem{
+            QuizView().tabItem {
+                Label("Check", systemImage: "list.bullet.clipboard")
+            }
+            
+            JournalView()
+                .tabItem{
+                    Label("Journal", systemImage: "book")
+                }
+            
+            UserProfileView(showLogin: $showAuthSheet)
+                .tabItem{
                     Label("Profile", systemImage: "person.circle")
                 }
         }
