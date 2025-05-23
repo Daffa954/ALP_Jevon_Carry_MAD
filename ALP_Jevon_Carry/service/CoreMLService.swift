@@ -1,25 +1,25 @@
+////
+////  CoreMLService.swift
+////  ALP_Jevon_Carry
+////
+////  Created by Daffa Khoirul on 16/05/25.
+////
 //
-//  CoreMLService.swift
-//  ALP_Jevon_Carry
+//import Foundation
+//import CoreML
 //
-//  Created by Daffa Khoirul on 16/05/25.
+//class CoreMLService {
+//    static let shared = CoreMLService()
+//    
+//    private let model: EmotionFix?
 //
-
-import Foundation
-import CoreML
-
-class CoreMLService {
-    static let shared = CoreMLService()
-    
-    private let model: EmotionFix?
-
-    init() {
-        model = try? EmotionFix(configuration: MLModelConfiguration())
-    }
-
-    func classifyEmotion(from text: String) -> String {
-        guard let model = model else { return "Unknown" }
-        let prediction = try? model.prediction(text: text)
-        return prediction?.label ?? "Unknown"
-    }
-}
+//    init() {
+//        model = try? EmotionFix(configuration: MLModelConfiguration())
+//    }
+//
+//    func classifyEmotion(from text: String) -> String {
+//        guard let model = model else { return "Unknown" }
+//        let prediction = try? model.prediction(text: text)
+//        return prediction?.label ?? "Unknown"
+//    }
+//}
