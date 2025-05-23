@@ -12,13 +12,10 @@ struct MainView: View {
     @State var showAuthSheet = false
     var body: some View {
         TabView{
-            HomeView()
-                .tabItem{
+            JournalView().tabItem{
                     Label("Home", systemImage: "house")
-                    
                 }
-            JournalView()
-                .tabItem{
+            JournalView().tabItem{
                     Label("Journal", systemImage: "book")
                 }
             
@@ -26,8 +23,7 @@ struct MainView: View {
                 Label("Breathing", systemImage: "lungs.fill")
             }
             
-            UserProfileView()
-                .tabItem{
+            UserProfileView().tabItem{
                     Label("Profile", systemImage: "person.circle")
                 }
         }

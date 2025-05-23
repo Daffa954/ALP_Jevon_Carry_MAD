@@ -23,10 +23,6 @@ struct CustomTextField: View {
     }
 }
 
-//#Preview {
-//    CustomTextField()
-//}
-// Hobby Chip Component
 struct HobbyChip: View {
     let hobby: String
     let isSelected: Bool
