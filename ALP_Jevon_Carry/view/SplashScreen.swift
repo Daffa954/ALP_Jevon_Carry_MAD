@@ -11,16 +11,16 @@ struct SplashScreenView: View {
     @State private var isActive = false
     
     var body: some View {
-//        if isActive {
-//           MainView()
-//        } else {
+        if isActive {
+           MainView()
+        } else {
             VStack {
                 Spacer()
                 Image("logo")
                     .resizable()
                     .frame(width: 200, height: 200)
                     
-                Text("Jevon Care")
+                Text("Mindly")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, -20)
@@ -46,7 +46,7 @@ struct SplashScreenView: View {
                 }
             }
         }
-//    }
+    }
 }
 
 #Preview {
