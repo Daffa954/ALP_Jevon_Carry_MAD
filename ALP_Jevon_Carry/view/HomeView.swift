@@ -47,7 +47,7 @@ struct HomeView: View {
                             .padding(.trailing, 10)
                     }
                     .padding(.top, 70)
-                    .padding(.bottom, 32)
+                    .padding(.bottom, 12)
                     .padding(.horizontal, 20)
                     .background(Color("color1")) // This header will blend with the ZStack background
                     // No clipShape on blue header means square bottom corners
@@ -82,13 +82,50 @@ struct HomeView: View {
 
                         // MARK: - Let See Others Result Section
                         VStack(alignment: .leading, spacing: 20) {
-                            Text("Take a Quiz")
-                                .font(.system(size: 22, weight: .medium))
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .padding(.bottom, 10)
-
-                            ResultCard(title: "Daily Mood", themeColor: Color("color1"))
-                            ResultCard(title: "Daily Mood", themeColor: Color("color1"))
+                            VStack{
+                                Text("Check Your Mental Health")
+                                    .font(.system(size: 22, weight: .medium))
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .padding(.top, 10)
+                                
+                                Text("For best results, this test is limited \nto one session per week.")
+                                    .padding(.top, 2)
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.black)
+                                    .multilineTextAlignment(.center)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            }
+                            HStack{
+                                ZStack{
+                                    Rectangle()
+                                        .frame(height: 200)
+                                        .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
+                                        .cornerRadius(20)
+                                    HStack{
+                                        //Image blm jadi
+                                        VStack(alignment: .leading){
+                                            Text("PHQ-9")
+                                                .font(.title2)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(.white)
+                                                .padding(.top, 16)
+                                            Text("This test measures your mental health.")
+                                                .font(.system(size: 18))
+                                                .foregroundStyle(.white)
+                                            Spacer()
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                            HStack{
+                                ZStack{
+                                    Rectangle()
+                                        .frame(height: 200)
+                                        .foregroundStyle(Color(hue: 0.416, saturation: 0.452, brightness: 0.581))
+                                        .cornerRadius(20)
+                                }
+                            }
                             
                         }
                         
