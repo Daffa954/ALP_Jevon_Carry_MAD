@@ -13,7 +13,7 @@ import FirebaseAppCheck
 struct ALP_Jevon_CarryApp: App {
    
     @StateObject private var authViewModel = AuthViewModel()
-    
+    @StateObject private var journalViewModel = JournalViewModel()
     init(){
         FirebaseApp.configure()
         #if DEBUG
@@ -25,6 +25,7 @@ struct ALP_Jevon_CarryApp: App {
         WindowGroup {
            SplashScreenView()
                 .environmentObject(authViewModel)
+                .environmentObject(journalViewModel)
         }
     }
 }

@@ -10,11 +10,19 @@ import FirebaseDatabase
 
 class JournalViewModel: ObservableObject {
     @Published var userInput = ""
-    @Published var result = ""
+    @Published var result : JournalModel?
     @Published var emoticonSymbol = ""
     private var ref: DatabaseReference
     
     init() {
+        
+        self.result = JournalModel(
+            title: "",
+            date: Date(),
+            description: "",
+            emotion: "",
+            score: 0
+        )
         self.ref = Database.database().reference().child("journals")
     }
     private func emoticon(for emotion: String) -> String {
@@ -33,15 +41,18 @@ class JournalViewModel: ObservableObject {
     func analyzeEmotion() {
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
         DispatchQueue.main.async {
-            self.result = emotion
+            self.result = JournalModel(
+                title: emotion, date: Date(), description: self.userInput,
+                emotion: emotion, score: 0)
             self.emoticonSymbol = self.emoticon(for: emotion)
+           
         }
     }
     
     func saveJournal() {
         let journal: [String: Any] = [
             "text": userInput,
-            "emotion": result
+            "emotion": result?.emotion ?? "",
         ]
         ref.childByAutoId().setValue(journal)
     }

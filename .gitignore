@@ -1,5 +1,9 @@
 # Ignore configuration and sensitive files
 config/
 GoogleService-Info.plist
+
 coreml/
 EmotionClassifierV5.mlmodel
+
+config/
+key.swift

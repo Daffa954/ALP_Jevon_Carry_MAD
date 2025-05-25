@@ -9,17 +9,18 @@ import SwiftUI
 
 struct JournalView: View {
     @State var isAdding: Bool = false
+    @EnvironmentObject var journalVM: JournalViewModel
     var body: some View {
         NavigationStack{
             ScrollView{
                 
                 VStack{
-                    Text("My Journal").font(.title).fontWeight(.bold).padding(.top,-40)
+                    Text("My Journal").font(.title).fontWeight(.bold).padding(.top,-40).foregroundStyle(Color("navyBlue"))
                     VStack{
                         Text("Your Weekly Stress Level")
-                            .fontWeight(.ultraLight)
+                            .foregroundStyle(Color("skyBlue"))
                         Text("From your journal").padding(.bottom, 10)
-                            .fontWeight(.ultraLight)
+                            .foregroundStyle(Color("skyBlue"))
 
                         JournalChartView()
                     }.padding(.top, -5).padding(.bottom,30)
@@ -28,6 +29,7 @@ struct JournalView: View {
                         Text("History")
                             .font(.title2)
                             .fontWeight(.semibold)
+                            .foregroundStyle(Color("navyBlue"))
                     }
                     
                     
@@ -41,7 +43,7 @@ struct JournalView: View {
                         isAdding = true
                     }) {
                         Text("+")
-                            .font(.title)
+                            .font(.title).foregroundStyle(Color("navyBlue"))
                     }.accessibilityIdentifier( "addBookButton" )
                 }
                 .navigationDestination(isPresented: $isAdding, destination: {AddJournalView(isAddJournal: $isAdding)})
@@ -51,4 +53,5 @@ struct JournalView: View {
 
 #Preview {
     JournalView()
+        .environmentObject(JournalViewModel())
 }
