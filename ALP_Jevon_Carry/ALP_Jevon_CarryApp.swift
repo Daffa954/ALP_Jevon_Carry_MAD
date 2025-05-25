@@ -13,6 +13,7 @@ import FirebaseAppCheck
 struct ALP_Jevon_CarryApp: App {
    
     @StateObject private var authViewModel = AuthViewModel()
+    
     init(){
         FirebaseApp.configure()
         #if DEBUG

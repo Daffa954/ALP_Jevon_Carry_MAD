@@ -94,7 +94,7 @@ struct HomeView: View {
                         
                         Spacer()
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 25)
                     .padding(.bottom, 20)
                     .background(Color.white)
                     .frame(minHeight: UIScreen.main.bounds.height)

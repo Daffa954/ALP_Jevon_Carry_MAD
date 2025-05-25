@@ -8,41 +8,103 @@
 import SwiftUI
 
 struct AddJournalView: View {
-    @State private var journal = ""
+    @State private var journalText = ""
+    @Binding var isAddJournal: Bool
+    @State private var isEditing = false
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
+    
     
     var body: some View {
-        VStack{
-            Text("My Journal")
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.bottom, 40)
-            
-            TextEditor(text: $journal)
-                .frame(maxWidth: .infinity, maxHeight: 220)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray, lineWidth: 1)
-                )
-                .padding(.bottom)
-            
-            
-            Button(action: {
-                
-            }){
-                Text("Check Now")
-                    .frame(maxWidth: .infinity)
-                    .padding(4)
-            }
-            .buttonStyle(.borderedProminent)
-            
-            Spacer()
-        }
-        .padding()
         
+        VStack() {
+            // Header with icon
+            HStack {
+                Image(systemName: "book.fill")
+                    .foregroundColor(.blue)
+                    .font(.system(size: 28))
+                
+                Text("New Journal Entry")
+                    .font(.system(.title, design: .rounded))
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            
+            
+            
+            VStack() {
+                
+
+                    TextEditor(text: $journalText)
+                        .frame(minHeight: 200,maxHeight: 300)
+                    
+                        .padding(4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.blue, lineWidth: 2)
+                        )
+                        .font(.system(.body, design: .rounded))
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .onTapGesture {
+                            isEditing = true
+                        }
+            }
+            
+//            // Character Counter
+            HStack {
+                Spacer()
+                Text("\(journalText.count)/1000")
+                    .font(.caption)
+                    .foregroundColor(journalText.count > 1000 ? .red : .gray)
+            }.padding(.bottom, 30)
+            
+            // Save Button
+            HStack{
+                Button("Cancel") {
+                    dismiss()
+                }
+                .tint(.red)
+                .buttonStyle(.borderedProminent)
+                
+                Button(action: saveEntry) {
+                    HStack {
+                        
+                        Text("Save and Analyze")
+                            .font(.headline)
+                        
+                        
+                    }
+                    
+                    
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(journalText.isEmpty)
+            }
+            Spacer()
+            
+        }
+        .padding(.horizontal, 25)
+        
+    }
+    
+    private func saveEntry() {
+        // Add save functionality here
+        print("Saving journal entry: \(journalText)")
+        isAddJournal = false
     }
 }
 
+//struct AddJournalView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationView {
+//            AddJournalView(isAddJournal: .constant(true))
+//        }
+//    }
+//}
+
 #Preview {
-    AddJournalView()
+    NavigationStack {
+        AddJournalView(isAddJournal: .constant(true))
+        
+    }
 }

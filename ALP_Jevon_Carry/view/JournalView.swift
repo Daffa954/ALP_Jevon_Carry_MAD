@@ -8,36 +8,44 @@
 import SwiftUI
 
 struct JournalView: View {
-    
-    
+    @State var isAdding: Bool = false
     var body: some View {
-        VStack{
-            HStack{
-                Text("My Journal")
-                    .font(.title)
-                    .fontWeight(.bold)
-               
-            }
+        NavigationStack{
+            ScrollView{
+                
+                VStack{
+                    Text("My Journal").font(.title).fontWeight(.bold).padding(.top,-40)
+                    VStack{
+                        Text("Your Weekly Stress Level")
+                            .fontWeight(.ultraLight)
+                        Text("From your journal").padding(.bottom, 10)
+                            .fontWeight(.ultraLight)
+
+                        JournalChartView()
+                    }.padding(.top, -5).padding(.bottom,30)
+                    
+                    VStack{
+                        Text("History")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                    }
+                    
+                    
+                }
+                Spacer()
+            }.padding(.horizontal,25)
             
-            ZStack{
-                Rectangle()
-                    .frame(height: 220)
-                    .cornerRadius(20)
-                    .padding(.top)
-                Text("Buat Grafik / History")
-                    .foregroundStyle(.white)
-                    .font(.title)
-            }
             
-            HStack{
-                Rectangle()
-                    .foregroundStyle(.yellow)
-            }
-            
-            
-            
-            Spacer()
-        }.padding()
+                .toolbar {
+                    Button(action: {
+                        isAdding = true
+                    }) {
+                        Text("+")
+                            .font(.title)
+                    }.accessibilityIdentifier( "addBookButton" )
+                }
+                .navigationDestination(isPresented: $isAdding, destination: {AddJournalView(isAddJournal: $isAdding)})
+        }
     }
 }
 

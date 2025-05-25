@@ -13,6 +13,5 @@ struct JournalModel: Identifiable, Hashable, Codable {
     var date: Date
     var description: String
     var emotion: String
-    var Score: Int
-    var isTrue: Bool
+    var score: Int
 }

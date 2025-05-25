@@ -56,14 +56,6 @@ class AuthViewModel: ObservableObject{
     
     func singUp() async {
         let ref = Database.database().reference()
-        
-        //        do{
-        //            let _ = try await Auth.auth().createUser(withEmail: myUser.email, password: myUser.password)
-        //            self.falseCredential = false
-        //        }catch{
-        //            print("Sign Up Error: \(error.localizedDescription)")
-        //            self.falseCredential = true
-        //        }
         do {
             let result = try await Auth.auth().createUser(withEmail: myUser.email, password: myUser.password)
             let uid = result.user.uid

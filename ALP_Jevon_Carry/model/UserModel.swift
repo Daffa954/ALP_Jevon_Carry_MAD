@@ -13,5 +13,5 @@ struct MyUser: Codable {
     var password: String = ""
     var email: String = ""
     var hobbies: [String] = [] 
-
+    
 }
