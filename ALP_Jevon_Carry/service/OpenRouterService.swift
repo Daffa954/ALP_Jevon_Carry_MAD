@@ -20,7 +20,7 @@ class OpenRouterService {
         let systemPrompt = """
             You are a helpful activity recommendation assistant. 
             Provide exactly 5 activity recommendations as a JSON array of strings.
-            Example: {"recommendations": ["Go for a walk", "Read a book"]}
+            Example: {"recommendation": ["Go for a walk", "Read a book"]}
             Only respond with valid JSON format.
             """
         

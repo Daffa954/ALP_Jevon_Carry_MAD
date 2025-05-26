@@ -7,12 +7,6 @@
 
 import Foundation
 
-//
-//  OpenRouterModel.swift
-//  CobaLibrary
-//
-//  Created by Daffa Khoirul on 29/04/25.
-//
 
 import Foundation
 struct OpenRouterRequest: Codable {

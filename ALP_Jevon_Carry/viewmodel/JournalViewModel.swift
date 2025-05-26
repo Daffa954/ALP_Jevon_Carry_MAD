@@ -10,10 +10,14 @@ import FirebaseDatabase
 
 class JournalViewModel: ObservableObject {
     @Published var userInput = ""
-    @Published var result : JournalModel?
+    @Published var result : JournalModel
     @Published var emoticonSymbol = ""
     private var ref: DatabaseReference
-    
+    private let openRouterService = OpenRouterService()
+    @Published var recommendations: [String] = []
+//    @Published var userPrompt: String = ""
+    @Published var isLoading = false
+    @Published var errorMessage: String?
     init() {
         
         self.result = JournalModel(
@@ -45,14 +49,36 @@ class JournalViewModel: ObservableObject {
                 title: emotion, date: Date(), description: self.userInput,
                 emotion: emotion, score: 0)
             self.emoticonSymbol = self.emoticon(for: emotion)
+            self.getRecommendations()
            
         }
     }
+  
     
+    func getRecommendations() {
+        guard !result.emotion.isEmpty else { return }
+        
+        isLoading = true
+        errorMessage = nil
+        recommendations = []
+        
+        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                
+                switch result {
+                case .success(let activities):
+                    self?.recommendations = activities
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
     func saveJournal() {
         let journal: [String: Any] = [
             "text": userInput,
-            "emotion": result?.emotion ?? "",
+//            "emotion": result?.emotion ?? "",
         ]
         ref.childByAutoId().setValue(journal)
     }

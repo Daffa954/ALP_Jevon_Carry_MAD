@@ -15,89 +15,121 @@ struct AddJournalView: View {
     @EnvironmentObject var journalViewModel: JournalViewModel
     @State var isAnalyzed: Bool = false
     var body: some View {
-        
-        VStack() {
-            // Header with icon
-            HStack {
-                Image(systemName: "book.fill")
-                    .foregroundColor(Color("navyBlue"))
-                    .font(.system(size: 28))
-                
-                Text("New Journal Entry")
-                    .font(.system(.title, design: .rounded))
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color("navyBlue"))
-            }
-            
-            
-            
+        ScrollView{
             VStack() {
-                TextEditor(text: $journalViewModel.userInput)
-                
-                    .frame(minHeight: 200,maxHeight: 300)
+                // Header with icon
+                HStack {
+                    Image(systemName: "book.fill")
+                        .foregroundColor(Color("navyBlue"))
+                        .font(.system(size: 28))
                     
-                    .padding(4)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color("skyBlue"), lineWidth: 2)
-                    )
-                    .font(.system(.body, design: .rounded))
-                    .foregroundColor(colorScheme == .dark ? .white : .black)
-                    .onTapGesture {
-                        isEditing = true
-                    }
-            }
-            
-            //            // Character Counter
-            HStack {
-                Spacer()
-                Text("\(journalViewModel.userInput.count)/1000")
-                    .font(.caption)
-                    .foregroundColor(journalViewModel.userInput.count > 1000 ? .red : .gray)
-            }.padding(.bottom, 20)
-            
-            // Save Button
-            HStack{
-                Button("Cancel") {
-                    dismiss()
+                    Text("New Journal Entry")
+                        .font(.system(.title, design: .rounded))
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color("navyBlue"))
                 }
-                .tint(.red)
-                .buttonStyle(.borderedProminent)
                 
-                Button(action: {
-                    journalViewModel.analyzeEmotion()
-                    isAnalyzed = true
-                }) {
-                    HStack {
-                        
-                        Text("Save and Analyze")
-                            .font(.headline)
+                
+                
+                VStack() {
+                    TextEditor(text: $journalViewModel.userInput)
+                    
+                        .frame(minHeight: 300,maxHeight: 500)
+                    
+                        .padding(4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color("skyBlue"), lineWidth: 2)
+                        )
+                        .font(.system(.body, design: .rounded))
+                        .foregroundColor(colorScheme == .dark ? .white : .black)
+                        .onTapGesture {
+                            isEditing = true
+                        }
+                }
+                
+                //            // Character Counter
+                HStack {
+                    Spacer()
+                    Text("\(journalViewModel.userInput.count)/1000")
+                        .font(.caption)
+                        .foregroundColor(journalViewModel.userInput.count > 1000 ? .red : .gray)
+                }.padding(.bottom, 20)
+                
+                // Save Button
+                HStack{
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .tint(.red)
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button(action: {
+                        journalViewModel.analyzeEmotion()
+                        isAnalyzed = true
+                    }) {
+                        HStack {
+                            
+                            Text("Save and Analyze")
+                                .font(.headline)
+                            
+                            
+                        }
                         
                         
                     }
-                    
-                    
+                    .buttonStyle(.borderedProminent)
+                    .disabled(journalViewModel.userInput.isEmpty)
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(journalViewModel.userInput.isEmpty)
-            }
-            //result card
-            if isAnalyzed {
-                Text("Your Result:")
-                    .font(.title2)
-                    .padding(.top, 10)
                 
-                ResultCardView(journal: journalViewModel.result ?? JournalModel(id: UUID(), title: "", date: Date(), description: "", emotion: "", score: 0))
                 
-                Spacer()
+                if isAnalyzed {
+                    Group {
+                        if journalViewModel.isLoading {
+                            HStack {
+                                
+                                ProgressView("Analyzing...")
+                                    .padding()
+                                
+                            }
+                        } else {
+                            VStack() {
+                                Text("Your Result:")
+                                    .font(.title2)
+                                
+                                ResultCardView(journal: journalViewModel.result)
+                                
+                                Text("Activity Recommendation:")
+                                    .font(.title2)
+                                
+                                if let error = journalViewModel.errorMessage {
+                                    Text(error)
+                                        .foregroundColor(.red)
+                                } else if journalViewModel.recommendations.isEmpty {
+                                    Text("No recommendations yet.")
+                                        .foregroundColor(.gray)
+                                } else {
+                                    ForEach(journalViewModel.recommendations, id: \.self) { activity in
+                                        HStack(alignment: .top, spacing: 8) {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .foregroundColor(.green)
+                                            Text(activity)
+                                                .font(.body)
+                                                .foregroundColor(.primary)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.top, 20)
+                    Spacer()
+                }
+                
             }
-
-              Spacer()
-        }
-        .padding(.horizontal, 25)
-        
+        }.padding(.horizontal,25)
+            .padding(.vertical,15)
     }
-    
 }
 
 
