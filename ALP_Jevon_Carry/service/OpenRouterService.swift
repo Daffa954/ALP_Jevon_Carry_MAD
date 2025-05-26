@@ -25,7 +25,7 @@ class OpenRouterService {
             """
         
         let userPrompt = """
-        Based on my current mood: \(prompt), suggest 5 activities. \
+        Based on 8 basic plutchik emotions, which the emotion is \(prompt), suggest 5 activities. \
         You must only return a JSON object with the following format: \
         {\"recommendation\": [\"activity 1\", \"activity 2\", \"activity 3\", \"activity 4\", \"activity 5\"]}. \
         Do not include any other text or explanation.

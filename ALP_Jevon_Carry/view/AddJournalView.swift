@@ -100,7 +100,7 @@ struct AddJournalView: View {
                                 ResultCardView(journal: journalViewModel.result)
                                 
                                 Text("Activity Recommendation:")
-                                    .font(.title2)
+                                    .font(.title2).padding(.top,5)
                                 
                                 if let error = journalViewModel.errorMessage {
                                     Text(error)
@@ -109,15 +109,12 @@ struct AddJournalView: View {
                                     Text("No recommendations yet.")
                                         .foregroundColor(.gray)
                                 } else {
-                                    ForEach(journalViewModel.recommendations, id: \.self) { activity in
-                                        HStack(alignment: .top, spacing: 8) {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .foregroundColor(.green)
-                                            Text(activity)
-                                                .font(.body)
-                                                .foregroundColor(.primary)
+                                    VStack(spacing: 12) {
+                                        ForEach(journalViewModel.recommendations, id: \.self) { activity in
+                                            RecommendationCardView(activity: activity)
                                         }
                                     }
+
                                 }
                             }
                         }
