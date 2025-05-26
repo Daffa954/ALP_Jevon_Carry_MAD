@@ -20,7 +20,8 @@ struct RecommendationCardView: View {
             
             Text(activity)
                 .font(.body)
-                .foregroundColor(colorScheme == .dark ? .white : .black)
+                .padding(.top, 2)
+                .foregroundColor(Color("lightGray1"))
                 .multilineTextAlignment(.leading)
             
             Spacer()
@@ -28,10 +29,10 @@ struct RecommendationCardView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(colorScheme == .dark ? Color(.systemGray5) : Color.white)
+                .fill(colorScheme == .dark ? Color(.systemGray5) : Color("skyBlue"))
                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
         )
-        .padding(.horizontal)
+        
     }
 }
 

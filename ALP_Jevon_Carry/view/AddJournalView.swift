@@ -13,7 +13,7 @@ struct AddJournalView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var journalViewModel: JournalViewModel
-    @State var isAnalyzed: Bool = false
+    @State var isAnalyzed: Bool = true
     var body: some View {
         ScrollView{
             VStack() {
@@ -100,7 +100,7 @@ struct AddJournalView: View {
                                 ResultCardView(journal: journalViewModel.result)
                                 
                                 Text("Activity Recommendation:")
-                                    .font(.title2).padding(.top,5)
+                                    .font(.title2).padding(.top,13)
                                 
                                 if let error = journalViewModel.errorMessage {
                                     Text(error)
@@ -184,10 +184,10 @@ struct ResultCardView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(colorScheme == .dark ? Color(.systemGray6) : .white)
+                .fill(Color("skyBlue"))
                 .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
         )
-        .padding(.horizontal)
+        
     }
     
     // Calculate score color based on value

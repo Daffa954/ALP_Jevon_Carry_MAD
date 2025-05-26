@@ -15,7 +15,6 @@ class JournalViewModel: ObservableObject {
     private var ref: DatabaseReference
     private let openRouterService = OpenRouterService()
     @Published var recommendations: [String] = []
-//    @Published var userPrompt: String = ""
     @Published var isLoading = false
     @Published var errorMessage: String?
     init() {
@@ -44,17 +43,31 @@ class JournalViewModel: ObservableObject {
     }
     func analyzeEmotion() {
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
+        let score = scoreForEmotion(emotion) // tambahkan scoring
         DispatchQueue.main.async {
             self.result = JournalModel(
                 title: emotion, date: Date(), description: self.userInput,
-                emotion: emotion, score: 0)
+                emotion: emotion, score: score)
             self.emoticonSymbol = self.emoticon(for: emotion)
             self.getRecommendations()
            
         }
     }
   
-    
+    func scoreForEmotion(_ emotion: String) -> Int {
+        switch emotion.lowercased() {
+        case "anger": return 10
+        case "fear": return 9
+        case "disgust": return 8
+        case "sadness": return 7
+        case "surprise": return 6
+        case "anticipation": return 5
+        case "trust": return 3
+        case "joy": return 1
+        default: return 5 // netral
+        }
+    }
+
     func getRecommendations() {
         guard !result.emotion.isEmpty else { return }
         
