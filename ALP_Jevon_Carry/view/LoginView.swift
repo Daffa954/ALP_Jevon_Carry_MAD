@@ -83,7 +83,7 @@ struct LoginRegisterSheet: View {
                         text: $authVM.myUser.email
                     )
                     .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
+                    
                     
                     CustomSecureField(
                         placeholder: "Password",

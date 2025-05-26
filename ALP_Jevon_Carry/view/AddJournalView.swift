@@ -14,6 +14,7 @@ struct AddJournalView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var journalViewModel: JournalViewModel
     @State var isAnalyzed: Bool = true
+    @State var userID : String
     var body: some View {
         ScrollView{
             VStack() {
@@ -133,7 +134,7 @@ struct AddJournalView: View {
 
 #Preview {
     NavigationStack {
-        AddJournalView(isAddJournal: .constant(true))
+        AddJournalView(isAddJournal: .constant(true), userID: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
             .environmentObject(JournalViewModel())
         
     }

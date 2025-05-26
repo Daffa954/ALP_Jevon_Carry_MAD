@@ -9,6 +9,7 @@ import SwiftUI
 
 struct JournalView: View {
     @State var isAdding: Bool = false
+    @State var userId: String
     @EnvironmentObject var journalVM: JournalViewModel
     var body: some View {
         NavigationStack{
@@ -46,12 +47,12 @@ struct JournalView: View {
                             .font(.title).foregroundStyle(Color("navyBlue"))
                     }.accessibilityIdentifier( "addBookButton" )
                 }
-                .navigationDestination(isPresented: $isAdding, destination: {AddJournalView(isAddJournal: $isAdding)})
+                .navigationDestination(isPresented: $isAdding, destination: {AddJournalView(isAddJournal: $isAdding, userID: userId)})
         }
     }
 }
 
 #Preview {
-    JournalView()
+    JournalView(userId: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
         .environmentObject(JournalViewModel())
 }

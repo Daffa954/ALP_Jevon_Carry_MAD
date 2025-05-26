@@ -22,7 +22,7 @@ struct MainView: View {
             }
             
             
-            JournalView()
+            JournalView(userId: authViewModel.user?.uid ?? "")
                 .tabItem{
                     Label("Journal", systemImage: "book")
                 }

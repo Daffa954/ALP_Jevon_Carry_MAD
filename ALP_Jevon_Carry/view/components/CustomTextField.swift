@@ -14,6 +14,7 @@ struct CustomTextField: View {
     var body: some View {
         TextField(placeholder, text: $text)
             .padding()
+            
             .background(Color(.systemGray6))
             .cornerRadius(8)
             .overlay(

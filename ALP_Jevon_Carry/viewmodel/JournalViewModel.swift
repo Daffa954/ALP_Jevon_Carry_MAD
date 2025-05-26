@@ -42,6 +42,7 @@ class JournalViewModel: ObservableObject {
         }
     }
     func analyzeEmotion() {
+        //call the coreML service
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
         let score = scoreForEmotion(emotion) // tambahkan scoring
         DispatchQueue.main.async {
@@ -50,10 +51,10 @@ class JournalViewModel: ObservableObject {
                 emotion: emotion, score: score)
             self.emoticonSymbol = self.emoticon(for: emotion)
             self.getRecommendations()
-           
+            
         }
     }
-  
+    
     func scoreForEmotion(_ emotion: String) -> Int {
         switch emotion.lowercased() {
         case "anger": return 10
@@ -67,7 +68,7 @@ class JournalViewModel: ObservableObject {
         default: return 5 // netral
         }
     }
-
+    
     func getRecommendations() {
         guard !result.emotion.isEmpty else { return }
         
@@ -77,8 +78,10 @@ class JournalViewModel: ObservableObject {
         
         openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
             DispatchQueue.main.async {
+                //stop the loading
                 self?.isLoading = false
                 
+                //send the result
                 switch result {
                 case .success(let activities):
                     self?.recommendations = activities
@@ -88,11 +91,16 @@ class JournalViewModel: ObservableObject {
             }
         }
     }
-    func saveJournal() {
-        let journal: [String: Any] = [
-            "text": userInput,
-//            "emotion": result?.emotion ?? "",
-        ]
-        ref.childByAutoId().setValue(journal)
+    
+    func addJournal(journal : JournalModel)-> Bool{
+        guard let jsonData = try? JSONEncoder().encode(journal),
+              let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
+        else {
+            return false
+        }
+        
+        //send to firebase
+        ref.child(journal.id.uuidString).setValue(json)
+        return true
     }
 }

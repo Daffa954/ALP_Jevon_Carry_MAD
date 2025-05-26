@@ -65,7 +65,7 @@ class AuthViewModel: ObservableObject{
                 "id": uid,
                 "email": myUser.email,
                 "name": myUser.name,
-                "hobbies": myUser.hobbies
+                "hobbies": myUser.hobbies.isEmpty ? [""] : myUser.hobbies
             ]
 
             try await ref.child("users").child(uid).setValue(userData)
