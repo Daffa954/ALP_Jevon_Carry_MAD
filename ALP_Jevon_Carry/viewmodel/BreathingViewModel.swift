@@ -15,13 +15,6 @@
 //  Created by student on 27/05/25.
 //
 
-//
-//  BreathingViewModel.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-
 import Foundation
 import SwiftUI
 import Combine
@@ -42,10 +35,15 @@ class BreathingViewModel: ObservableObject {
     @Published var pulseEffect: Bool = false
     @Published var breathingRate: Double = 1.0 // For advanced breathing patterns
     
+    // Loading and error states for Firebase operations
+    @Published var isSaving: Bool = false
+    @Published var saveError: String?
+    
     let availableSongs = ["No Music", "song1", "song2"] // Ensure these mp3 files are in your project
 
     @ObservedObject var musicPlayerViewModel: MusicPlayerViewModel
     private var authViewModel: AuthViewModel
+    private var ref: DatabaseReference // Firebase reference
 
     private var breathingTimer: Timer?
     private var sessionDurationTimer: Timer?
@@ -62,6 +60,7 @@ class BreathingViewModel: ObservableObject {
     init(musicPlayerViewModel: MusicPlayerViewModel, authViewModel: AuthViewModel) {
         self.musicPlayerViewModel = musicPlayerViewModel
         self.authViewModel = authViewModel
+        self.ref = Database.database().reference() // Initialize Firebase reference
         
         self.musicPlayerViewModel.didSongFinishPlaying
             .sink { [weak self] in
@@ -98,6 +97,7 @@ class BreathingViewModel: ObservableObject {
         isSessionActive = true
         sessionStartTime = Date()
         sessionTimeElapsed = 0
+        saveError = nil // Clear any previous errors
         startSessionDurationTimer()
 
         if selectedSong != "No Music" {
@@ -118,6 +118,8 @@ class BreathingViewModel: ObservableObject {
         stopBreathingCycle()
         stopSessionDurationTimer()
         musicPlayerViewModel.stop()
+        
+        // Save to Firebase when session ends
         saveSessionToFirebase()
 
         // Enhanced session end animation
@@ -228,19 +230,64 @@ class BreathingViewModel: ObservableObject {
         self.authViewModel = newAuthViewModel
     }
 
+    // MARK: - Firebase Operations (Fixed to work with your model)
+    
     private func saveSessionToFirebase() {
         guard let userID = getActiveUserID(), let startTime = sessionStartTime else {
             print("Error saving session: UserID or start time not available. Signed in: \(authViewModel.isSigneIn)")
+            saveError = "Unable to save session. Please ensure you're signed in."
             return
         }
-        let session = BreathingSession(userID: userID, sessionDate: startTime, duration: sessionTimeElapsed)
-        let db = Database.database().reference()
-        do {
-            try db.child("users").child(userID).child("breathingSessions").child(session.id).setValue(from: session)
-            print("Breathing session saved successfully. Duration: \(session.duration)s")
-        } catch {
-            print("Error saving breathing session to Firebase: \(error.localizedDescription)")
+        
+        // Only save sessions that have meaningful duration (at least 5 seconds)
+        guard sessionTimeElapsed >= 5 else {
+            print("Session too short to save (duration: \(sessionTimeElapsed)s)")
+            return
         }
+        
+        isSaving = true
+        saveError = nil
+        
+        let session = BreathingSession(userID: userID, sessionDate: startTime, duration: sessionTimeElapsed)
+        
+        // Convert to dictionary manually to ensure proper Firebase format
+        let sessionData: [String: Any] = [
+            "id": session.id,
+            "userID": session.userID,
+            "sessionDate": session.sessionDate.timeIntervalSince1970, // Store as timestamp
+            "duration": session.duration
+        ]
+        
+        print("Attempting to save session data: \(sessionData)")
+        
+        // Save to Firebase
+        ref.child("users")
+           .child(userID)
+           .child("breathingSessions")
+           .child(session.id)
+           .setValue(sessionData) { [weak self] error, _ in
+            DispatchQueue.main.async {
+                self?.isSaving = false
+                
+                if let error = error {
+                    self?.saveError = "Failed to save session: \(error.localizedDescription)"
+                    print("Firebase save error: \(error.localizedDescription)")
+                } else {
+                    print("✅ Successfully saved breathing session with ID: \(session.id)")
+                    print("✅ Session duration: \(session.duration)s")
+                    print("✅ Session date: \(session.sessionDate)")
+                }
+            }
+        }
+    }
+    
+    // Optional: Add a retry method for failed saves
+    func retrySaveSession() {
+        guard let userID = getActiveUserID(), let startTime = sessionStartTime else {
+            return
+        }
+        
+        saveSessionToFirebase()
     }
 
     enum BreathingPhase {
