@@ -15,6 +15,13 @@
 //  Created by student on 27/05/25.
 //
 
+//
+//  BreathingViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by student on 27/05/25.
+//
+
 import Foundation
 import SwiftUI
 import Combine
@@ -23,13 +30,18 @@ import FirebaseDatabase
 @MainActor
 class BreathingViewModel: ObservableObject {
     @Published var breathingPhase: BreathingPhase = .idle
-    @Published var instructionText: String = "Select a song or tap Start"
-    @Published var circleScale: CGFloat = 0.5
+    @Published var instructionText: String = "Choose your music and begin your journey"
+    @Published var circleScale: CGFloat = 0.6
     @Published var circleColor: Color = AppColors.neutralColor
     @Published var isSessionActive: Bool = false
     @Published var sessionTimeElapsed: TimeInterval = 0
     @Published var selectedSong: String = "No Music"
-
+    
+    // Enhanced UI states
+    @Published var circleOpacity: Double = 0.8
+    @Published var pulseEffect: Bool = false
+    @Published var breathingRate: Double = 1.0 // For advanced breathing patterns
+    
     let availableSongs = ["No Music", "song1", "song2"] // Ensure these mp3 files are in your project
 
     @ObservedObject var musicPlayerViewModel: MusicPlayerViewModel
@@ -40,10 +52,12 @@ class BreathingViewModel: ObservableObject {
     private var sessionStartTime: Date?
     private var cancellables = Set<AnyCancellable>()
 
+    // Enhanced breathing parameters
     private let inhaleDuration: TimeInterval = 4.0
     private let exhaleDuration: TimeInterval = 6.0
-    private let maxCircleScale: CGFloat = 1.0
-    private let minCircleScale: CGFloat = 0.5
+    private let holdDuration: TimeInterval = 1.0 // Brief pause between breaths
+    private let maxCircleScale: CGFloat = 1.2
+    private let minCircleScale: CGFloat = 0.6
 
     init(musicPlayerViewModel: MusicPlayerViewModel, authViewModel: AuthViewModel) {
         self.musicPlayerViewModel = musicPlayerViewModel
@@ -77,8 +91,7 @@ class BreathingViewModel: ObservableObject {
 
     private func startSession() {
         guard authViewModel.isSigneIn, let _ = getActiveUserID() else {
-            instructionText = "Please sign in to start a session."
-            print("BreathingViewModel: User not signed in or no UserID available.")
+            instructionText = "Please sign in to start your mindful journey"
             return
         }
 
@@ -91,9 +104,13 @@ class BreathingViewModel: ObservableObject {
             musicPlayerViewModel.loadSong(fileName: selectedSong, autoPlay: true)
         }
         
-        // Start breathing cycle regardless of music, music is auxiliary
+        // Enhanced session start animation
+        withAnimation(.easeInOut(duration: 0.8)) {
+            pulseEffect = true
+        }
+        
         startBreathingCycle()
-        instructionText = "Session Started..."
+        instructionText = "Find your center and breathe deeply..."
     }
 
     private func stopSession() {
@@ -103,27 +120,39 @@ class BreathingViewModel: ObservableObject {
         musicPlayerViewModel.stop()
         saveSessionToFirebase()
 
-        breathingPhase = .idle
-        instructionText = "Session Ended. Tap Start."
-        circleScale = minCircleScale
-        circleColor = AppColors.neutralColor
+        // Enhanced session end animation
+        withAnimation(.easeOut(duration: 1.0)) {
+            breathingPhase = .idle
+            circleScale = minCircleScale
+            circleColor = AppColors.neutralColor
+            circleOpacity = 0.8
+            pulseEffect = false
+        }
+        
+        let sessionMinutes = Int(sessionTimeElapsed / 60)
+        instructionText = sessionMinutes > 0 ?
+            "Beautiful session! You practiced for \(sessionMinutes) minute\(sessionMinutes == 1 ? "" : "s")" :
+            "Session complete. Take a moment to appreciate your practice"
     }
     
     private func handleSongFinished() {
         if isSessionActive && selectedSong != "No Music" {
-            print("Song finished, stopping breathing session.")
+            print("Song finished, completing breathing session gracefully.")
             stopSession()
         }
     }
     
     func songSelectionChanged(newSong: String) {
         self.selectedSong = newSong
-        if newSong != "No Music" {
-            musicPlayerViewModel.loadSong(fileName: newSong, autoPlay: false)
-            instructionText = "Tap Start to begin with \(newSong)"
-        } else {
-            musicPlayerViewModel.stop()
-            instructionText = "Tap Start for a silent session"
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            if newSong != "No Music" {
+                musicPlayerViewModel.loadSong(fileName: newSong, autoPlay: false)
+                instructionText = "Ready to breathe with \(newSong.capitalized)"
+            } else {
+                musicPlayerViewModel.stop()
+                instructionText = "Ready for a peaceful silent session"
+            }
         }
     }
 
@@ -139,23 +168,42 @@ class BreathingViewModel: ObservableObject {
 
     private func performInhale() {
         breathingPhase = .inhale
-        instructionText = "Inhale"
+        instructionText = "Breathe in... fill your lungs"
+        
         withAnimation(.easeInOut(duration: inhaleDuration)) {
             circleScale = maxCircleScale
             circleColor = AppColors.inhaleColor
+            circleOpacity = 1.0
         }
+        
         breathingTimer = Timer.scheduledTimer(withTimeInterval: inhaleDuration, repeats: false) { [weak self] _ in
+            self?.performHold()
+        }
+    }
+    
+    private func performHold() {
+        breathingPhase = .hold
+        instructionText = "Hold..."
+        
+        withAnimation(.easeInOut(duration: holdDuration)) {
+            circleOpacity = 0.9
+        }
+        
+        breathingTimer = Timer.scheduledTimer(withTimeInterval: holdDuration, repeats: false) { [weak self] _ in
             self?.performExhale()
         }
     }
 
     private func performExhale() {
         breathingPhase = .exhale
-        instructionText = "Exhale"
+        instructionText = "Breathe out... release and relax"
+        
         withAnimation(.easeInOut(duration: exhaleDuration)) {
             circleScale = minCircleScale
             circleColor = AppColors.exhaleColor
+            circleOpacity = 0.7
         }
+        
         breathingTimer = Timer.scheduledTimer(withTimeInterval: exhaleDuration, repeats: false) { [weak self] _ in
             if self?.isSessionActive == true {
                 self?.performInhale()
@@ -192,6 +240,6 @@ class BreathingViewModel: ObservableObject {
     }
 
     enum BreathingPhase {
-        case idle, inhale, exhale
+        case idle, inhale, hold, exhale
     }
 }
