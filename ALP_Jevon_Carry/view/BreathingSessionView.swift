@@ -10,24 +10,14 @@
 // BreathingSessionView.swift
 // Make sure to import SwiftUI
 // BreathingSessionView.swift
-//
-//  BreathingSessionView.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-//
-//  BreathingSessionView.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
+
 
 import SwiftUI
 
 struct BreathingSessionView: View {
     @StateObject var breathingViewModel: BreathingViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
+    @Binding var showingSessionHistory: Bool  // Added binding for external control
 
     @State private var isDraggingSlider = false
     @State private var showingSongSelectionSheet = false
@@ -75,6 +65,11 @@ struct BreathingSessionView: View {
                             controlButtonSection
                                 .padding(.horizontal, 20)
                                 .padding(.top, 30)
+                            
+                            // History Button
+                            historyButtonSection
+                                .padding(.horizontal, 20)
+                                .padding(.top, 16)
                                 .padding(.bottom, 40)
                         }
                     }
@@ -310,11 +305,66 @@ struct BreathingSessionView: View {
         .scaleEffect(breathingViewModel.isSessionActive ? 1.0 : 1.02)
         .animation(.easeInOut(duration: 0.15), value: breathingViewModel.isSessionActive)
     }
+    
+    // MARK: - History Button Section
+    private var historyButtonSection: some View {
+        Button(action: {
+            showingSessionHistory = true  // Use the binding instead of local state
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: "clock.badge.checkmark")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(AppColors.neutralColor)
+                
+                Text("View Session History")
+                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                    .foregroundColor(AppColors.lightPrimaryText)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(AppColors.lightSecondaryText)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(Color.white)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [
+                                        AppColors.neutralColor.opacity(0.3),
+                                        AppColors.neutralColor.opacity(0.1)
+                                    ]),
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1
+                            )
+                    )
+                    .shadow(color: AppColors.neutralColor.opacity(0.05), radius: 4, x: 0, y: 2)
+            )
+        }
+        .buttonStyle(PlainButtonStyle())
+        .scaleEffect(1.0)
+        .animation(.easeInOut(duration: 0.1), value: showingSessionHistory)
+    }
 
     private func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%02d:%02d", minutes, seconds)
+    }
+}
+
+// MARK: - Convenience initializer for backward compatibility
+extension BreathingSessionView {
+    init(breathingViewModel: BreathingViewModel) {
+        self._breathingViewModel = StateObject(wrappedValue: breathingViewModel)
+        self._showingSessionHistory = .constant(false)
     }
 }
 
@@ -481,7 +531,10 @@ struct BreathingSessionView_Previews: PreviewProvider {
         let musicPlayerVM = MusicPlayerViewModel()
         let breathingVM = BreathingViewModel(musicPlayerViewModel: musicPlayerVM, authViewModel: previewAuthVM)
 
-        return BreathingSessionView(breathingViewModel: breathingVM)
-            .environmentObject(previewAuthVM)
+        return BreathingSessionView(
+            breathingViewModel: breathingVM,
+            showingSessionHistory: .constant(false)
+        )
+        .environmentObject(previewAuthVM)
     }
 }

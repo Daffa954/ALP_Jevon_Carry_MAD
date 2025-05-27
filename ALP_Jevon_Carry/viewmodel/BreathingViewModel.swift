@@ -223,6 +223,10 @@ class BreathingViewModel: ObservableObject {
         sessionDurationTimer?.invalidate()
         sessionDurationTimer = nil
     }
+    
+    func updateAuthViewModel(_ newAuthViewModel: AuthViewModel) {
+        self.authViewModel = newAuthViewModel
+    }
 
     private func saveSessionToFirebase() {
         guard let userID = getActiveUserID(), let startTime = sessionStartTime else {
