@@ -232,17 +232,4 @@ struct ResultCardView: View {
     }
 }
 
-struct ResultCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        ResultCardView(journal: JournalModel(
-            title: "Best Day Ever!",
-            date: Date(),
-            description: "Had an amazing time at the park with friends",
-            emotion: "excited",
-            score: 9
-        ))
-        .padding()
-        .previewLayout(.sizeThatFits)
-        .environment(\.colorScheme, .light)
-    }
-}
+

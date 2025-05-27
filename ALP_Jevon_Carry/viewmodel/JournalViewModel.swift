@@ -18,7 +18,6 @@ class JournalViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     init() {
-        
         self.result = JournalModel(
             title: "",
             date: Date(),
