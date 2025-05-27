@@ -30,3 +30,5 @@ struct BreathingSession: Identifiable, Codable, Hashable {
         case duration
     }
 }
+
+

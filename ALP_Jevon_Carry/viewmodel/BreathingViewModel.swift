@@ -8,11 +8,17 @@
 // BreathingViewModel.swift (Create this new file)
 // Make sure to import Foundation, SwiftUI, Combine, FirebaseDatabase, FirebaseDatabaseSwift
 // BreathingViewModel.swift
+//
+//  BreathingViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by student on 27/05/25.
+//
+
 import Foundation
 import SwiftUI
 import Combine
 import FirebaseDatabase
-
 
 @MainActor
 class BreathingViewModel: ObservableObject {
