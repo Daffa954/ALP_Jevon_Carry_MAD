@@ -3,3 +3,10 @@ config/
 GoogleService-Info.plist
 coreml/
 EmotionClassifierV5.mlmodel
+<<<<<<< Updated upstream
+=======
+EmotionClassifierOpt.mlmodel
+
+config/
+key.swift
+>>>>>>> Stashed changes
