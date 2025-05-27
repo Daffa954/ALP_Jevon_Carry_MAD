@@ -8,10 +8,10 @@
 // SessionHistoryViewModel.swift (Create this new file)
 // Make sure to import Foundation, SwiftUI, FirebaseDatabase, FirebaseDatabaseSwift
 // SessionHistoryViewModel.swift
+// SessionHistoryViewModel.swift
 import Foundation
 import SwiftUI
 import FirebaseDatabase
-
 
 struct DatedSessionGroup: Identifiable, Hashable {
     let id: Date // The day (normalized to midnight)
@@ -23,6 +23,9 @@ class SessionHistoryViewModel: ObservableObject {
     @Published var datedSessionGroups: [DatedSessionGroup] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    
+    // Add this flag for preview mode
+    var isPreviewMode: Bool = false
 
     private var authViewModel: AuthViewModel
 
@@ -42,6 +45,12 @@ class SessionHistoryViewModel: ObservableObject {
     }
 
     func fetchSessionHistory() {
+        // Skip fetching if in preview mode
+        if isPreviewMode {
+            print("SessionHistoryViewModel: Skipping fetch in preview mode")
+            return
+        }
+        
         guard authViewModel.isSigneIn, let userID = getActiveUserID() else {
             if !authViewModel.isSigneIn {
                 errorMessage = "User not signed in."
