@@ -41,17 +41,24 @@ class JournalViewModel: ObservableObject {
         default: return "❓"
         }
     }
-    func analyzeEmotion() {
+    func analyzeEmotion(userID : String) {
         //call the coreML service
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
         let score = scoreForEmotion(emotion) // tambahkan scoring
         DispatchQueue.main.async {
             self.result = JournalModel(
                 title: emotion, date: Date(), description: self.userInput,
-                emotion: emotion, score: score)
+                emotion: emotion, score: score, userID: userID)
             self.emoticonSymbol = self.emoticon(for: emotion)
             self.getRecommendations()
+            var addToDB = self.addJournal(journal: self.result)
+            if addToDB {
+                print( "berhasil")
+            }else {
+                print("gagal")
+            }
             
+          
         }
     }
     

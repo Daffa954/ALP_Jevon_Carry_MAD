@@ -13,7 +13,7 @@ struct AddJournalView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var journalViewModel: JournalViewModel
-    @State var isAnalyzed: Bool = true
+    @State var isAnalyzed: Bool = false
     @State var userID : String
     var body: some View {
         ScrollView{
@@ -66,7 +66,7 @@ struct AddJournalView: View {
                     .buttonStyle(.borderedProminent)
                     
                     Button(action: {
-                        journalViewModel.analyzeEmotion()
+                        journalViewModel.analyzeEmotion(userID: userID)
                         isAnalyzed = true
                     }) {
                         HStack {

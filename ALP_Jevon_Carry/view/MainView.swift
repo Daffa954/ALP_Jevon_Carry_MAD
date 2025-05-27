@@ -9,6 +9,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
+    @EnvironmentObject var listJournalViewModel: ListJournalViewModel
     @State var showAuthSheet = false
     var body: some View {
         TabView{
@@ -44,4 +45,6 @@ struct MainView: View {
 #Preview {
     MainView()
         .environmentObject(AuthViewModel())
+        .environmentObject(ListJournalViewModel())
+        .environmentObject(JournalViewModel())
 }
