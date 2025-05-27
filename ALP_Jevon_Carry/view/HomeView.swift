@@ -17,8 +17,9 @@ struct HomeView: View {
     }
     
     let cornerRadius: CGFloat = 30 // Define corner radius for consistency
-
+    @EnvironmentObject var authVM : AuthViewModel
     var body: some View {
+        
         ZStack { // << --- Root ZStack for global background
             // Bottom layer: Global background color
             Color("color1")
@@ -31,7 +32,7 @@ struct HomeView: View {
                     // MARK: - Header Section
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("Hi Dave!")
+                            Text("Hi \(authVM.user?.email ?? "User")")
                                 .font(.system(size: 30, weight: .bold))
                             Text("Your journey matters.\nLet's see how you're growing.")
                                 .font(.system(size: 16))
@@ -128,9 +129,7 @@ struct ResultCard: View {
     }
 }
 
-// MARK: - Preview (identical to before)
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-    }
+#Preview {
+    HomeView()
+        .environmentObject(AuthViewModel())
 }
