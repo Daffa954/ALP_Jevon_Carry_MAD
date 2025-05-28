@@ -5,38 +5,35 @@
 ////  Created by Daffa Khoirul on 26/05/25.
 ////
 //
-//import SwiftUI
-//
-//
-//struct RecommendationCardView: View {
-//    let activity: String
-//    @Environment(\.colorScheme) var colorScheme
-//    
-//    var body: some View {
-//        HStack(alignment: .top, spacing: 12) {
-//            Image(systemName: "lightbulb.fill")
-//                .foregroundColor(.yellow)
-//                .font(.system(size: 24))
-//            
-//            Text(activity)
-//                .font(.body)
-//                .padding(.top, 2)
-//                .foregroundColor(Color("lightGray1"))
-//                .multilineTextAlignment(.leading)
-//            
-//            Spacer()
-//        }
-//        .padding()
-//        .background(
-//            RoundedRectangle(cornerRadius: 12)
-//                .fill(colorScheme == .dark ? Color(.systemGray5) : Color("skyBlue"))
-//                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-//        )
-//        
-//    }
-//}
-//
-//
-//#Preview {
-//    RecommendationCardView(activity: "hello")
-//}
+import SwiftUI
+// Enhanced RecommendationCardView (assuming it exists)
+struct RecommendationCardView: View {
+    let activity: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "star.fill")
+                .font(.title3)
+                .foregroundColor(Color("coralOrange"))
+            
+            Text(activity)
+                .font(.body)
+                .foregroundColor(Color("navyBlue"))
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(Color("skyBlue"))
+        }
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(color: Color("skyBlue").opacity(0.08), radius: 4, x: 0, y: 2)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color("lightGray1"), lineWidth: 1)
+        )
+    }
+}
+

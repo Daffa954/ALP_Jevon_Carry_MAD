@@ -19,15 +19,23 @@ class OpenRouterService {
         // Craft a prompt that forces JSON array response
         let systemPrompt = """
             You are a helpful activity recommendation assistant. 
-            Provide exactly 5 activity recommendations as a JSON array of strings.
-            Example: {"recommendation": ["Go for a walk", "Read a book"]}
+             Your job is to return exactly 5 activity recommendations based on emotions. Never add explanation. Only respond in JSON with this structure:
+
+            {
+              "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+            }
             Only respond with valid JSON format.
             """
         
         let userPrompt = """
-        Based on 8 basic plutchik emotions, which the emotion is \(prompt), suggest 5 activities. \
-        You must only return a JSON object with the following format: \
-        {\"recommendation\": [\"activity 1\", \"activity 2\", \"activity 3\", \"activity 4\", \"activity 5\"]}. \
+        Based on 8 basic plutchik emotions, which the emotion is \(prompt), suggest 5 activities. 
+        Return only a valid JSON object in the format:
+
+        {
+          "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+        }
+
+        No explanation. No extra text. No Markdown. Just pure JSON.
         Do not include any other text or explanation.
         """
         

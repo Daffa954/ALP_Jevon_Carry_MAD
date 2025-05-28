@@ -26,16 +26,47 @@ class ListJournalViewModel: ObservableObject {
         self.ref = Database.database().reference().child("journals")
     }
     
+//    func fetchJournalThisWeek(userID: String) {
+//        ref.observe(.value) { snapshot in
+//            guard let value = snapshot.value as? [String : Any] else {
+//                self.allJournalThisWeek = []
+//                return
+//            }
+//
+//            let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+//
+//            self.allJournalThisWeek = value.compactMap { (_, restData) in
+//                guard let restDict = restData as? [String: Any],
+//                      let jsonData = try? JSONSerialization.data(withJSONObject: restDict),
+//                      var journal = try? JSONDecoder().decode(JournalModel.self, from: jsonData)
+//                else {
+//                    return nil
+//                }
+//
+//                // Filter by userID and date >= oneWeekAgo
+//                if journal.userID == userID && journal.date >= oneWeekAgo {
+//                    // Generate UUID if not included from Firebase
+//                    journal.id = UUID()
+//                    return journal
+//                } else {
+//                    return nil
+//                }
+//            }
+//        }
+//    }
     func fetchJournalThisWeek(userID: String) {
         ref.observe(.value) { snapshot in
-            guard let value = snapshot.value as? [String : Any] else {
+            guard let value = snapshot.value as? [String: Any] else {
                 self.allJournalThisWeek = []
                 return
             }
 
             let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
 
-            self.allJournalThisWeek = value.compactMap { (_, restData) in
+            let calendar = Calendar.current
+
+            // Ambil semua journal dalam 7 hari terakhir & milik user ini
+            let journalsThisWeek: [JournalModel] = value.compactMap { (_, restData) in
                 guard let restDict = restData as? [String: Any],
                       let jsonData = try? JSONSerialization.data(withJSONObject: restDict),
                       var journal = try? JSONDecoder().decode(JournalModel.self, from: jsonData)
@@ -43,17 +74,37 @@ class ListJournalViewModel: ObservableObject {
                     return nil
                 }
 
-                // Filter by userID and date >= oneWeekAgo
                 if journal.userID == userID && journal.date >= oneWeekAgo {
-                    // Generate UUID if not included from Firebase
                     journal.id = UUID()
                     return journal
                 } else {
                     return nil
                 }
             }
+
+            // Kelompokkan berdasarkan tanggal (tanpa jam)
+            let groupedByDate = Dictionary(grouping: journalsThisWeek) { journal in
+                calendar.startOfDay(for: journal.date)
+            }
+
+            // Rata-rata score per hari
+            let averagedJournals: [JournalModel] = groupedByDate.map { (date, journals) in
+                let averageScore = journals.map { Double($0.score) }.reduce(0, +) / Double(journals.count)
+
+                return JournalModel(
+                    id: UUID(),
+                    title: "Rata-rata hari \(DateFormatter.localizedString(from: date, dateStyle: .medium, timeStyle: .none))",
+                    date: date,
+                    description: "Rata-rata dari \(journals.count) jurnal",
+                    emotion: "Mixed",
+                    score: Int(averageScore.rounded()),
+                    userID: userID
+                )
+            }
+
+            // Urutkan berdasarkan tanggal
+            self.allJournalThisWeek = averagedJournals.sorted(by: { $0.date < $1.date })
         }
     }
-
 
 }
