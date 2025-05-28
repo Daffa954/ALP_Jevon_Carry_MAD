@@ -110,7 +110,7 @@ struct JournalView: View {
                                     .background(Color.white.opacity(0.5))
                                     .cornerRadius(16)
                                 } else {
-                                    ForEach(listJournalVM.allJournalThisWeek) { journal in
+                                    ForEach(listJournalVM.allJournalHistories, id: \.id) { journal in
                                         JournalCardView(journal: journal)
                                     }
                                 }
@@ -152,8 +152,10 @@ struct JournalView: View {
             .onChange(of: authVM.user?.uid ?? "", initial: true) { oldUID, newUID in
                 if !newUID.isEmpty {
                     listJournalVM.fetchJournalThisWeek(userID: newUID)
+                    listJournalVM.fetchAllJournal(userID: newUID)
                 } else {
                     listJournalVM.allJournalThisWeek = []
+                    listJournalVM.allJournalHistories = []
                 }
             }
         }

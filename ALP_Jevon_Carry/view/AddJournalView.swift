@@ -93,19 +93,6 @@ struct AddJournalView: View {
                                     )
                                 
                                 VStack {
-                                    if journalViewModel.userInput.isEmpty && !isEditing {
-                                        VStack(spacing: 12) {
-                                            Image(systemName: "pencil.and.outline")
-                                                .font(.system(size: 32))
-                                                .foregroundColor(Color( "skyBlue").opacity(0.4))
-                                            
-                                            Text("Start writing your journal entry...")
-                                                .font(.body)
-                                                .foregroundColor(Color( "skyBlue").opacity(0.6))
-                                        }
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .padding(.top, 80)
-                                    }
                                     
                                     TextEditor(text: $journalViewModel.userInput)
                                         .scrollContentBackground(.hidden)
