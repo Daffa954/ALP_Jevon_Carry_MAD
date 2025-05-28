@@ -3,7 +3,7 @@ import SwiftUI
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
-
+    
     func path(in rect: CGRect) -> Path {
         let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
         return Path(path.cgPath)
@@ -11,7 +11,6 @@ struct RoundedCorner: Shape {
 }
 
 struct HomeView: View {
-
     var headerImage: Image {
         return Image("Image1")
     }
@@ -24,7 +23,7 @@ struct HomeView: View {
             // Bottom layer: Global background color
             Color("color1")
                 .edgesIgnoringSafeArea(.all)
-
+            
             // Top layer: Your scrollable content
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) { // No spacing between blue and white visually
@@ -32,7 +31,7 @@ struct HomeView: View {
                     // MARK: - Header Section
                     HStack(alignment: .center) {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("Hi \(authVM.user?.email ?? "User")")
+                            Text("Hi \(authVM.myUser.name)")
                                 .font(.system(size: 30, weight: .bold))
                             Text("Your journey matters.\nLet's see how you're growing.")
                                 .font(.system(size: 16))
@@ -52,7 +51,7 @@ struct HomeView: View {
                     .padding(.horizontal, 20)
                     .background(Color("color1")) // This header will blend with the ZStack background
                     // No clipShape on blue header means square bottom corners
-
+                    
                     // MARK: - Main Content Area (White Background)
                     VStack(alignment: .leading, spacing: 25) {
                         
@@ -80,14 +79,14 @@ struct HomeView: View {
                         }
                         // Adjusted top padding for direct spacing, no overlap
                         .padding(.top, 25)
-
+                        
                         // MARK: - Let See Others Result Section
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Take a Quiz")
                                 .font(.system(size: 22, weight: .medium))
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .padding(.bottom, 10)
-
+                            
                             ResultCard(title: "Daily Mood", themeColor: Color("color1"))
                             ResultCard(title: "Daily Mood", themeColor: Color("color1"))
                             
@@ -106,7 +105,21 @@ struct HomeView: View {
             } // End of ScrollView
             // .background(...) removed from ScrollView
             .edgesIgnoringSafeArea(.top) // Allows ScrollView content (blue header) to go to top edge
+            
+        }.onChange(of: authVM.user?.uid ?? "", initial: true) { oldUID, newUID in
+            if !newUID.isEmpty {
+                Task {
+                    
+                    do {
+                        try await authVM.fetchUserProfile(userID: newUID)
+                    } catch {
+                        Text("error loading")
+                    }
+                    
+                }
+            }
         }
+        
     }
 }
 

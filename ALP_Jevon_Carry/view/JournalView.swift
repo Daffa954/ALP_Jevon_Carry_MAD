@@ -74,8 +74,8 @@ struct JournalView: View {
                                 
                                 Spacer()
                                 
-                                if !listJournalVM.allJournalThisWeek.isEmpty {
-                                    Text("\(listJournalVM.allJournalThisWeek.count) entries this week")
+                                if !listJournalVM.allJournalHistories.isEmpty {
+                                    Text("\(listJournalVM.allJournalHistories.count) entries this week")
                                         .font(.caption)
                                         .foregroundStyle(Color("emeraldGreen"))
                                         .padding(.horizontal, 12)
