@@ -13,6 +13,8 @@ import FirebaseAppCheck
 struct ALP_Jevon_CarryApp: App {
    
     @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var historyViewModel = HistoryViewModel()
+    @StateObject private var quizViewModel = QuizViewModel(type: "PHQ-9")
     @StateObject private var listJournalViewModel = ListJournalViewModel()
 
     @StateObject private var journalViewModel = JournalViewModel()
@@ -29,6 +31,8 @@ struct ALP_Jevon_CarryApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(journalViewModel)
                 .environmentObject(listJournalViewModel)
+                .environmentObject(historyViewModel)
+                .environmentObject(quizViewModel)
         }
     }
 }

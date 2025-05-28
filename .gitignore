@@ -4,6 +4,7 @@ GoogleService-Info.plist
 
 coreml/
 EmotionClassifierV5.mlmodel
+EmotionClassifierOpt.mlmodel
 
 config/
 key.swift
