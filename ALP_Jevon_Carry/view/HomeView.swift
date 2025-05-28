@@ -11,6 +11,8 @@ struct RoundedCorner: Shape {
 }
 
 struct HomeView: View {
+    @State private var navigateToQuiz = false
+    @State private var selectedQuizType: String = ""
 
     var headerImage: Image {
         return Image("Image1")
@@ -96,34 +98,59 @@ struct HomeView: View {
                                     .frame(maxWidth: .infinity, alignment: .center)
                             }
                             HStack{
-                                ZStack{
-                                    Rectangle()
-                                        .frame(height: 200)
-                                        .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
-                                        .cornerRadius(20)
-                                    HStack{
-                                        //Image blm jadi
-                                        VStack(alignment: .leading){
-                                            Text("PHQ-9")
-                                                .font(.title2)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(.white)
-                                                .padding(.top, 16)
-                                            Text("This test measures your mental health.")
-                                                .font(.system(size: 18))
-                                                .foregroundStyle(.white)
-                                            Spacer()
-                                            
+                                Button(action: {
+                                    selectedQuizType = "PHQ-9"
+                                    navigateToQuiz = true
+                                }){
+                                    ZStack{
+                                        Rectangle()
+                                            .frame(height: 200)
+                                            .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
+                                            .cornerRadius(20)
+                                        HStack{
+                                            //Image blm jadi
+                                            VStack(alignment: .leading){
+                                                Text("PHQ-9")
+                                                    .font(.title2)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundStyle(.white)
+                                                    .padding(.top, 16)
+                                                Text("This test measures your mental health.")
+                                                    .font(.system(size: 18))
+                                                    .foregroundStyle(.white)
+                                                Spacer()
+                                                
+                                            }
                                         }
                                     }
                                 }
                             }
                             HStack{
-                                ZStack{
-                                    Rectangle()
-                                        .frame(height: 200)
-                                        .foregroundStyle(Color(hue: 0.416, saturation: 0.452, brightness: 0.581))
-                                        .cornerRadius(20)
+                                Button(action: {
+                                    selectedQuizType = "GAD-7"
+                                    navigateToQuiz = true
+                                }){
+                                    ZStack{
+                                        Rectangle()
+                                            .frame(height: 200)
+                                            .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
+                                            .cornerRadius(20)
+                                        HStack{
+                                            //Image blm jadi
+                                            VStack(alignment: .leading){
+                                                Text("GAD-7")
+                                                    .font(.title2)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundStyle(.white)
+                                                    .padding(.top, 16)
+                                                Text("This test measures your mental health.")
+                                                    .font(.system(size: 18))
+                                                    .foregroundStyle(.white)
+                                                Spacer()
+                                                
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             
@@ -142,6 +169,7 @@ struct HomeView: View {
             } // End of ScrollView
             // .background(...) removed from ScrollView
             .edgesIgnoringSafeArea(.top) // Allows ScrollView content (blue header) to go to top edge
+            
         }
     }
 }

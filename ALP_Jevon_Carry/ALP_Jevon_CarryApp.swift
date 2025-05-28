@@ -13,6 +13,8 @@ import FirebaseAppCheck
 struct ALP_Jevon_CarryApp: App {
    
     @StateObject private var authViewModel = AuthViewModel()
+    @StateObject private var historyViewModel = HistoryViewModel()
+    @StateObject private var quizViewModel = QuizViewModel(type: "PHQ-9")
     init(){
         FirebaseApp.configure()
         #if DEBUG
@@ -24,6 +26,8 @@ struct ALP_Jevon_CarryApp: App {
         WindowGroup {
            SplashScreenView()
                 .environmentObject(authViewModel)
+                .environmentObject(historyViewModel)
+                .environmentObject(quizViewModel)
         }
     }
 }
