@@ -13,6 +13,11 @@
 		CF1621E32DD72E0600DC6BE0 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621E22DD72E0600DC6BE0 /* FirebaseAuth */; };
 		CF1621E52DD72E0600DC6BE0 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621E42DD72E0600DC6BE0 /* FirebaseCore */; };
 		CF1621E72DD72E0600DC6BE0 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CF1621E62DD72E0600DC6BE0 /* FirebaseDatabase */; };
+		CFBA987F2DE821DB00AECA63 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = CFBA987E2DE821DB00AECA63 /* FirebaseAnalytics */; };
+		CFBA98812DE821E400AECA63 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = CFBA98802DE821E400AECA63 /* FirebaseAppCheck */; };
+		CFBA98832DE821E900AECA63 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CFBA98822DE821E900AECA63 /* FirebaseAuth */; };
+		CFBA98852DE821F800AECA63 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = CFBA98842DE821F800AECA63 /* FirebaseCore */; };
+		CFBA98872DE8220500AECA63 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = CFBA98862DE8220500AECA63 /* FirebaseDatabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +35,20 @@
 			remoteGlobalIDString = CF2C9E212DD6DDB900208ECF;
 			remoteInfo = ALP_Jevon_Carry;
 		};
+		CFBA98632DE821BE00AECA63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF2C9E1A2DD6DDB900208ECF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CFBA98542DE821BD00AECA63;
+			remoteInfo = JevonCarryMac;
+		};
+		CFBA986D2DE821BE00AECA63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CF2C9E1A2DD6DDB900208ECF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CFBA98542DE821BD00AECA63;
+			remoteInfo = JevonCarryMac;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +56,9 @@
 		CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALP_Jevon_Carry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ALP_Jevon_CarryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFBA98552DE821BD00AECA63 /* JevonCarryMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JevonCarryMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFBA98622DE821BE00AECA63 /* JevonCarryMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JevonCarryMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CFBA986C2DE821BE00AECA63 /* JevonCarryMacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JevonCarryMacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -53,6 +75,21 @@
 		CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ALP_Jevon_CarryUITests;
+			sourceTree = "<group>";
+		};
+		CFBA98562DE821BD00AECA63 /* JevonCarryMac */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = JevonCarryMac;
+			sourceTree = "<group>";
+		};
+		CFBA98652DE821BE00AECA63 /* JevonCarryMacTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = JevonCarryMacTests;
+			sourceTree = "<group>";
+		};
+		CFBA986F2DE821BE00AECA63 /* JevonCarryMacUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = JevonCarryMacUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -84,6 +121,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFBA98522DE821BD00AECA63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CFBA98872DE8220500AECA63 /* FirebaseDatabase in Frameworks */,
+				CFBA98812DE821E400AECA63 /* FirebaseAppCheck in Frameworks */,
+				CFBA98832DE821E900AECA63 /* FirebaseAuth in Frameworks */,
+				CFBA98852DE821F800AECA63 /* FirebaseCore in Frameworks */,
+				CFBA987F2DE821DB00AECA63 /* FirebaseAnalytics in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA985F2DE821BE00AECA63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA98692DE821BE00AECA63 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -94,6 +157,10 @@
 				CF2C9E242DD6DDB900208ECF /* ALP_Jevon_Carry */,
 				CF2C9E322DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
 				CF2C9E3C2DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
+				CFBA98562DE821BD00AECA63 /* JevonCarryMac */,
+				CFBA98652DE821BE00AECA63 /* JevonCarryMacTests */,
+				CFBA986F2DE821BE00AECA63 /* JevonCarryMacUITests */,
+				CFBA987D2DE821DB00AECA63 /* Frameworks */,
 				CF2C9E232DD6DDB900208ECF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,8 +171,18 @@
 				CF2C9E222DD6DDB900208ECF /* ALP_Jevon_Carry.app */,
 				CF2C9E2F2DD6DDBB00208ECF /* ALP_Jevon_CarryTests.xctest */,
 				CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */,
+				CFBA98552DE821BD00AECA63 /* JevonCarryMac.app */,
+				CFBA98622DE821BE00AECA63 /* JevonCarryMacTests.xctest */,
+				CFBA986C2DE821BE00AECA63 /* JevonCarryMacUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CFBA987D2DE821DB00AECA63 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,6 +261,79 @@
 			productReference = CF2C9E392DD6DDBB00208ECF /* ALP_Jevon_CarryUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CFBA98542DE821BD00AECA63 /* JevonCarryMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFBA987A2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMac" */;
+			buildPhases = (
+				CFBA98512DE821BD00AECA63 /* Sources */,
+				CFBA98522DE821BD00AECA63 /* Frameworks */,
+				CFBA98532DE821BD00AECA63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CFBA98562DE821BD00AECA63 /* JevonCarryMac */,
+			);
+			name = JevonCarryMac;
+			packageProductDependencies = (
+				CFBA987E2DE821DB00AECA63 /* FirebaseAnalytics */,
+				CFBA98802DE821E400AECA63 /* FirebaseAppCheck */,
+				CFBA98822DE821E900AECA63 /* FirebaseAuth */,
+				CFBA98842DE821F800AECA63 /* FirebaseCore */,
+				CFBA98862DE8220500AECA63 /* FirebaseDatabase */,
+			);
+			productName = JevonCarryMac;
+			productReference = CFBA98552DE821BD00AECA63 /* JevonCarryMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CFBA98612DE821BE00AECA63 /* JevonCarryMacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFBA987B2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMacTests" */;
+			buildPhases = (
+				CFBA985E2DE821BE00AECA63 /* Sources */,
+				CFBA985F2DE821BE00AECA63 /* Frameworks */,
+				CFBA98602DE821BE00AECA63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CFBA98642DE821BE00AECA63 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CFBA98652DE821BE00AECA63 /* JevonCarryMacTests */,
+			);
+			name = JevonCarryMacTests;
+			packageProductDependencies = (
+			);
+			productName = JevonCarryMacTests;
+			productReference = CFBA98622DE821BE00AECA63 /* JevonCarryMacTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CFBA986B2DE821BE00AECA63 /* JevonCarryMacUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CFBA987C2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMacUITests" */;
+			buildPhases = (
+				CFBA98682DE821BE00AECA63 /* Sources */,
+				CFBA98692DE821BE00AECA63 /* Frameworks */,
+				CFBA986A2DE821BE00AECA63 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CFBA986E2DE821BE00AECA63 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				CFBA986F2DE821BE00AECA63 /* JevonCarryMacUITests */,
+			);
+			name = JevonCarryMacUITests;
+			packageProductDependencies = (
+			);
+			productName = JevonCarryMacUITests;
+			productReference = CFBA986C2DE821BE00AECA63 /* JevonCarryMacUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -204,6 +354,17 @@
 					CF2C9E382DD6DDBB00208ECF = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = CF2C9E212DD6DDB900208ECF;
+					};
+					CFBA98542DE821BD00AECA63 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					CFBA98612DE821BE00AECA63 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = CFBA98542DE821BD00AECA63;
+					};
+					CFBA986B2DE821BE00AECA63 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = CFBA98542DE821BD00AECA63;
 					};
 				};
 			};
@@ -227,6 +388,9 @@
 				CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */,
 				CF2C9E2E2DD6DDBB00208ECF /* ALP_Jevon_CarryTests */,
 				CF2C9E382DD6DDBB00208ECF /* ALP_Jevon_CarryUITests */,
+				CFBA98542DE821BD00AECA63 /* JevonCarryMac */,
+				CFBA98612DE821BE00AECA63 /* JevonCarryMacTests */,
+				CFBA986B2DE821BE00AECA63 /* JevonCarryMacUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -248,6 +412,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CF2C9E372DD6DDBB00208ECF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA98532DE821BD00AECA63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA98602DE821BE00AECA63 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA986A2DE821BE00AECA63 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -278,6 +463,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CFBA98512DE821BD00AECA63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA985E2DE821BE00AECA63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CFBA98682DE821BE00AECA63 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -290,6 +496,16 @@
 			isa = PBXTargetDependency;
 			target = CF2C9E212DD6DDB900208ECF /* ALP_Jevon_Carry */;
 			targetProxy = CF2C9E3A2DD6DDBB00208ECF /* PBXContainerItemProxy */;
+		};
+		CFBA98642DE821BE00AECA63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CFBA98542DE821BD00AECA63 /* JevonCarryMac */;
+			targetProxy = CFBA98632DE821BE00AECA63 /* PBXContainerItemProxy */;
+		};
+		CFBA986E2DE821BE00AECA63 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CFBA98542DE821BD00AECA63 /* JevonCarryMac */;
+			targetProxy = CFBA986D2DE821BE00AECA63 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -537,6 +753,130 @@
 			};
 			name = Release;
 		};
+		CFBA98742DE821BE00AECA63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = JevonCarryMac/JevonCarryMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CFBA98752DE821BE00AECA63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = JevonCarryMac/JevonCarryMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CFBA98762DE821BE00AECA63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMacTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JevonCarryMac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/JevonCarryMac";
+			};
+			name = Debug;
+		};
+		CFBA98772DE821BE00AECA63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMacTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JevonCarryMac.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/JevonCarryMac";
+			};
+			name = Release;
+		};
+		CFBA98782DE821BE00AECA63 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMacUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = JevonCarryMac;
+			};
+			name = Debug;
+		};
+		CFBA98792DE821BE00AECA63 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = tes.JevonCarryMacUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = JevonCarryMac;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -576,6 +916,33 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CFBA987A2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFBA98742DE821BE00AECA63 /* Debug */,
+				CFBA98752DE821BE00AECA63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFBA987B2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFBA98762DE821BE00AECA63 /* Debug */,
+				CFBA98772DE821BE00AECA63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CFBA987C2DE821BE00AECA63 /* Build configuration list for PBXNativeTarget "JevonCarryMacUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFBA98782DE821BE00AECA63 /* Debug */,
+				CFBA98792DE821BE00AECA63 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -611,6 +978,31 @@
 			productName = FirebaseCore;
 		};
 		CF1621E62DD72E0600DC6BE0 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		CFBA987E2DE821DB00AECA63 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		CFBA98802DE821E400AECA63 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		CFBA98822DE821E900AECA63 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		CFBA98842DE821F800AECA63 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CFBA98862DE8220500AECA63 /* FirebaseDatabase */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CF1621DD2DD720C000DC6BE0 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseDatabase;
