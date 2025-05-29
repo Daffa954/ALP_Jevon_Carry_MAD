@@ -21,9 +21,9 @@ class ListJournalViewModel: ObservableObject {
     @Published var allJournalHistories: [JournalModel] = []
     @Published var allJournalThisWeek: [JournalModel] = []
     //    @Published var isLoading = false
-    private let journalRepository: JournalRepository
+    private let journalRepository: FirebaseJournalRepository
     
-    init(journalRepository: JournalRepository = JournalRepository()) {
+    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
         
         self.journalRepository = journalRepository
     }

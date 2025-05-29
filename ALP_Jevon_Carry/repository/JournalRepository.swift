@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseDatabase
 
-class JournalRepository {
+class FirebaseJournalRepository {
     private let ref: DatabaseReference
     
     init() {

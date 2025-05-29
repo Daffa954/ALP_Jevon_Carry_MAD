@@ -16,9 +16,9 @@ class JournalViewModel: ObservableObject {
     @Published var recommendations: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    private let journalRepository: JournalRepository
+    private let journalRepository: FirebaseJournalRepository
 
-    init(journalRepository: JournalRepository = JournalRepository()) {
+    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
         self.result = JournalModel(
             title: "",
             date: Date(),

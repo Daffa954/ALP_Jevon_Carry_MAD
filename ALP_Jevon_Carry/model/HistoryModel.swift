@@ -13,4 +13,5 @@ struct HistoryModel: Hashable, Identifiable, Codable{
     var totalScore: Int
     var date: Date
     var summary: String
+    var userID: String = ""
 }
