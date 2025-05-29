@@ -34,7 +34,7 @@ struct JournalView: View {
                                 .fontWeight(.bold)
                                 .foregroundStyle(Color( "navyBlue"))
                             
-                            Text("Welcome back, \(authVM.user?.displayName ?? "User")!")
+                            Text("Welcome back, \(authVM.myUser.name)!")
                                 .font(.subheadline)
                                 .foregroundStyle(Color( "skyBlue"))
                         }
@@ -101,8 +101,7 @@ struct JournalView: View {
                                             
                                             Text("Start your journaling journey by tapping the + button")
                                                 .font(.subheadline)
-                                                .foregroundColor(Color("skyBlue"))
-                                                .multilineTextAlignment(.center)
+                                                .foregroundColor(Color("skyBlue")).multilineTextAlignment(.center)
                                         }
                                     }
                                     .padding(.vertical, 40)
