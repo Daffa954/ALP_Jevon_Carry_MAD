@@ -1,5 +1,194 @@
 import SwiftUI
 
+struct HomeView: View {
+    @State private var selectedQuizType: String = ""
+    let cornerRadius: CGFloat = 30
+    @EnvironmentObject var authVM: AuthViewModel
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                // Background
+                Color("color1")
+                    .edgesIgnoringSafeArea(.all)
+                
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // Header Section
+                        headerSection
+                        
+                        // Main Content
+                        VStack(spacing: 25) {
+                            // Fresh Start Section
+                            freshStartSection
+                            
+                            // Quiz Cards Section
+                            VStack(spacing: 20) {
+                                VStack(spacing: 10) {
+                                    Text("Check Your Mental Health")
+                                        .font(.system(size: 22, weight: .medium))
+                                        .foregroundColor(.black)
+                                    
+                                    Text("For best results, this test is limited to one session per week.")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.gray)
+                                        .multilineTextAlignment(.center)
+                                }
+                                
+                                // Quiz Cards
+                                VStack(spacing: 15) {
+                                    NavigationLink(
+                                        destination: QuizView(type: "PHQ-9")
+                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
+                                            .environmentObject(HistoryViewModel()),
+                                        label: {
+                                            QuizCard(title: "PHQ-9",
+                                                     subtitle: "Depression Assessment",
+                                                     icon: "heart.text.square")
+                                        }
+                                    )
+                                    
+                                    NavigationLink(
+                                        destination: QuizView(type: "GAD-7")
+                                            .environmentObject(QuizViewModel(type: "GAD-7"))
+                                            .environmentObject(HistoryViewModel()),
+                                        label: {
+                                            QuizCard(title: "GAD-7",
+                                                     subtitle: "Anxiety Assessment",
+                                                     icon: "brain.head.profile")
+                                        }
+                                    )
+                                }
+                            }
+                            
+                        }
+                        .padding(.horizontal, 35)
+                        .padding(.bottom, 50) // Padding untuk Tab Bar
+                        
+                        .background(Color.white)
+                        .clipShape(RoundedCorner(radius: cornerRadius, corners: [.topLeft, .topRight]))
+                    }
+                }
+            }
+            .onChange(of: authVM.user?.uid ?? "", initial: true) { _, newUID in
+                if !newUID.isEmpty {
+                    Task {
+                        do {
+                            try await authVM.fetchUserProfile(userID: newUID)
+                        } catch {
+                            print("Error loading user: \(error)")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - UI Components
+    
+    private var headerSection: some View {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Hi \(authVM.myUser.name)")
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundColor(.white)
+                
+                Text("Your journey matters.\nLet's see how you're growing.")
+                    .font(.system(size: 16))
+                    .foregroundColor(.white.opacity(0.9))
+            }
+            
+            Spacer()
+            
+            Image("Image1")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 80, height: 80)
+        }
+        .padding(.top, 20)
+        .padding(.bottom, 30)
+        .padding(.horizontal, 25)
+        .background(Color("color1"))
+    }
+    
+    private var freshStartSection: some View {
+        VStack(spacing: 15) {
+            Text("Your Fresh Start")
+                .font(.system(size: 24, weight: .medium))
+                .foregroundColor(.black)
+            
+            Text("Welcome! Let's grow together,\none day at a time.")
+                .font(.system(size: 16))
+                .foregroundColor(.gray)
+                .multilineTextAlignment(.center)
+            
+            // Graph Placeholder
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(.systemGray6))
+                .frame(height: 180)
+                .overlay(
+                    VStack {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                        Text("Overall Graph")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.gray)
+                    }
+                )
+        }
+        .padding(.top, 25)
+    }
+    
+    
+}
+
+// MARK: - Components
+
+struct QuizCard: View {
+    let title: String
+    let subtitle: String
+    let icon: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundColor(.white)
+                .frame(width: 50, height: 50)
+                .background(Color.white.opacity(0.2))
+                .clipShape(Circle())
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white)
+                
+                Text(subtitle)
+                    .font(.system(size: 14))
+                    .foregroundColor(.white.opacity(0.9))
+            }
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .foregroundColor(.white.opacity(0.7))
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .frame(height: 120)
+        .background(
+            LinearGradient(
+                gradient: Gradient(colors: [Color.blue, Color.purple]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(15)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+}
+
 struct RoundedCorner: Shape {
     var radius: CGFloat = .infinity
     var corners: UIRectCorner = .allCorners
@@ -10,204 +199,8 @@ struct RoundedCorner: Shape {
     }
 }
 
-struct HomeView: View {
-    @State private var navigateToQuiz = false
-    @State private var selectedQuizType: String = ""
-
-    var headerImage: Image {
-        return Image("Image1")
-    }
-    
-    let cornerRadius: CGFloat = 30 // Define corner radius for consistency
-    @EnvironmentObject var authVM : AuthViewModel
-    var body: some View {
-        
-        ZStack { // << --- Root ZStack for global background
-            // Bottom layer: Global background color
-            Color("color1")
-                .edgesIgnoringSafeArea(.all)
-            
-            // Top layer: Your scrollable content
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) { // No spacing between blue and white visually
-                    
-                    // MARK: - Header Section
-                    HStack(alignment: .center) {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Hi \(authVM.myUser.name)")
-                                .font(.system(size: 30, weight: .bold))
-                            Text("Your journey matters.\nLet's see how you're growing.")
-                                .font(.system(size: 16))
-                        }
-                        .foregroundColor(.white)
-                        
-                        Spacer()
-                        
-                        headerImage
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .padding(.trailing, 10)
-                    }
-                    .padding(.top, 70)
-                    .padding(.bottom, 12)
-                    .padding(.horizontal, 20)
-                    .background(Color("color1")) // This header will blend with the ZStack background
-                    // No clipShape on blue header means square bottom corners
-                    
-                    // MARK: - Main Content Area (White Background)
-                    VStack(alignment: .leading, spacing: 25) {
-                        
-                        // MARK: - Your Fresh Start Section
-                        VStack(alignment: .center, spacing: 10) {
-                            Text("Your Fresh Start")
-                                .font(.system(size: 24, weight: .medium))
-                                .frame(maxWidth: .infinity, alignment: .center)
-                            
-                            Text("Welcome! Let's grow together,\none day at a time.")
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                                .multilineTextAlignment(.center)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                            
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color(UIColor.systemGray5))
-                                    .frame(height: 180)
-                                
-                                Text("Overall Graph")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(Color(UIColor.darkGray))
-                            }
-                        }
-                        // Adjusted top padding for direct spacing, no overlap
-                        .padding(.top, 25)
-                        
-                        // MARK: - Let See Others Result Section
-                        VStack(alignment: .leading, spacing: 20) {
-                            VStack{
-                                Text("Check Your Mental Health")
-                                    .font(.system(size: 22, weight: .medium))
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding(.top, 10)
-                                
-                                Text("For best results, this test is limited \nto one session per week.")
-                                    .padding(.top, 2)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.black)
-                                    .multilineTextAlignment(.center)
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                            }
-                            HStack{
-                                Button(action: {
-                                    selectedQuizType = "PHQ-9"
-                                    navigateToQuiz = true
-                                }){
-                                    ZStack{
-                                        Rectangle()
-                                            .frame(height: 200)
-                                            .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
-                                            .cornerRadius(20)
-                                        HStack{
-                                            //Image blm jadi
-                                            VStack(alignment: .leading){
-                                                Text("PHQ-9")
-                                                    .font(.title2)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundStyle(.white)
-                                                    .padding(.top, 16)
-                                                Text("This test measures your mental health.")
-                                                    .font(.system(size: 18))
-                                                    .foregroundStyle(.white)
-                                                Spacer()
-                                                
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            HStack{
-                                Button(action: {
-                                    selectedQuizType = "GAD-7"
-                                    navigateToQuiz = true
-                                }){
-                                    ZStack{
-                                        Rectangle()
-                                            .frame(height: 200)
-                                            .foregroundStyle(Color(hue: 0.745, saturation: 0.287, brightness: 0.651))
-                                            .cornerRadius(20)
-                                        HStack{
-                                            //Image blm jadi
-                                            VStack(alignment: .leading){
-                                                Text("GAD-7")
-                                                    .font(.title2)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundStyle(.white)
-                                                    .padding(.top, 16)
-                                                Text("This test measures your mental health.")
-                                                    .font(.system(size: 18))
-                                                    .foregroundStyle(.white)
-                                                Spacer()
-                                                
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal, 25)
-                    .padding(.bottom, 20)
-                    .background(Color.white)
-                    .frame(minHeight: UIScreen.main.bounds.height)
-                    .clipShape(RoundedCorner(radius: cornerRadius, corners: .allCorners))
-                    // No .offset() here, so it sits directly below the blue header
-                    
-                } // End of main content VStack inside ScrollView
-            } // End of ScrollView
-            // .background(...) removed from ScrollView
-            .edgesIgnoringSafeArea(.top) // Allows ScrollView content (blue header) to go to top edge
-            
-        }.onChange(of: authVM.user?.uid ?? "", initial: true) { oldUID, newUID in
-            if !newUID.isEmpty {
-                Task {
-                    
-                    do {
-                        try await authVM.fetchUserProfile(userID: newUID)
-                    } catch {
-                        Text("error loading")
-                    }
-                    
-                }
-            }
-        }
-        
-    }
-}
-
-// MARK: - Reusable Card View (identical to before)
-struct ResultCard: View {
-    let title: String
-    let themeColor: Color
-    var body: some View {
-        VStack(spacing: 15) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(UIColor.systemGray5))
-                    .frame(height: 130)
-                Text(title)
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundColor(Color(UIColor.darkGray))
-            }
-            
-        }
-    }
-}
-
 #Preview {
     HomeView()
-        .environmentObject(AuthViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
+        .environmentObject(QuizViewModel(type: "PHQ-9"))
 }

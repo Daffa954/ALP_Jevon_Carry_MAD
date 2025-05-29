@@ -13,12 +13,18 @@ struct QuizView: View {
     @State private var showResult = false
     @State private var result: HistoryModel? = nil
     @State private var score: Int = 0
-
+    var type: String
+    @StateObject private var quizVM: QuizViewModel
+    
+    init(type: String) {
+        self.type = type
+        _quizVM = StateObject(wrappedValue: QuizViewModel(type: type))
+    }
     var body: some View {
         NavigationStack{
             ScrollView{
                 VStack(alignment: .leading, spacing: 4) {
-                    //                    Text("\(score)")
+                    Text("\(score)")
                     HStack{
                         Spacer()
                         Text("Quiz \(quizViewModel.type)")
@@ -79,7 +85,7 @@ struct QuizView: View {
 }
 
 #Preview {
-    QuizView()
+    QuizView(type: "PHQ-9")
         .environmentObject(QuizViewModel(type: "PHQ-9"))
         .environmentObject(HistoryViewModel())
 }

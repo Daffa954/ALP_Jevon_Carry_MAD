@@ -52,6 +52,6 @@ struct SplashScreenView: View {
 #Preview {
     SplashScreenView()
         .environmentObject(
-            AuthViewModel()
+            AuthViewModel(repository: FirebaseAuthRepository())
         )
 }

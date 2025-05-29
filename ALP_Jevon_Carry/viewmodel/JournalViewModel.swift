@@ -12,12 +12,13 @@ class JournalViewModel: ObservableObject {
     @Published var userInput = ""
     @Published var result : JournalModel
     @Published var emoticonSymbol = ""
-    private var ref: DatabaseReference
     private let openRouterService = OpenRouterService()
     @Published var recommendations: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-    init() {
+    private let journalRepository: JournalRepository
+
+    init(journalRepository: JournalRepository = JournalRepository()) {
         self.result = JournalModel(
             title: "",
             date: Date(),
@@ -25,7 +26,7 @@ class JournalViewModel: ObservableObject {
             emotion: "",
             score: 0
         )
-        self.ref = Database.database().reference().child("journals")
+        self.journalRepository = journalRepository
     }
     private func emoticon(for emotion: String) -> String {
         switch emotion.lowercased() {
@@ -40,27 +41,51 @@ class JournalViewModel: ObservableObject {
         default: return "❓"
         }
     }
-    func analyzeEmotion(userID : String) {
-        //call the coreML service
+    //    func analyzeEmotion(userID : String) {
+    //        //call the coreML service
+    //        let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
+    //        let score = scoreForEmotion(emotion) // tambahkan scoring
+    //        DispatchQueue.main.async {
+    //            self.result = JournalModel(
+    //                title: emotion, date: Date(), description: self.userInput,
+    //                emotion: emotion, score: score, userID: userID)
+    //            self.emoticonSymbol = self.emoticon(for: emotion)
+    //            self.getRecommendations()
+    //            var addToDB = self.addJournal(journal: self.result)
+    //            if addToDB {
+    //                print( "berhasil")
+    //            }else {
+    //                print("gagal")
+    //            }
+    //
+    //
+    //        }
+    //    }
+    //
+    func analyzeEmotion(userID: String) {
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
-        let score = scoreForEmotion(emotion) // tambahkan scoring
+        let score = scoreForEmotion(emotion)
         DispatchQueue.main.async {
             self.result = JournalModel(
-                title: emotion, date: Date(), description: self.userInput,
-                emotion: emotion, score: score, userID: userID)
+                title: emotion,
+                date: Date(),
+                description: self.userInput,
+                emotion: emotion,
+                score: score,
+                userID: userID
+            )
             self.emoticonSymbol = self.emoticon(for: emotion)
             self.getRecommendations()
-            var addToDB = self.addJournal(journal: self.result)
-            if addToDB {
-                print( "berhasil")
-            }else {
-                print("gagal")
-            }
             
-          
+            self.journalRepository.addJournal(self.result) { success in
+                if success {
+                    print("berhasil")
+                } else {
+                    print("gagal")
+                }
+            }
         }
     }
-    
     func scoreForEmotion(_ emotion: String) -> Int {
         switch emotion.lowercased() {
         case "anger": return 10
@@ -98,15 +123,5 @@ class JournalViewModel: ObservableObject {
         }
     }
     
-    func addJournal(journal : JournalModel)-> Bool{
-        guard let jsonData = try? JSONEncoder().encode(journal),
-              let json = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
-        else {
-            return false
-        }
-        
-        //send to firebase
-        ref.child(journal.id.uuidString).setValue(json)
-        return true
-    }
+    
 }

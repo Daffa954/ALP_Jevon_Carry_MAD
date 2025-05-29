@@ -157,7 +157,7 @@ struct LoginRegisterSheet: View {
                 .constant(true)
     )
     .environmentObject(
-        AuthViewModel()
+        AuthViewModel(repository: FirebaseAuthRepository())
     )
 }
 

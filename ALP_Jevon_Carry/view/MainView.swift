@@ -44,7 +44,9 @@ struct MainView: View {
 
 #Preview {
     MainView()
-        .environmentObject(AuthViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
         .environmentObject(ListJournalViewModel())
         .environmentObject(JournalViewModel())
+        .environmentObject(QuizViewModel(type: "PHQ-9"))
+
 }

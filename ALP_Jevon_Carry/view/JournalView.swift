@@ -164,6 +164,6 @@ struct JournalView: View {
 #Preview {
     JournalView(userId: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
         .environmentObject(ListJournalViewModel())
-        .environmentObject(AuthViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
         .environmentObject(JournalViewModel())
 }

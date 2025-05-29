@@ -153,17 +153,15 @@ struct UserProfileView: View {
             .onChange(of: authViewModel.user?.uid ?? "", initial: true) { oldUID, newUID in
                 if !newUID.isEmpty {
                     Task {
-                        isLoading = true
                         do {
                             try await authViewModel.fetchUserProfile(userID: newUID)
                         } catch {
-                            errorMessage = error.localizedDescription
-                            showErrorAlert = true
+                            print("Error loading: \(error.localizedDescription)")
                         }
-                        isLoading = false
                     }
                 }
             }
+            
         }
     }
 }
@@ -171,6 +169,7 @@ struct UserProfileView: View {
 // Preview
 #Preview {
     UserProfileView(showLogin: .constant(false))
-        .environmentObject(AuthViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
+    
 }
 
