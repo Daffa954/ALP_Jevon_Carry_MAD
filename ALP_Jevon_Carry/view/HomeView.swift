@@ -7,10 +7,8 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                // Background
-                Color("color1")
-                    .edgesIgnoringSafeArea(.all)
+            VStack {
+                
                 
                 ScrollView {
                     VStack(spacing: 0) {
@@ -26,12 +24,12 @@ struct HomeView: View {
                             VStack(spacing: 20) {
                                 VStack(spacing: 10) {
                                     Text("Check Your Mental Health")
-                                        .font(.system(size: 22, weight: .medium))
-                                        .foregroundColor(.black)
+                                        .font(.system(size: 22, weight: .bold))
+                                        .foregroundColor(Color("navyBlue"))
                                     
                                     Text("For best results, this test is limited to one session per week.")
                                         .font(.system(size: 16))
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color.white)
                                         .multilineTextAlignment(.center)
                                 }
                                 
@@ -65,7 +63,7 @@ struct HomeView: View {
                         .padding(.horizontal, 35)
                         .padding(.bottom, 50) // Padding untuk Tab Bar
                         
-                        .background(Color.white)
+                        .background(Color("color1").opacity(0.8))
                         .clipShape(RoundedCorner(radius: cornerRadius, corners: [.topLeft, .topRight]))
                     }
                 }
@@ -91,11 +89,12 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Hi \(authVM.myUser.name)")
                     .font(.system(size: 30, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("navyBlue"))
+                
                 
                 Text("Your journey matters.\nLet's see how you're growing.")
                     .font(.system(size: 16))
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(Color("navyBlue"))
             }
             
             Spacer()
@@ -108,18 +107,19 @@ struct HomeView: View {
         .padding(.top, 20)
         .padding(.bottom, 30)
         .padding(.horizontal, 25)
-        .background(Color("color1"))
+        
+        
     }
     
     private var freshStartSection: some View {
         VStack(spacing: 15) {
             Text("Your Fresh Start")
                 .font(.system(size: 24, weight: .medium))
-                .foregroundColor(.black)
+                .foregroundColor(Color("navyBlue"))
             
             Text("Welcome! Let's grow together,\none day at a time.")
-                .font(.system(size: 16))
-                .foregroundColor(.gray)
+                .font(.system(size: 18))
+                .foregroundColor(Color.white)
                 .multilineTextAlignment(.center)
             
             // Graph Placeholder
