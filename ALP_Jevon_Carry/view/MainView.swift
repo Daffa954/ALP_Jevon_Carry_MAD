@@ -51,5 +51,6 @@ struct MainView: View {
         .environmentObject(ListJournalViewModel())
         .environmentObject(JournalViewModel())
         .environmentObject(QuizViewModel(type: "PHQ-9"))
+        .environmentObject(HistoryViewModel())
 
 }

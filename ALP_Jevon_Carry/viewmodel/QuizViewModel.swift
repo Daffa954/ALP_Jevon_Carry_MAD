@@ -12,7 +12,7 @@ class QuizViewModel: ObservableObject {
     var type: String
     @Published var questions: [QuestionModel] = []
     @Published var selectedAnswers: [Int: Int] = [:]
-   
+    
     
     init(type: String) {
         self.type = type
@@ -57,7 +57,7 @@ class QuizViewModel: ObservableObject {
             AnswerModel(id: 3, text: "Nearly every day", score: 3)
         ]
     }
-
+    
     func totalScore() -> Int {
         selectedAnswers.values.reduce(0, +)
     }
@@ -81,16 +81,14 @@ class QuizViewModel: ObservableObject {
         }
     }
     
-    func saveHistory() -> HistoryModel {
+    func saveHistory(userID: String) -> HistoryModel {
         let score = totalScore()
         return HistoryModel(
             type: type,
             totalScore: score,
             date: Date(),
-            summary: getSummary(score: score)
+            summary: getSummary(score: score),
+            userID: userID
         )
     }
-    
-    
-    
 }

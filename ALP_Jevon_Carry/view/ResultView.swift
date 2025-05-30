@@ -231,7 +231,8 @@ struct ResultView: View {
         type: "PHQ-9",
         totalScore: 10,
         date: Date(),
-        summary: "Moderate depression"
+        summary: "Moderate depression",
+        userID: "sssssssssssss"
     ), tab: .constant(TabItemEnum.home), isPresented: .constant(true))
     .environmentObject(HistoryViewModel())
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct QuizView: View {
     @EnvironmentObject var quizViewModel: QuizViewModel
     @EnvironmentObject var historyViewModel: HistoryViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     @State private var showResult = false
     @State private var result: HistoryModel? = nil
     @State private var score: Int = 0
@@ -155,7 +156,7 @@ struct QuizView: View {
                         let isFormComplete = quizViewModel.selectedAnswers.count == quizViewModel.questions.count
                         
                         Button(action: {
-                            let history = quizViewModel.saveHistory()
+                            let history = quizViewModel.saveHistory(userID: authViewModel.user?.uid ?? "")
                             result = history
                             historyViewModel.addHistory(history)
                             showResult = true
@@ -199,4 +200,5 @@ struct QuizView: View {
     QuizView(type: "PHQ-9", tab: .constant(TabItemEnum.home), isPresented: .constant(true))
         .environmentObject(QuizViewModel(type: "PHQ-9"))
         .environmentObject(HistoryViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
 }

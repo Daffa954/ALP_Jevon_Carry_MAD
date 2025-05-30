@@ -9,6 +9,7 @@ import SwiftUI
 
 struct QuizHistory: View {
     @EnvironmentObject var historyViewModel: HistoryViewModel
+    @EnvironmentObject var authViewModel: AuthViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -145,10 +146,17 @@ struct QuizHistory: View {
                     .ignoresSafeArea()
             )
         }
+        .onChange(of: authViewModel.user?.uid ?? "") { newUserID in
+            historyViewModel.fetchHistory(userID: newUserID)
+        }
+        .onAppear {
+            historyViewModel.fetchHistory(userID: authViewModel.user?.uid ?? "")
+        }
     }
 }
 
 #Preview {
     QuizHistory()
         .environmentObject(HistoryViewModel())
+        .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
 }
