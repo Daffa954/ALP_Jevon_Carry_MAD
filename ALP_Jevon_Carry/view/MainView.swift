@@ -11,11 +11,14 @@ struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var listJournalViewModel: ListJournalViewModel
     @State var showAuthSheet = false
+    
+    @State var selectedTabItem: TabItemEnum = .home
     var body: some View {
-        TabView{
-            HomeView().tabItem{
+        TabView(selection: $selectedTabItem){
+            HomeView(tab: $selectedTabItem).tabItem{
                     Label("Home", systemImage: "house")
                 }
+            .tag(TabItemEnum.home)
             
             
             SchedulleView().tabItem{
