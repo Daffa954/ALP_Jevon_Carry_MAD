@@ -11,42 +11,47 @@ import FirebaseAppCheck
 
 @main
 struct ALP_Jevon_CarryApp: App {
-   
-    @StateObject private var authViewModel = AuthViewModel()
-    @StateObject private var listJournalViewModel = ListJournalViewModel()
-    @StateObject private var journalViewModel = JournalViewModel()
-    @StateObject private var musicPlayerViewModel = MusicPlayerViewModel()
-    @StateObject private var breathingViewModel: BreathingViewModel
-    @StateObject private var sessionHistoryViewModel: SessionHistoryViewModel
-    
-    init(){
-        FirebaseApp.configure()
-        #if DEBUG
-        let providerFactory = AppCheckDebugProviderFactory()
-        AppCheck.setAppCheckProviderFactory(providerFactory)
-        #endif
-        
-        // Initialize ViewModels with dependencies
-        let authVM = AuthViewModel()
-        let musicVM = MusicPlayerViewModel()
-        
-        _authViewModel = StateObject(wrappedValue: authVM)
-        _musicPlayerViewModel = StateObject(wrappedValue: musicVM)
-        _breathingViewModel = StateObject(wrappedValue: BreathingViewModel(musicPlayerViewModel: musicVM, authViewModel: authVM))
-        _sessionHistoryViewModel = StateObject(wrappedValue: SessionHistoryViewModel(authViewModel: authVM))
-        
-        print("🔥 Firebase configured at: \(Date())")
-    }
-    
-    var body: some Scene {
-        WindowGroup {
-           SplashScreenView()
-                .environmentObject(authViewModel)
-                .environmentObject(journalViewModel)
-                .environmentObject(listJournalViewModel)
-                .environmentObject(musicPlayerViewModel)
-                .environmentObject(breathingViewModel)
-                .environmentObject(sessionHistoryViewModel)
-        }
-    }
+
+    // Friend’s original ViewModels
+    @StateObject private var authViewModel = AuthViewModel(repository: FirebaseAuthRepository())
+    @StateObject private var historyViewModel = HistoryViewModel()
+    @StateObject private var quizViewModel = QuizViewModel(type: "PHQ-9")
+    @StateObject private var listJournalViewModel = ListJournalViewModel()
+    @StateObject private var journalViewModel = JournalViewModel()
+
+    // Your view models that can be initialized directly
+    @StateObject private var musicPlayerViewModel = MusicPlayerViewModel()
+
+    // These depend on other view models, so we’ll initialize them lazily
+    @StateObject private var breathingViewModel: BreathingViewModel
+    @StateObject private var sessionHistoryViewModel: SessionHistoryViewModel
+
+    init() {
+        FirebaseApp.configure()
+        #if DEBUG
+        let providerFactory = AppCheckDebugProviderFactory()
+        AppCheck.setAppCheckProviderFactory(providerFactory)
+        #endif
+
+        // Initialize dependent view models
+        let authVM = AuthViewModel(repository: FirebaseAuthRepository())
+        _breathingViewModel = StateObject(wrappedValue: BreathingViewModel(musicPlayerViewModel: musicPlayerViewModel, authViewModel: authVM))
+        _sessionHistoryViewModel = StateObject(wrappedValue: SessionHistoryViewModel(authViewModel: authVM))
+
+        print("🔥 Firebase configured at: \(Date())")
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            SplashScreenView()
+                .environmentObject(authViewModel)
+                .environmentObject(journalViewModel)
+                .environmentObject(listJournalViewModel)
+                .environmentObject(historyViewModel)
+                .environmentObject(quizViewModel)
+                .environmentObject(musicPlayerViewModel)
+                .environmentObject(breathingViewModel)
+                .environmentObject(sessionHistoryViewModel)
+        }
+    }
 }
