@@ -1,510 +1,277 @@
-//
-//  SessionHistoryView.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-
-// SessionHistoryView.swift
-//
-//  SessionHistoryView.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-
-//
-//  SessionHistoryView.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-
 import SwiftUI
 
 struct SessionHistoryView: View {
-    // MARK: - State Objects and Environment Objects
     @StateObject var historyViewModel: SessionHistoryViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
-    @State private var selectedSession: BreathingSession?
-    @State private var showingSessionDetail = false
 
-    // MARK: - Visual Constants
-    private let cardCornerRadius: CGFloat = 16
-    private let cardShadowRadius: CGFloat = 8
-    private let sectionSpacing: CGFloat = 24
-    private let rowSpacing: CGFloat = 12
-
-    // MARK: - Date Formatters
-    private static let sectionDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
-        return formatter
-    }()
-    
-    private static let relativeDateFormatter: RelativeDateTimeFormatter = {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter
-    }()
-
-    private func formattedSectionDate(_ date: Date) -> String {
-        let calendar = Calendar.current
-        if calendar.isDateInToday(date) {
-            return "Today"
-        } else if calendar.isDateInYesterday(date) {
-            return "Yesterday"
-        } else if calendar.isDate(date, equalTo: Date(), toGranularity: .weekOfYear) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE"
-            return formatter.string(from: date)
-        } else {
-            return Self.sectionDateFormatter.string(from: date)
-        }
-    }
-
-    // MARK: - Body
     var body: some View {
         NavigationView {
             ZStack {
-                // Background gradient
                 LinearGradient(
-                    colors: [
-                        Color(.systemBackground),
-                        Color(.systemGray6).opacity(0.3)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
-                
-                contentView
+                    colors: [Color(.systemBackground), Color(.systemGray6).opacity(0.3)],
+                    startPoint: .top, endPoint: .bottom
+                ).ignoresSafeArea()
+
+                switch historyViewModel.viewState {
+                case .loading:
+                    LoadingView()
+                case .error(let message):
+                    ErrorView(message: message, viewModel: historyViewModel)
+                case .empty:
+                    EmptyStateView()
+                case .loaded(let groups):
+                    LoadedStateView(groups: groups) // groups is [DatedSessionGroupDisplayData]
+                }
             }
             .navigationTitle("Breathing History")
             .navigationBarTitleDisplayMode(.large)
             .refreshable {
-                await refreshData()
+                await historyViewModel.fetchSessionHistory()
+            }
+            .onAppear {
+                print("SessionHistoryView appeared. Current ViewModel state: \(historyViewModel.viewState.description)")
+                if !historyViewModel.isPreviewMode &&
+                    historyViewModel.getActiveUserID() != nil &&
+                    historyViewModel.firebaseListenerHandle == nil {
+                
+                     print("SessionHistoryView onAppear: Listener handle is nil and user is active. Attempting to set up listener.")
+                     historyViewModel.setupFirebaseListener()
+                }
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .sheet(isPresented: $showingSessionDetail) {
-            if let session = selectedSession {
-                SessionDetailView(session: session)
-            }
-        }
     }
-    
-    // MARK: - Content Views
-    @ViewBuilder
-    private var contentView: some View {
-        if historyViewModel.isLoading {
-            loadingView
-        } else if let errorMessage = historyViewModel.errorMessage {
-            errorView(message: errorMessage)
-        } else if historyViewModel.datedSessionGroups.isEmpty {
-            emptyStateView
-        } else {
-            sessionListView
-        }
-    }
-    
-    private var loadingView: some View {
-        VStack(spacing: 20) {
-            ProgressView()
-                .scaleEffect(1.5)
-                .tint(AppColors.accent)
-            
-            Text("Loading your sessions...")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    private func errorView(message: String) -> some View {
-        VStack(spacing: 20) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 50))
-                .foregroundColor(.orange)
-            
-            VStack(spacing: 8) {
-                Text("Something went wrong")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                
-                Text(message)
-                    .font(.callout)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-            }
-            
-            Button("Try Again") {
-                historyViewModel.fetchSessionHistory()
-            }
-            .buttonStyle(PrimaryButtonStyle())
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    private var emptyStateView: some View {
-        VStack(spacing: 24) {
-            VStack(spacing: 16) {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [AppColors.inhaleColor.opacity(0.3), AppColors.exhaleColor.opacity(0.3)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 100, height: 100)
-                    .overlay(
-                        Image(systemName: "wind")
-                            .font(.system(size: 40))
-                            .foregroundColor(AppColors.accent)
-                    )
-                
-                VStack(spacing: 8) {
-                    Text("No Sessions Yet")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    Text("Start your breathing journey today!\nYour completed sessions will appear here.")
-                        .font(.callout)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(2)
-                }
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    private var sessionListView: some View {
-        ScrollView {
-            LazyVStack(spacing: sectionSpacing) {
-                ForEach(historyViewModel.datedSessionGroups) { group in
-                    SessionGroupCard(
-                        group: group,
-                        dateTitle: formattedSectionDate(group.id),
-                        onSessionTap: { session in
-                            selectedSession = session
-                            showingSessionDetail = true
-                        }
-                    )
-                }
-            }
-            .padding(.horizontal)
-            .padding(.top, 8)
-            .padding(.bottom, 100)
-        }
-        .onAppear {
-            historyViewModel.fetchSessionHistory()
-        }
-    }
-    
-    // MARK: - Helper Methods
-    @MainActor
-    private func refreshData() async {
-        historyViewModel.fetchSessionHistory()
-        // Add a small delay for smooth refresh animation
-        try? await Task.sleep(nanoseconds: 500_000_000)
-    }
-}
 
-// MARK: - Session Group Card
-struct SessionGroupCard: View {
-    let group: DatedSessionGroup
-    let dateTitle: String
-    let onSessionTap: (BreathingSession) -> Void
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Date Header
-            HStack {
-                Text(dateTitle)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-                
-                Text("\(group.sessions.count) session\(group.sessions.count == 1 ? "" : "s")")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color(.systemGray5))
-                    .clipShape(Capsule())
+    struct LoadingView: View {
+        var body: some View {
+            VStack(spacing: 20) {
+                ProgressView().scaleEffect(1.5).tint(Color("AccentColor"))
+                Text("Loading your sessions...").font(.subheadline).foregroundColor(.secondary)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    struct ErrorView: View {
+        let message: String
+        @ObservedObject var viewModel: SessionHistoryViewModel
+        var body: some View {
+            VStack(spacing: 20) {
+                Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 50)).foregroundColor(.orange)
+                VStack(spacing: 8) {
+                    Text("Something went wrong").font(.title2).fontWeight(.semibold)
+                    Text(message).font(.callout).foregroundColor(.secondary).multilineTextAlignment(.center).padding(.horizontal)
+                }
+                Button("Try Again") { Task { await viewModel.fetchSessionHistory() } }
+                    .buttonStyle(PrimaryButtonStyle())
+            }.padding().frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    struct EmptyStateView: View {
+        var body: some View {
+            VStack(spacing: 24) {
+                VStack(spacing: 16) {
+                    Circle().fill(LinearGradient(colors: [Color("color1").opacity(0.3), Color("coralOrange").opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .frame(width: 100, height: 100)
+                        .overlay(Image(systemName: "wind").font(.system(size: 40)).foregroundColor(Color("AccentColor")))
+                    VStack(spacing: 8) {
+                        Text("No Sessions Yet").font(.title2).fontWeight(.semibold)
+                        Text("Start your breathing journey today!\nYour completed sessions will appear here.").font(.callout).foregroundColor(.secondary).multilineTextAlignment(.center).lineSpacing(2)
+                    }
+                }
+            }.padding().frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    struct LoadedStateView: View {
+        let groups: [DatedSessionGroupDisplayData]
+        // Removed @State variables for sheet presentation as per your original code modifications
+
+        var body: some View {
+            ZStack {
+                Color.white.ignoresSafeArea()
+
+                ScrollView {
+                    LazyVStack(spacing: 24) {
+                        ForEach(groups) { groupData in
+                            SessionGroupCardView(groupDisplayData: groupData, onSessionTap: { sessionDisplayData in
+                                print("Session tapped: \(sessionDisplayData.id) at \(sessionDisplayData.timeText)")
+                                // Add navigation or sheet presentation logic here if needed
+                            })
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom, 100)
+                }
             }
-            
-            // Sessions
-            VStack(spacing: 8) {
-                ForEach(group.sessions) { session in
-                    SessionRowCard(session: session) {
-                        onSessionTap(session)
+        }
+    }
+
+    struct SessionGroupCardView: View {
+        let groupDisplayData: DatedSessionGroupDisplayData
+        let onSessionTap: (BreathingSessionDisplayData) -> Void
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text(groupDisplayData.formattedDateTitle).font(.title3).fontWeight(.semibold).foregroundColor(Color.black)
+                    Spacer()
+                    Text(groupDisplayData.sessionCountText).font(.caption).fontWeight(.medium).foregroundColor(Color.gray)
+                        .padding(.horizontal, 8).padding(.vertical, 4).background(Color(.systemGray5)).clipShape(Capsule())
+                }
+                VStack(spacing: 8) {
+                    ForEach(groupDisplayData.sessions) { sessionData in
+                        SessionRowCardView(sessionDisplayData: sessionData, onTap: { onSessionTap(sessionData) })
                     }
                 }
             }
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(.systemBackground))
-                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-        )
-    }
-}
-
-// MARK: - Session Row Card
-struct SessionRowCard: View {
-    let session: BreathingSession
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Icon
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [AppColors.inhaleColor, AppColors.exhaleColor],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Image(systemName: "leaf.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                    )
-                
-                // Session Info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(session.sessionDate, style: .time)
-                        .font(.headline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.primary)
-                    
-                    Text("Duration: \(formatDuration(session.duration))")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                // Chevron
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(AppColors.lightSecondaryText)
-            }
-            .padding(16)
+            .padding(20)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.systemGray6).opacity(0.5))
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(.systemGray6))
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
             )
         }
-        .buttonStyle(PlainButtonStyle())
     }
-    
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let totalSeconds = Int(duration)
-        let minutes = totalSeconds / 60
-        let seconds = totalSeconds % 60
-        
-        if minutes > 0 && seconds > 0 {
-            return "\(minutes)m \(seconds)s"
-        } else if minutes > 0 {
-            return "\(minutes)m"
-        } else {
-            return "\(seconds)s"
+
+    struct SessionRowCardView: View {
+        let sessionDisplayData: BreathingSessionDisplayData
+        let onTap: () -> Void
+        var body: some View {
+            Button(action: onTap) {
+                HStack(spacing: 16) {
+                    Circle().fill(LinearGradient(colors: [Color("color1"), Color("coralOrange")], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .frame(width: 44, height: 44).overlay(Image(systemName: "leaf.fill").font(.system(size: 18)).foregroundColor(.white))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(sessionDisplayData.timeText).font(.headline).fontWeight(.medium).foregroundColor(Color.black)
+                        Text("Duration: \(sessionDisplayData.durationText)").font(.subheadline).foregroundColor(Color.gray)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 14, weight: .medium)).foregroundColor(Color.gray)
+                }.padding(16)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.white)
+                )
+            }.buttonStyle(PlainButtonStyle())
+        }
+    }
+
+    struct PrimaryButtonStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .font(.headline).fontWeight(.medium).foregroundColor(.white)
+                .padding(.horizontal, 24).padding(.vertical, 12)
+                .background(RoundedRectangle(cornerRadius: 12).fill(Color("AccentColor")))
+                .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+                .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
         }
     }
 }
 
-// MARK: - Session Detail View
-struct SessionDetailView: View {
-    let session: BreathingSession
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 24) {
-                // Header Icon
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [AppColors.inhaleColor, AppColors.exhaleColor],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 80, height: 80)
-                    .overlay(
-                        Image(systemName: "leaf.fill")
-                            .font(.system(size: 30))
-                            .foregroundColor(.white)
-                    )
-                
-                VStack(spacing: 16) {
-                    Text("Breathing Session")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
-                    VStack(spacing: 12) {
-                        DetailRow(
-                            title: "Date",
-                            value: session.sessionDate.formatted(date: .abbreviated, time: .omitted)
-                        )
-                        
-                        DetailRow(
-                            title: "Time",
-                            value: session.sessionDate.formatted(date: .omitted, time: .shortened)
-                        )
-                        
-                        DetailRow(
-                            title: "Duration",
-                            value: formatDuration(session.duration)
-                        )
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding()
-            .navigationTitle("Session Details")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-    
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let totalSeconds = Int(duration)
-        let minutes = totalSeconds / 60
-        let seconds = totalSeconds % 60
-        
-        if minutes > 0 && seconds > 0 {
-            return "\(minutes) minutes \(seconds) seconds"
-        } else if minutes > 0 {
-            return "\(minutes) minute\(minutes == 1 ? "" : "s")"
-        } else {
-            return "\(seconds) second\(seconds == 1 ? "" : "s")"
-        }
-    }
-}
-
-// MARK: - Detail Row
+// MARK: - Placeholder/Definitions for previously "out of scope" Views
+// (Keep these as is from your previous response, or use your actual definitions)
 struct DetailRow: View {
     let title: String
     let value: String
-    
     var body: some View {
         HStack {
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
+            Text(title).font(.callout).foregroundColor(.secondary)
             Spacer()
-            
-            Text(value)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
+            Text(value).font(.callout).fontWeight(.medium)
+        }.padding(.vertical, 4)
+    }
+}
+
+// SessionDetailView is no longer presented by this view, but keep its definition
+// if it's used elsewhere or if you plan to re-introduce navigation differently.
+struct SessionDetailView: View { // Assuming BreathingSession is your model
+    let session: BreathingSession
+    @Environment(\.dismiss) private var dismiss
+    private func formatDetailDuration(_ duration: TimeInterval) -> String {
+        let totalSeconds = Int(duration); let minutes = totalSeconds / 60; let seconds = totalSeconds % 60
+        if minutes > 0 && seconds > 0 { return "\(minutes) minutes, \(seconds) seconds" }
+        if minutes > 0 { return "\(minutes) minute\(minutes == 1 ? "" : "s")" }
+        return "\(seconds) second\(seconds == 1 ? "" : "s")"
+    }
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Image(systemName: "leaf.fill").font(.system(size: 50)).foregroundColor(Color("AccentColor")).padding(.bottom, 20)
+                DetailRow(title: "Date", value: session.sessionDate.formatted(date: .long, time: .omitted))
+                DetailRow(title: "Time", value: session.sessionDate.formatted(date: .omitted, time: .shortened))
+                DetailRow(title: "Duration", value: formatDetailDuration(session.duration))
+                Spacer()
+            }.padding().navigationTitle("Session Details").navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color(.systemGray6).opacity(0.5))
-        )
     }
 }
 
-// MARK: - Primary Button Style
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.headline)
-            .fontWeight(.medium)
-            .foregroundColor(.white)
-            .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(AppColors.accent)
-            )
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
-    }
-}
 
-// MARK: - Preview
+// MARK: - Preview Provider (Your Original Version)
 struct SessionHistoryView_Previews: PreviewProvider {
-    static var previews: some View {
-        let previewAuthVM = AuthViewModel()
-        previewAuthVM.isSigneIn = true
-        previewAuthVM.myUser = MyUser(uid: "previewUser123", name: "Preview User", email: "preview@example.com")
-        
-        let historyVM = SessionHistoryViewModel(authViewModel: previewAuthVM)
-        historyVM.isPreviewMode = true
-        let today = Date()
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
+    // You need to define MyUser and BreathingSession for this preview to work
+    // For example:
+    // struct MyUser { let uid: String; let name: String?; let email: String? }
+    // struct BreathingSession: Identifiable { let id: String; let userID: String; let sessionDate: Date; let duration: TimeInterval }
+
+    static func createSampleSessions() -> [BreathingSession] {
+        let today = Date(); let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
         let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: today)!
-        let threeDaysAgo = Calendar.current.date(byAdding: .day, value: -3, to: today)!
-        let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: today)!
-        let twoWeeksAgo = Calendar.current.date(byAdding: .day, value: -14, to: today)!
-        
-        // Set up dummy data for preview
-        historyVM.datedSessionGroups = [
-            // Today - Multiple sessions
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: today), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: today.addingTimeInterval(-1*60*60), duration: 420), // 7m
-                BreathingSession(userID: "previewUser123", sessionDate: today.addingTimeInterval(-3*60*60), duration: 300), // 5m
-                BreathingSession(userID: "previewUser123", sessionDate: today.addingTimeInterval(-8*60*60), duration: 180), // 3m
-            ]),
-            // Yesterday - Single longer session
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: yesterday), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: yesterday.addingTimeInterval(-2*60*60), duration: 600), // 10m
-            ]),
-            // Two days ago - Multiple varied sessions
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: twoDaysAgo), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: twoDaysAgo.addingTimeInterval(-1*60*60), duration: 480), // 8m
-                BreathingSession(userID: "previewUser123", sessionDate: twoDaysAgo.addingTimeInterval(-4*60*60), duration: 240), // 4m
-                BreathingSession(userID: "previewUser123", sessionDate: twoDaysAgo.addingTimeInterval(-7*60*60), duration: 120), // 2m
-            ]),
-            // Three days ago - Morning and evening sessions
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: threeDaysAgo), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: threeDaysAgo.addingTimeInterval(-2*60*60), duration: 900), // 15m
-                BreathingSession(userID: "previewUser123", sessionDate: threeDaysAgo.addingTimeInterval(-10*60*60), duration: 360), // 6m
-            ]),
-            // One week ago - Single session
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: oneWeekAgo), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: oneWeekAgo.addingTimeInterval(-5*60*60), duration: 540), // 9m
-            ]),
-            // Two weeks ago - Quick sessions
-            DatedSessionGroup(id: Calendar.current.startOfDay(for: twoWeeksAgo), sessions: [
-                BreathingSession(userID: "previewUser123", sessionDate: twoWeeksAgo.addingTimeInterval(-3*60*60), duration: 90), // 1m 30s
-                BreathingSession(userID: "previewUser123", sessionDate: twoWeeksAgo.addingTimeInterval(-6*60*60), duration: 150), // 2m 30s
-                BreathingSession(userID: "previewUser123", sessionDate: twoWeeksAgo.addingTimeInterval(-9*60*60), duration: 75), // 1m 15s
-            ])
+        return [
+            BreathingSession(id: "s1",userID: "previewUser", sessionDate: today.addingTimeInterval(-1*60*15), duration: 300),
+            BreathingSession(id: "s2",userID: "previewUser", sessionDate: today.addingTimeInterval(-2*60*60), duration: 600),
+            BreathingSession(id: "s3",userID: "previewUser", sessionDate: yesterday.addingTimeInterval(-3*60*60), duration: 420),
+            BreathingSession(id: "s4",userID: "previewUser", sessionDate: twoDaysAgo.addingTimeInterval(-5*60*60), duration: 180)
         ]
+    }
+
+    static var previews: some View {
+        let authViewModel = AuthViewModel() // AuthViewModel must be defined
+        // The following lines are from your original preview code
+        if authViewModel.myUser.uid.isEmpty { // MyUser must be defined and part of AuthViewModel
+            authViewModel.myUser = MyUser(uid: "previewUser123", name: "Preview User", email: "preview@example.com") // MyUser init
+            authViewModel.isSigneIn = true
+        }
+
+        let loadingVM = SessionHistoryViewModel(authViewModel: authViewModel)
+        loadingVM.configureForPreview(state: HistoryViewState.loading)
+
+        let emptyVM = SessionHistoryViewModel(authViewModel: authViewModel)
+        emptyVM.setupPreviewData(sampleSessions: []) // This uses the updated VM method
+
+        let errorVM = SessionHistoryViewModel(authViewModel: authViewModel)
+        errorVM.configureForPreview(state: HistoryViewState.error(message: "Network connection lost."))
+
+        let loadedVM = SessionHistoryViewModel(authViewModel: authViewModel)
+        loadedVM.setupPreviewData(sampleSessions: createSampleSessions()) // This uses the updated VM method
         
-        // Ensure we're not in loading state for preview
-        historyVM.isLoading = false
-        historyVM.errorMessage = nil
-        
-        return SessionHistoryView(historyViewModel: historyVM)
-            .environmentObject(previewAuthVM)
+        let loadedSingleVM = SessionHistoryViewModel(authViewModel: authViewModel)
+        loadedSingleVM.setupPreviewData(sampleSessions: [ // This uses the updated VM method
+            BreathingSession(id: "s5", userID: "previewUser", sessionDate: Date().addingTimeInterval(-30*60), duration: 120)
+        ])
+
+        return Group {
+            SessionHistoryView(historyViewModel: loadingVM)
+                .environmentObject(authViewModel)
+                .previewDisplayName("Loading")
+
+            SessionHistoryView(historyViewModel: emptyVM)
+                .environmentObject(authViewModel)
+                .previewDisplayName("Empty")
+
+            SessionHistoryView(historyViewModel: errorVM)
+                .environmentObject(authViewModel)
+                .previewDisplayName("Error")
+
+            SessionHistoryView(historyViewModel: loadedVM)
+                .environmentObject(authViewModel)
+                .previewDisplayName("Loaded (White BG)")
+
+            SessionHistoryView(historyViewModel: loadedSingleVM)
+                .environmentObject(authViewModel)
+                .previewDisplayName("Loaded (Single - White BG)")
+        }
     }
 }
