@@ -20,7 +20,7 @@ struct SessionHistoryView: View {
                 case .empty:
                     EmptyStateView()
                 case .loaded(let groups):
-                    LoadedStateView(groups: groups) // groups is [DatedSessionGroupDisplayData]
+                    LoadedStateView(groups: groups)
                 }
             }
             .navigationTitle("Breathing History")
@@ -30,12 +30,12 @@ struct SessionHistoryView: View {
             }
             .onAppear {
                 print("SessionHistoryView appeared. Current ViewModel state: \(historyViewModel.viewState.description)")
+                // Instead of checking for a Firebase handle, use an isListening flag or similar
                 if !historyViewModel.isPreviewMode &&
                     historyViewModel.getActiveUserID() != nil &&
-                    historyViewModel.firebaseListenerHandle == nil {
-                
-                     print("SessionHistoryView onAppear: Listener handle is nil and user is active. Attempting to set up listener.")
-                     historyViewModel.setupFirebaseListener()
+                    !historyViewModel.isListening {
+                    print("SessionHistoryView onAppear: Not listening and user is active. Attempting to set up listener.")
+                    historyViewModel.setupFirebaseListener()
                 }
             }
         }
@@ -46,24 +46,37 @@ struct SessionHistoryView: View {
         var body: some View {
             VStack(spacing: 20) {
                 ProgressView().scaleEffect(1.5).tint(Color("AccentColor"))
-                Text("Loading your sessions...").font(.subheadline).foregroundColor(.secondary)
-            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+                Text("Loading your sessions...")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
     struct ErrorView: View {
         let message: String
-        @ObservedObject var viewModel: SessionHistoryViewModel
+        // Pass as plain property, not @ObservedObject, as parent owns the view model
+        var viewModel: SessionHistoryViewModel
         var body: some View {
             VStack(spacing: 20) {
-                Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 50)).foregroundColor(.orange)
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 50)).foregroundColor(.orange)
                 VStack(spacing: 8) {
                     Text("Something went wrong").font(.title2).fontWeight(.semibold)
-                    Text(message).font(.callout).foregroundColor(.secondary).multilineTextAlignment(.center).padding(.horizontal)
+                    Text(message)
+                        .font(.callout)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
                 }
-                Button("Try Again") { Task { await viewModel.fetchSessionHistory() } }
-                    .buttonStyle(PrimaryButtonStyle())
-            }.padding().frame(maxWidth: .infinity, maxHeight: .infinity)
+                Button("Try Again") {
+                    Task { await viewModel.fetchSessionHistory() }
+                }
+                .buttonStyle(PrimaryButtonStyle())
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -71,26 +84,38 @@ struct SessionHistoryView: View {
         var body: some View {
             VStack(spacing: 24) {
                 VStack(spacing: 16) {
-                    Circle().fill(LinearGradient(colors: [Color("color1").opacity(0.3), Color("coralOrange").opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    Circle()
+                        .fill(LinearGradient(
+                            colors: [Color("color1").opacity(0.3), Color("coralOrange").opacity(0.3)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing))
                         .frame(width: 100, height: 100)
-                        .overlay(Image(systemName: "wind").font(.system(size: 40)).foregroundColor(Color("AccentColor")))
+                        .overlay(Image(systemName: "wind")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(Color("AccentColor")))
                     VStack(spacing: 8) {
-                        Text("No Sessions Yet").font(.title2).fontWeight(.semibold)
-                        Text("Start your breathing journey today!\nYour completed sessions will appear here.").font(.callout).foregroundColor(.secondary).multilineTextAlignment(.center).lineSpacing(2)
+                        Text("No Sessions Yet")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Text("Start your breathing journey today!\nYour completed sessions will appear here.")
+                            .font(.callout)
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(2)
                     }
                 }
-            }.padding().frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
     struct LoadedStateView: View {
         let groups: [DatedSessionGroupDisplayData]
-        // Removed @State variables for sheet presentation as per your original code modifications
 
         var body: some View {
             ZStack {
                 Color.white.ignoresSafeArea()
-
                 ScrollView {
                     LazyVStack(spacing: 24) {
                         ForEach(groups) { groupData in
@@ -114,10 +139,19 @@ struct SessionHistoryView: View {
         var body: some View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
-                    Text(groupDisplayData.formattedDateTitle).font(.title3).fontWeight(.semibold).foregroundColor(Color.black)
+                    Text(groupDisplayData.formattedDateTitle)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.black)
                     Spacer()
-                    Text(groupDisplayData.sessionCountText).font(.caption).fontWeight(.medium).foregroundColor(Color.gray)
-                        .padding(.horizontal, 8).padding(.vertical, 4).background(Color(.systemGray5)).clipShape(Capsule())
+                    Text(groupDisplayData.sessionCountText)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(Color.gray)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color(.systemGray5))
+                        .clipShape(Capsule())
                 }
                 VStack(spacing: 8) {
                     ForEach(groupDisplayData.sessions) { sessionData in
@@ -140,28 +174,40 @@ struct SessionHistoryView: View {
         var body: some View {
             Button(action: onTap) {
                 HStack(spacing: 16) {
-                    Circle().fill(LinearGradient(colors: [Color("color1"), Color("coralOrange")], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(width: 44, height: 44).overlay(Image(systemName: "leaf.fill").font(.system(size: 18)).foregroundColor(.white))
+                    Circle()
+                        .fill(LinearGradient(colors: [Color("color1"), Color("coralOrange")], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .frame(width: 44, height: 44)
+                        .overlay(Image(systemName: "leaf.fill").font(.system(size: 18)).foregroundColor(.white))
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(sessionDisplayData.timeText).font(.headline).fontWeight(.medium).foregroundColor(Color.black)
-                        Text("Duration: \(sessionDisplayData.durationText)").font(.subheadline).foregroundColor(Color.gray)
+                        Text(sessionDisplayData.timeText)
+                            .font(.headline)
+                            .fontWeight(.medium)
+                            .foregroundColor(Color.black)
+                        Text("Duration: \(sessionDisplayData.durationText)")
+                            .font(.subheadline)
+                            .foregroundColor(Color.gray)
                     }
                     Spacer()
                     Image(systemName: "chevron.right").font(.system(size: 14, weight: .medium)).foregroundColor(Color.gray)
-                }.padding(16)
+                }
+                .padding(16)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
                         .fill(Color.white)
                 )
-            }.buttonStyle(PlainButtonStyle())
+            }
+            .buttonStyle(PlainButtonStyle())
         }
     }
 
     struct PrimaryButtonStyle: ButtonStyle {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .font(.headline).fontWeight(.medium).foregroundColor(.white)
-                .padding(.horizontal, 24).padding(.vertical, 12)
+                .font(.headline)
+                .fontWeight(.medium)
+                .foregroundColor(.white)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 12)
                 .background(RoundedRectangle(cornerRadius: 12).fill(Color("AccentColor")))
                 .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
                 .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
@@ -170,7 +216,6 @@ struct SessionHistoryView: View {
 }
 
 // MARK: - Placeholder/Definitions for previously "out of scope" Views
-// (Keep these as is from your previous response, or use your actual definitions)
 struct DetailRow: View {
     let title: String
     let value: String
@@ -183,8 +228,6 @@ struct DetailRow: View {
     }
 }
 
-// SessionDetailView is no longer presented by this view, but keep its definition
-// if it's used elsewhere or if you plan to re-introduce navigation differently.
 struct SessionDetailView: View { // Assuming BreathingSession is your model
     let session: BreathingSession
     @Environment(\.dismiss) private var dismiss
@@ -208,14 +251,8 @@ struct SessionDetailView: View { // Assuming BreathingSession is your model
     }
 }
 
-
 // MARK: - Preview Provider (Your Original Version)
 struct SessionHistoryView_Previews: PreviewProvider {
-    // You need to define MyUser and BreathingSession for this preview to work
-    // For example:
-    // struct MyUser { let uid: String; let name: String?; let email: String? }
-    // struct BreathingSession: Identifiable { let id: String; let userID: String; let sessionDate: Date; let duration: TimeInterval }
-
     static func createSampleSessions() -> [BreathingSession] {
         let today = Date(); let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
         let twoDaysAgo = Calendar.current.date(byAdding: .day, value: -2, to: today)!
@@ -229,9 +266,8 @@ struct SessionHistoryView_Previews: PreviewProvider {
 
     static var previews: some View {
         let authViewModel = AuthViewModel() // AuthViewModel must be defined
-        // The following lines are from your original preview code
-        if authViewModel.myUser.uid.isEmpty { // MyUser must be defined and part of AuthViewModel
-            authViewModel.myUser = MyUser(uid: "previewUser123", name: "Preview User", email: "preview@example.com") // MyUser init
+        if authViewModel.myUser.uid.isEmpty {
+            authViewModel.myUser = MyUser(uid: "previewUser123", name: "Preview User", email: "preview@example.com")
             authViewModel.isSigneIn = true
         }
 
@@ -239,16 +275,16 @@ struct SessionHistoryView_Previews: PreviewProvider {
         loadingVM.configureForPreview(state: HistoryViewState.loading)
 
         let emptyVM = SessionHistoryViewModel(authViewModel: authViewModel)
-        emptyVM.setupPreviewData(sampleSessions: []) // This uses the updated VM method
+        emptyVM.setupPreviewData(sampleSessions: [])
 
         let errorVM = SessionHistoryViewModel(authViewModel: authViewModel)
         errorVM.configureForPreview(state: HistoryViewState.error(message: "Network connection lost."))
 
         let loadedVM = SessionHistoryViewModel(authViewModel: authViewModel)
-        loadedVM.setupPreviewData(sampleSessions: createSampleSessions()) // This uses the updated VM method
+        loadedVM.setupPreviewData(sampleSessions: createSampleSessions())
         
         let loadedSingleVM = SessionHistoryViewModel(authViewModel: authViewModel)
-        loadedSingleVM.setupPreviewData(sampleSessions: [ // This uses the updated VM method
+        loadedSingleVM.setupPreviewData(sampleSessions: [
             BreathingSession(id: "s5", userID: "previewUser", sessionDate: Date().addingTimeInterval(-30*60), duration: 120)
         ])
 

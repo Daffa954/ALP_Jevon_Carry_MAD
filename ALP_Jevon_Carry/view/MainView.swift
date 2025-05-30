@@ -50,7 +50,6 @@ struct MainView: View {
     }
 }
 
-// Wrapper view that creates the view models and handles session completion
 struct BreathingSessionViewWrapper: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @State private var breathingViewModel: BreathingViewModel?
@@ -67,25 +66,18 @@ struct BreathingSessionViewWrapper: View {
                     showingSessionHistory: $showingSessionHistory
                 )
                 .onChange(of: breathingViewModel.isSessionActive) { oldValue, newValue in
-                    // Store the previous state for comparison
                     let wasActive = previousSessionState
                     previousSessionState = newValue
-                    
-                    // Detect when a session ends (was active, now inactive) and has meaningful duration
                     if wasActive && !newValue && breathingViewModel.sessionTimeElapsed > 5 {
-                        // Create/update the session history view model when a session completes
                         if sessionHistoryViewModel == nil {
                             sessionHistoryViewModel = SessionHistoryViewModel(authViewModel: authViewModel)
                         }
-                        
-                        // Show history after a brief delay to allow for session completion animations
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             showingSessionHistory = true
                         }
                     }
                 }
                 .onAppear {
-                    // Initialize session state tracking
                     previousSessionState = breathingViewModel.isSessionActive
                 }
                 .sheet(isPresented: $showingSessionHistory) {
@@ -93,21 +85,19 @@ struct BreathingSessionViewWrapper: View {
                         SessionHistoryView(historyViewModel: historyVM)
                             .environmentObject(authViewModel)
                     } else {
-                        // Fallback - create a new one if needed
                         SessionHistoryView(historyViewModel: SessionHistoryViewModel(authViewModel: authViewModel))
                             .environmentObject(authViewModel)
                     }
                 }
             } else {
-                // Elegant loading state while view models are being initialized
                 VStack(spacing: 20) {
                     ZStack {
                         Circle()
                             .fill(
                                 LinearGradient(
                                     gradient: Gradient(colors: [
-                                        AppColors.inhaleColor.opacity(0.2),
-                                        AppColors.exhaleColor.opacity(0.2)
+                                        Color.blue.opacity(0.2),
+                                        Color.orange.opacity(0.2)
                                     ]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -119,8 +109,8 @@ struct BreathingSessionViewWrapper: View {
                             .fill(
                                 LinearGradient(
                                     gradient: Gradient(colors: [
-                                        AppColors.inhaleColor.opacity(0.4),
-                                        AppColors.exhaleColor.opacity(0.4)
+                                        Color.blue.opacity(0.4),
+                                        Color.orange.opacity(0.4)
                                     ]),
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
@@ -137,11 +127,11 @@ struct BreathingSessionViewWrapper: View {
                     VStack(spacing: 4) {
                         Text("Preparing your breathing session...")
                             .font(.system(size: 16, weight: .medium, design: .rounded))
-                            .foregroundColor(AppColors.lightPrimaryText)
+                            .foregroundColor(.primary)
                         
                         Text("Setting up mindful experience")
                             .font(.system(size: 14, weight: .regular))
-                            .foregroundColor(AppColors.lightSecondaryText)
+                            .foregroundColor(.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -149,7 +139,7 @@ struct BreathingSessionViewWrapper: View {
                     LinearGradient(
                         gradient: Gradient(colors: [
                             Color.white,
-                            AppColors.neutralColor.opacity(0.1),
+                            Color.blue.opacity(0.1),
                             Color.white
                         ]),
                         startPoint: .topLeading,
@@ -167,8 +157,6 @@ struct BreathingSessionViewWrapper: View {
                     authViewModel: authViewModel
                 )
                 musicPlayerViewModel = musicPlayerVM
-                
-                // Initialize session history view model
                 sessionHistoryViewModel = SessionHistoryViewModel(authViewModel: authViewModel)
             }
         }
