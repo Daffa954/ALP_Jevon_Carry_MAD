@@ -26,7 +26,6 @@ struct JournalView: View {
                 
                 ScrollView{
                     VStack(spacing: 20) {
-                        
                         // Header Section
                         VStack(spacing: 8) {
                             Text("My Journal")

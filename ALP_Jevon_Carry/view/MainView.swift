@@ -11,8 +11,8 @@ struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var listJournalViewModel: ListJournalViewModel
     @State var showAuthSheet = false
-    
     @State var selectedTabItem: TabItemEnum = .home
+    
     var body: some View {
         TabView(selection: $selectedTabItem){
             HomeView(tab: $selectedTabItem).tabItem{
@@ -36,9 +36,19 @@ struct MainView: View {
                     Label("Profile", systemImage: "person.circle")
                 }
         }
+//        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+//            showAuthSheet = !isSignedIn
+//        }.sheet(isPresented: $showAuthSheet){
+//            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+//        }
         .onAppear {
             showAuthSheet = !authViewModel.isSigneIn
-        }.sheet(isPresented: $showAuthSheet){
+            selectedTabItem = .schedule
+        }
+        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+            showAuthSheet = !isSignedIn
+        }
+        .sheet(isPresented: $showAuthSheet){
             LoginRegisterSheet(showAuthSheet: $showAuthSheet)
         }
     }
