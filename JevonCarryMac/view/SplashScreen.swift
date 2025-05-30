@@ -1,8 +1,8 @@
 //
-//  SplashScreenView.swift
+//  SplashScreen.swift
 //  ALP_Jevon_Carry
 //
-//  Created by Daffa Khoirul on 29/05/25.
+//  Created by Daffa Khoirul on 20/05/25.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ struct SplashScreenView: View {
     
     var body: some View {
         if isActive {
-//           MainView()
+           MainView()
         } else {
             VStack {
                 Spacer()
@@ -35,7 +35,7 @@ struct SplashScreenView: View {
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color("skyBlue"))
+                .background(Color("color1"))
                 .ignoresSafeArea()
             .onAppear {
                 // Waktu tampil splash screen dalam detik

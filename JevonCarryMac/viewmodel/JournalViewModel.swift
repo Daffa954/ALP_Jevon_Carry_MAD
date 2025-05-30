@@ -1,0 +1,127 @@
+//
+//  JournalViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by Daffa Khoirul on 25/05/25.
+//
+
+import Foundation
+import FirebaseDatabase
+
+class JournalViewModel: ObservableObject {
+    @Published var userInput = ""
+    @Published var result : JournalModel
+    @Published var emoticonSymbol = ""
+    private let openRouterService = OpenRouterService()
+    @Published var recommendations: [String] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    private let journalRepository: FirebaseJournalRepository
+
+    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
+        self.result = JournalModel(
+            title: "",
+            date: Date(),
+            description: "",
+            emotion: "",
+            score: 0
+        )
+        self.journalRepository = journalRepository
+    }
+    private func emoticon(for emotion: String) -> String {
+        switch emotion.lowercased() {
+        case "joy": return "😊"
+        case "trust": return "🤝"
+        case "fear": return "😨"
+        case "surprise": return "😲"
+        case "sadness": return "😢"
+        case "disgust": return "🤢"
+        case "anger": return "😠"
+        case "anticipation": return "🤔"
+        default: return "❓"
+        }
+    }
+    //    func analyzeEmotion(userID : String) {
+    //        //call the coreML service
+    //        let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
+    //        let score = scoreForEmotion(emotion) // tambahkan scoring
+    //        DispatchQueue.main.async {
+    //            self.result = JournalModel(
+    //                title: emotion, date: Date(), description: self.userInput,
+    //                emotion: emotion, score: score, userID: userID)
+    //            self.emoticonSymbol = self.emoticon(for: emotion)
+    //            self.getRecommendations()
+    //            var addToDB = self.addJournal(journal: self.result)
+    //            if addToDB {
+    //                print( "berhasil")
+    //            }else {
+    //                print("gagal")
+    //            }
+    //
+    //
+    //        }
+    //    }
+    //
+    func analyzeEmotion(userID: String) {
+        let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
+        let score = scoreForEmotion(emotion)
+        DispatchQueue.main.async {
+            self.result = JournalModel(
+                title: emotion,
+                date: Date(),
+                description: self.userInput,
+                emotion: emotion,
+                score: score,
+                userID: userID
+            )
+            self.emoticonSymbol = self.emoticon(for: emotion)
+            self.getRecommendations()
+            
+            self.journalRepository.addJournal(self.result) { success in
+                if success {
+                    print("berhasil")
+                } else {
+                    print("gagal")
+                }
+            }
+        }
+    }
+    func scoreForEmotion(_ emotion: String) -> Int {
+        switch emotion.lowercased() {
+        case "anger": return 10
+        case "fear": return 9
+        case "disgust": return 8
+        case "sadness": return 7
+        case "surprise": return 6
+        case "anticipation": return 5
+        case "trust": return 3
+        case "joy": return 1
+        default: return 5 // netral
+        }
+    }
+    
+    func getRecommendations() {
+        guard !result.emotion.isEmpty else { return }
+        
+        isLoading = true
+        errorMessage = nil
+        recommendations = []
+        
+        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
+            DispatchQueue.main.async {
+                //stop the loading
+                self?.isLoading = false
+                
+                //send the result
+                switch result {
+                case .success(let activities):
+                    self?.recommendations = activities
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    
+}
