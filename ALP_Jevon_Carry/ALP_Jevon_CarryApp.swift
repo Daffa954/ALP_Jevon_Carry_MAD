@@ -35,19 +35,5 @@ struct ALP_Jevon_CarryApp: App {
                 .environmentObject(quizViewModel)
         }
     }
-               print("🔥 Firebase configured at: \(Date())")
-    }
-    var body: some Scene {
-        WindowGroup {
-           SplashScreenView()
-                .environmentObject(authViewModel)
-                .environmentObject(journalViewModel)
-                .environmentObject(listJournalViewModel)
-                .environmentObject(historyViewModel)
-                .environmentObject(quizViewModel)
-                .environmentObject(musicPlayerViewModel)
-                                .environmentObject(breathingViewModel)
-                                .environmentObject(sessionHistoryViewModel)
-        }
-    }
+   
 }
