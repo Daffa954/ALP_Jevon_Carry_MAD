@@ -18,8 +18,6 @@ struct ALP_Jevon_CarryApp: App {
     @StateObject private var listJournalViewModel = ListJournalViewModel()
 
     // Friend's original ViewModels
-    @StateObject private var authViewModel = AuthViewModel()
-    @StateObject private var listJournalViewModel = ListJournalViewModel()
     @StateObject private var journalViewModel = JournalViewModel()
 
     // Your view models that can be initialized directly
@@ -37,7 +35,7 @@ struct ALP_Jevon_CarryApp: App {
         #endif
 
         // Create temporary instances for initialization (matching your actual AuthViewModel init)
-        let tempAuthVM = AuthViewModel()
+        let tempAuthVM = AuthViewModel(repository: FirebaseAuthRepository())
         let tempMusicPlayerVM = MusicPlayerViewModel()
         
         // Initialize dependent view models with temporary instances

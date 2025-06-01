@@ -165,7 +165,7 @@ struct SessionHistoryView_Previews: PreviewProvider {
 
     static var previews: some View {
         // Setup preview authentication
-        let authViewModel = AuthViewModel()
+        let authViewModel = AuthViewModel(repository: FirebaseAuthRepository())
         if authViewModel.myUser.uid.isEmpty {
             authViewModel.myUser = MyUser(uid: "previewUser123", name: "Preview User", email: "preview@example.com")
             authViewModel.isSigneIn = true
