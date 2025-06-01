@@ -71,6 +71,11 @@ struct MainView: View {
                     Label("Profile", systemImage: "person.circle")
                 }
         }
+//        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+//            showAuthSheet = !isSignedIn
+//        }.sheet(isPresented: $showAuthSheet){
+//            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+//        }
         .onAppear {
             // Show auth sheet if not signed in
             showAuthSheet = !authViewModel.isSigneIn
@@ -103,5 +108,6 @@ struct MainView: View {
         .environmentObject(ListJournalViewModel())
         .environmentObject(JournalViewModel())
         .environmentObject(QuizViewModel(type: "PHQ-9"))
+        .environmentObject(HistoryViewModel())
 
 }

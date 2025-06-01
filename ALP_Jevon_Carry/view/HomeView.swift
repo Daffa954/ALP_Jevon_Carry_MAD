@@ -4,12 +4,13 @@ struct HomeView: View {
     @State private var selectedQuizType: String = ""
     let cornerRadius: CGFloat = 30
     @EnvironmentObject var authVM: AuthViewModel
+    @State private var showQuizPHQ = false
+    @State private var showQuizGAD = false
+    @State private var showQuizHistory = false
     
     var body: some View {
         NavigationStack {
             VStack {
-                
-                
                 ScrollView {
                     VStack(spacing: 0) {
                         // Header Section
@@ -34,29 +35,73 @@ struct HomeView: View {
                                 }
                                 
                                 // Quiz Cards
-                                VStack(spacing: 15) {
-                                    NavigationLink(
-                                        destination: QuizView(type: "PHQ-9")
-                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
-                                            .environmentObject(HistoryViewModel()),
-                                        label: {
-                                            QuizCard(title: "PHQ-9",
-                                                     subtitle: "Depression Assessment",
-                                                     icon: "heart.text.square")
-                                        }
-                                    )
-                                    
-                                    NavigationLink(
-                                        destination: QuizView(type: "GAD-7")
-                                            .environmentObject(QuizViewModel(type: "GAD-7"))
-                                            .environmentObject(HistoryViewModel()),
-                                        label: {
-                                            QuizCard(title: "GAD-7",
-                                                     subtitle: "Anxiety Assessment",
-                                                     icon: "brain.head.profile")
-                                        }
-                                    )
+                                //START COMMENT
+//                                VStack(spacing: 15) {
+//                                    NavigationLink(
+//                                        destination: QuizView(type: "PHQ-9", tab: $tab)
+//                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
+//                                            .environmentObject(HistoryViewModel()),
+//                                        label: {
+//                                            QuizCard(title: "PHQ-9",
+//                                                     subtitle: "Depression Assessment",
+//                                                     icon: "heart.text.square")
+//                                        }
+//                                    )
+//                                    
+//                                    NavigationLink(
+//                                        destination: QuizView(type: "GAD-7", tab: $tab)
+//                                            .environmentObject(QuizViewModel(type: "GAD-7"))
+//                                            .environmentObject(HistoryViewModel()),
+//                                        label: {
+//                                            QuizCard(title: "GAD-7",
+//                                                     subtitle: "Anxiety Assessment",
+//                                                     icon: "brain.head.profile")
+//                                        }
+//                                    )
+//                                }
+                                //END COMMENT
+                                
+                                NavigationLink(destination: QuizView(type: "PHQ-9")){
+                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
                                 }
+                                
+                                NavigationLink(destination: QuizView(type: "GAD-7")){
+                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
+                                }
+                                
+//                                Button {
+//                                    showQuizPHQ = true
+//                                } label: {
+//                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizPHQ) {
+//                                    QuizView(type: "PHQ-9", tab: $tab, isPresented: $showQuizPHQ)
+//                                        .environmentObject(QuizViewModel(type: "PHQ-9"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
+                                
+//                                Button {
+//                                    showQuizGAD = true
+//                                } label: {
+//                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizGAD) {
+//                                    QuizView(type: "GAD-7", tab: $tab, isPresented: $showQuizGAD)
+//                                        .environmentObject(QuizViewModel(type: "GAD-7"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
+                                
+                                Button {
+                                    showQuizHistory = true
+                                } label: {
+                                    QuizCard(title: "Test History", subtitle: "See your history results", icon: "book.pages.fill")
+                                }
+                                .sheet(isPresented: $showQuizHistory) {
+                                    QuizHistory()
+                                }
+                                
+                                
+                                
                             }
                             
                         }
@@ -203,4 +248,5 @@ struct RoundedCorner: Shape {
     HomeView()
         .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
         .environmentObject(QuizViewModel(type: "PHQ-9"))
+        .environmentObject(HistoryViewModel())
 }
