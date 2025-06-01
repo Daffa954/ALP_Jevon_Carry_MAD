@@ -10,9 +10,10 @@ import SwiftUI
 struct ResultView: View {
     let result: HistoryModel
     @Environment(\.dismiss) var dismiss
-    @State private var backHome = false
-    @Binding var tab: TabItemEnum
-    @Binding var isPresented: Bool
+//    @State private var backHome = false
+    @Binding var goHome: Bool
+//    @Binding var tab: TabItemEnum
+//    @Binding var isPresented: Bool
 
     var body: some View {
         let mainColor = Color(red: 0.286, green: 0.561, blue: 0.816)
@@ -188,8 +189,9 @@ struct ResultView: View {
                         
 //                        NavigationLink(destination: HomeView()){
                             Button(action: {
-                                tab = TabItemEnum.home
-                                isPresented = false
+//                                tab = TabItemEnum.home
+//                                isPresented = false
+                                goHome.toggle()
                                 dismiss()
                             }) {
                                 HStack {
@@ -233,6 +235,6 @@ struct ResultView: View {
         date: Date(),
         summary: "Moderate depression",
         userID: "sssssssssssss"
-    ), tab: .constant(TabItemEnum.home), isPresented: .constant(true))
+    ), goHome: .constant(true))
     .environmentObject(HistoryViewModel())
 }

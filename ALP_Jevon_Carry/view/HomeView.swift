@@ -4,8 +4,6 @@ struct HomeView: View {
     @State private var selectedQuizType: String = ""
     let cornerRadius: CGFloat = 30
     @EnvironmentObject var authVM: AuthViewModel
-    @Binding var tab: TabItemEnum
-    
     @State private var showQuizPHQ = false
     @State private var showQuizGAD = false
     @State private var showQuizHistory = false
@@ -65,27 +63,35 @@ struct HomeView: View {
 //                                }
                                 //END COMMENT
                                 
-                                Button {
-                                    showQuizPHQ = true
-                                } label: {
+                                NavigationLink(destination: QuizView(type: "PHQ-9")){
                                     QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
                                 }
-                                .fullScreenCover(isPresented: $showQuizPHQ) {
-                                    QuizView(type: "PHQ-9", tab: $tab, isPresented: $showQuizPHQ)
-                                        .environmentObject(QuizViewModel(type: "PHQ-9"))
-                                        .environmentObject(HistoryViewModel())
-                                }
                                 
-                                Button {
-                                    showQuizGAD = true
-                                } label: {
+                                NavigationLink(destination: QuizView(type: "GAD-7")){
                                     QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
                                 }
-                                .fullScreenCover(isPresented: $showQuizGAD) {
-                                    QuizView(type: "GAD-7", tab: $tab, isPresented: $showQuizGAD)
-                                        .environmentObject(QuizViewModel(type: "GAD-7"))
-                                        .environmentObject(HistoryViewModel())
-                                }
+                                
+//                                Button {
+//                                    showQuizPHQ = true
+//                                } label: {
+//                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizPHQ) {
+//                                    QuizView(type: "PHQ-9", tab: $tab, isPresented: $showQuizPHQ)
+//                                        .environmentObject(QuizViewModel(type: "PHQ-9"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
+                                
+//                                Button {
+//                                    showQuizGAD = true
+//                                } label: {
+//                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizGAD) {
+//                                    QuizView(type: "GAD-7", tab: $tab, isPresented: $showQuizGAD)
+//                                        .environmentObject(QuizViewModel(type: "GAD-7"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
                                 
                                 Button {
                                     showQuizHistory = true
@@ -241,7 +247,7 @@ struct RoundedCorner: Shape {
 }
 
 #Preview {
-    HomeView(tab: .constant(TabItemEnum.home))
+    HomeView()
         .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
         .environmentObject(QuizViewModel(type: "PHQ-9"))
         .environmentObject(HistoryViewModel())

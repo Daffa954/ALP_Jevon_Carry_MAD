@@ -11,14 +11,13 @@ struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var listJournalViewModel: ListJournalViewModel
     @State var showAuthSheet = false
-    @State var selectedTabItem: TabItemEnum = .home
+//    @State var selectedTabItem: TabItemEnum = .home
     
     var body: some View {
-        TabView(selection: $selectedTabItem){
-            HomeView(tab: $selectedTabItem).tabItem{
+        TabView{
+            HomeView().tabItem{
                     Label("Home", systemImage: "house")
                 }
-            .tag(TabItemEnum.home)
             
             
             SchedulleView().tabItem{
@@ -43,11 +42,11 @@ struct MainView: View {
 //        }
         .onAppear {
             showAuthSheet = !authViewModel.isSigneIn
-            selectedTabItem = .schedule
+//            selectedTabItem = .schedule
         }
-        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
-            showAuthSheet = !isSignedIn
-        }
+//        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+//            showAuthSheet = !isSignedIn
+//        }
         .sheet(isPresented: $showAuthSheet){
             LoginRegisterSheet(showAuthSheet: $showAuthSheet)
         }

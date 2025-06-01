@@ -8,24 +8,26 @@
 import SwiftUI
 
 struct QuizView: View {
-    @EnvironmentObject var quizViewModel: QuizViewModel
     @EnvironmentObject var historyViewModel: HistoryViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
-    @State private var showResult = false
+    
     @State private var result: HistoryModel? = nil
     @State private var score: Int = 0
     var type: String
     @StateObject private var quizVM: QuizViewModel
+    
+    @State var goHome: Bool = false
+    @State private var showResult = false
     @Environment(\.dismiss) var dismiss
     
-    @Binding var tab: TabItemEnum
-    @Binding var isPresented: Bool
+    //    @Binding var tab: TabItemEnum
+    //    @Binding var isPresented: Bool
     
-    init(type: String, tab: Binding<TabItemEnum>, isPresented: Binding<Bool>) {
+    init(type: String) {
         self.type = type
         _quizVM = StateObject(wrappedValue: QuizViewModel(type: type))
-        self._tab = tab
-        self._isPresented = isPresented
+        //        self._tab = tab
+        //        self._isPresented = isPresented
     }
     var body: some View {
         let mainColor = Color(red: 0.286, green: 0.561, blue: 0.816) // #498FD0
@@ -33,16 +35,16 @@ struct QuizView: View {
         NavigationStack {
             
             HStack{
-                HStack {
-                    Image(systemName: "chevron.backward")
-                        .foregroundColor(.blue)
-                    Text("Back")
-                        .foregroundStyle(.blue)
-                }
-                .padding(.leading)
-                .onTapGesture {
-                    dismiss()
-                }
+                //                HStack {
+                //                    Image(systemName: "chevron.backward")
+                //                        .foregroundColor(.blue)
+                //                    Text("Back")
+                //                        .foregroundStyle(.blue)
+                //                }
+                //                .padding(.leading)
+                //                .onTapGesture {
+                //                    dismiss()
+                //                }
                 Spacer()
             }
             Spacer()
@@ -69,7 +71,7 @@ struct QuizView: View {
                         HStack{
                             
                             VStack(spacing: 16) {
-                                Text("Quiz \(quizViewModel.type)")
+                                Text("Quiz \(quizVM.type)")
                                     .font(.title)
                                     .bold()
                             }
@@ -78,7 +80,7 @@ struct QuizView: View {
                         
                         
                         
-                        ForEach(quizViewModel.questions) { question in
+                        ForEach(quizVM.questions) { question in
                             VStack(alignment: .leading, spacing: 16) {
                                 HStack {
                                     
@@ -90,11 +92,11 @@ struct QuizView: View {
                                         .fixedSize(horizontal: false, vertical: true)
                                 }
                                 
-                                let options = quizViewModel.getAnswerOptions()
+                                let options = quizVM.getAnswerOptions()
                                 
                                 VStack(spacing: 12) {
                                     ForEach(options) { option in
-                                        let isSelected = quizViewModel.selectedAnswers[question.id] == option.score
+                                        let isSelected = quizVM.selectedAnswers[question.id] == option.score
                                         
                                         HStack(spacing: 16) {
                                             Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
@@ -118,7 +120,7 @@ struct QuizView: View {
                                         )
                                         .onTapGesture {
                                             withAnimation(.easeInOut(duration: 0.1)) {
-                                                quizViewModel.selectedAnswers[question.id] = option.score
+                                                quizVM.selectedAnswers[question.id] = option.score
                                             }
                                         }
                                     }
@@ -138,13 +140,13 @@ struct QuizView: View {
                                 
                                 Spacer()
                                 
-                                Text("\(quizViewModel.selectedAnswers.count)/\(quizViewModel.questions.count)")
+                                Text("\(quizVM.selectedAnswers.count)/\(quizVM.questions.count)")
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
                                     .foregroundColor(mainColor)
                             }
                             
-                            ProgressView(value: Double(quizViewModel.selectedAnswers.count), total: Double(quizViewModel.questions.count))
+                            ProgressView(value: Double(quizVM.selectedAnswers.count), total: Double(quizVM.questions.count))
                                 .progressViewStyle(LinearProgressViewStyle(tint: mainColor))
                                 .scaleEffect(x: 1, y: 2, anchor: .center)
                         }
@@ -153,10 +155,10 @@ struct QuizView: View {
                         .cornerRadius(16)
                         .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
                         
-                        let isFormComplete = quizViewModel.selectedAnswers.count == quizViewModel.questions.count
+                        let isFormComplete = quizVM.selectedAnswers.count == quizVM.questions.count
                         
                         Button(action: {
-                            let history = quizViewModel.saveHistory(userID: authViewModel.user?.uid ?? "")
+                            let history = quizVM.saveHistory(userID: authViewModel.user?.uid ?? "")
                             result = history
                             historyViewModel.addHistory(history)
                             showResult = true
@@ -189,15 +191,18 @@ struct QuizView: View {
             }
             .sheet(isPresented: $showResult) {
                 if let result = result {
-                    ResultView(result: result, tab: $tab, isPresented: $isPresented)
+                    ResultView(result: result, goHome: $goHome)
                 }
+            }
+            .onChange(of: goHome){
+                dismiss()
             }
         }
     }
 }
 
 #Preview {
-    QuizView(type: "PHQ-9", tab: .constant(TabItemEnum.home), isPresented: .constant(true))
+    QuizView(type: "PHQ-9")
         .environmentObject(QuizViewModel(type: "PHQ-9"))
         .environmentObject(HistoryViewModel())
         .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))

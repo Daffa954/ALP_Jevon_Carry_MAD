@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 class QuizViewModel: ObservableObject {
-    var type: String
+    @Published var type: String
     @Published var questions: [QuestionModel] = []
     @Published var selectedAnswers: [Int: Int] = [:]
     
