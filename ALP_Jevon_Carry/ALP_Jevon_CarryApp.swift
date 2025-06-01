@@ -49,7 +49,8 @@ struct ALP_Jevon_CarryApp: App {
 
     var body: some Scene {
         WindowGroup {
-           SplashScreenView()
+
+            SplashScreenView()
                 .environmentObject(authViewModel)
                 .environmentObject(journalViewModel)
                 .environmentObject(listJournalViewModel)

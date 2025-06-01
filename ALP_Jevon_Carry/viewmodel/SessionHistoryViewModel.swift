@@ -5,6 +5,24 @@
 //  Created by Daffa Khoirul on 01/06/25.
 //
 
+// SessionHistoryViewModel.swift (Create this new file)
+// Make sure to import Foundation, SwiftUI, FirebaseDatabase, FirebaseDatabaseSwift
+// SessionHistoryViewModel.swift
+// SessionHistoryViewModel.swift
+//
+//  SessionHistoryViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by student on 27/05/25.
+//
+
+//
+//  SessionHistoryViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by student on 27/05/25.
+//
+
 import Foundation
 import SwiftUI
 import Combine

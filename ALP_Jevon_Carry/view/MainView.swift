@@ -61,12 +61,6 @@ struct MainView: View {
                 Label("Breathing", systemImage: "lungs.fill")
             }
             
-            
-            SchedulleView().tabItem{
-                Label("Breathing", systemImage: "lungs.fill")
-            }
-            
-            
             JournalView(userId: authViewModel.user?.uid ?? "")
                 .tabItem{
                     Label("Journal", systemImage: "book")
