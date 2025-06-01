@@ -11,8 +11,6 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
-                
                 ScrollView {
                     VStack(spacing: 0) {
                         // Header Section
