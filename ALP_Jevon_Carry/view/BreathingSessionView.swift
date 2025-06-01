@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// Main view for breathing sessions
 struct BreathingSessionView: View {
     @StateObject var breathingViewModel: BreathingViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
@@ -20,7 +19,7 @@ struct BreathingSessionView: View {
         NavigationView {
             GeometryReader { geometry in
                 ZStack {
-                    // Background gradient
+                    // Static elegant background
                     LinearGradient(
                         gradient: Gradient(colors: [
                             Color.white,
@@ -34,14 +33,14 @@ struct BreathingSessionView: View {
 
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
-                            // Header section
+                            // Header Section
                             VStack(spacing: 16) {
                                 Text("Mindful Breathing")
                                     .font(.system(size: 32, weight: .thin, design: .rounded))
                                     .foregroundColor(Color.black)
                                     .multilineTextAlignment(.center)
 
-                                // Music selection card
+                                // Music Selection Card
                                 Button(action: {
                                     showingSongSelectionSheet = true
                                 }) {
@@ -60,9 +59,7 @@ struct BreathingSessionView: View {
                                                 .font(.system(size: 16, weight: .semibold))
                                                 .foregroundColor(Color.black)
                                         }
-                                        
                                         Spacer()
-                                        
                                         Image(systemName: "chevron.right")
                                             .font(.system(size: 14, weight: .medium))
                                             .foregroundColor(Color.gray)
@@ -79,10 +76,9 @@ struct BreathingSessionView: View {
                             }
                             .padding(.top, 20)
 
-                            // Breathing circle section
+                            // Breathing Circle Section
                             VStack(spacing: 30) {
                                 let circleSize = min(geometry.size.width, geometry.size.height) * 0.65
-                                
                                 ZStack {
                                     // Outer glow effect
                                     Circle()
@@ -136,15 +132,18 @@ struct BreathingSessionView: View {
                                         .frame(width: circleSize * 0.7, height: circleSize * 0.7)
                                         .scaleEffect(breathingViewModel.circleScale * 0.9)
 
-                                    // Breathing instruction text
+                                    // Breathing instruction text and phase icon
                                     VStack(spacing: 8) {
                                         if breathingViewModel.isSessionActive {
-                                            Image(systemName: breathingViewModel.breathingPhase == .inhale ? "arrow.up.circle.fill" :
-                                                              breathingViewModel.breathingPhase == .exhale ? "arrow.down.circle.fill" : "pause.circle.fill")
-                                                .font(.system(size: 24, weight: .light))
-                                                .foregroundColor(Color.black)
+                                            Image(systemName:
+                                                breathingViewModel.breathingPhase == "inhale" ? "arrow.up.circle.fill" :
+                                                breathingViewModel.breathingPhase == "exhale" ? "arrow.down.circle.fill" :
+                                                breathingViewModel.breathingPhase == "hold" ? "pause.circle.fill" :
+                                                "pause.circle"
+                                            )
+                                            .font(.system(size: 24, weight: .light))
+                                            .foregroundColor(Color.black)
                                         }
-                                        
                                         Text(breathingViewModel.instructionText)
                                             .font(.system(size: 18, weight: .semibold, design: .rounded))
                                             .foregroundColor(Color.black)
@@ -156,7 +155,7 @@ struct BreathingSessionView: View {
                             }
                             .padding(.vertical, 40)
 
-                            // Session info section
+                            // Session Info Section
                             VStack(spacing: 16) {
                                 HStack {
                                     Image(systemName: "clock")
@@ -168,7 +167,7 @@ struct BreathingSessionView: View {
                                         .foregroundColor(Color.gray)
 
                                     Spacer()
-                                    
+
                                     Text(String(format: "%02d:%02d", Int(breathingViewModel.sessionTimeElapsed) / 60, Int(breathingViewModel.sessionTimeElapsed) % 60))
                                         .font(.system(size: 18, weight: .bold, design: .rounded))
                                         .foregroundColor(Color.black)
@@ -183,7 +182,7 @@ struct BreathingSessionView: View {
                             }
                             .padding(.horizontal, 20)
 
-                            // Music controls section (if music is playing)
+                            // Music Controls Section (if applicable)
                             if breathingViewModel.selectedSong != "No Music",
                                breathingViewModel.musicPlayerViewModel.currentSongFileName != nil {
                                 VStack(spacing: 16) {
@@ -191,12 +190,11 @@ struct BreathingSessionView: View {
                                         .font(.system(size: 14, weight: .medium))
                                         .foregroundColor(Color.gray)
 
-                                    // Music controls
                                     VStack(spacing: 16) {
                                         Text(breathingViewModel.musicPlayerViewModel.currentSongFileName?.capitalized ?? "No song loaded")
                                             .font(.system(size: 16, weight: .semibold))
                                             .foregroundColor(Color.black)
-                                        
+
                                         VStack(spacing: 8) {
                                             Slider(
                                                 value: Binding(
@@ -217,7 +215,7 @@ struct BreathingSessionView: View {
                                                     .fill(Color("skyBlue").opacity(0.2))
                                                     .frame(height: 4)
                                             )
-                                            
+
                                             HStack {
                                                 Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.currentTime))
                                                 Spacer()
@@ -226,7 +224,7 @@ struct BreathingSessionView: View {
                                             .font(.system(size: 12, weight: .medium, design: .monospaced))
                                             .foregroundColor(Color.gray)
                                         }
-                                        
+
                                         Button(action: {
                                             breathingViewModel.musicPlayerViewModel.playPause()
                                         }) {
@@ -249,7 +247,7 @@ struct BreathingSessionView: View {
                                 .padding(.top, 20)
                             }
 
-                            // Control button section
+                            // Control Button Section
                             Button(action: {
                                 withAnimation(.easeInOut(duration: 0.2)) {
                                     breathingViewModel.toggleSession()
@@ -286,7 +284,7 @@ struct BreathingSessionView: View {
                             .padding(.horizontal, 20)
                             .padding(.top, 30)
 
-                            // History button section
+                            // History Button Section
                             Button(action: {
                                 showingSessionHistory = true
                             }) {
@@ -339,13 +337,11 @@ struct BreathingSessionView: View {
             .navigationTitle("")
             .navigationBarHidden(true)
             .onAppear {
-                // Check authentication on appear
                 if authViewModel.user == nil && authViewModel.myUser.uid.isEmpty {
                     breathingViewModel.instructionText = "Please sign in to begin your mindful journey"
                 }
             }
             .sheet(isPresented: $showingSongSelectionSheet) {
-                // Song selection sheet
                 NavigationView {
                     VStack(spacing: 0) {
                         VStack(spacing: 8) {
@@ -359,9 +355,7 @@ struct BreathingSessionView: View {
                         .padding(.horizontal, 20)
                         .padding(.top, 20)
                         .padding(.bottom, 16)
-                        
                         Divider().padding(.horizontal, 20)
-                        
                         ScrollView {
                             LazyVStack(spacing: 12) {
                                 ForEach(breathingViewModel.availableSongs, id: \.self) { song in
@@ -375,7 +369,6 @@ struct BreathingSessionView: View {
                                                 .font(.system(size: 18, weight: .medium))
                                                 .foregroundColor(song == breathingViewModel.selectedSong ? Color("skyBlue") : Color.gray)
                                                 .frame(width: 24, height: 24)
-                                            
                                             VStack(alignment: .leading, spacing: 4) {
                                                 Text(song == "No Music" ? "Silent Session" : song.capitalized)
                                                     .font(.system(size: 16, weight: .semibold))
@@ -384,9 +377,7 @@ struct BreathingSessionView: View {
                                                     .font(.system(size: 12, weight: .medium))
                                                     .foregroundColor(Color.gray)
                                             }
-                                            
                                             Spacer()
-                                            
                                             if song == breathingViewModel.selectedSong {
                                                 Image(systemName: "checkmark.circle.fill")
                                                     .font(.system(size: 20, weight: .semibold))
@@ -405,7 +396,6 @@ struct BreathingSessionView: View {
                             .padding(.horizontal, 20)
                             .padding(.top, 20)
                         }
-                        
                         Spacer()
                     }
                     .background(Color.white.ignoresSafeArea())
@@ -422,29 +412,5 @@ struct BreathingSessionView: View {
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
-    }
-}
-
-// MARK: - Preview
-struct BreathingSessionView_Previews: PreviewProvider {
-    static var previews: some View {
-        let previewAuthVM = AuthViewModel()
-        previewAuthVM.isSigneIn = true
-        previewAuthVM.myUser = MyUser(
-            uid: "previewUser123",
-            name: "Preview User",
-            email: "preview@example.com"
-        )
-
-        let musicPlayerVM = MusicPlayerViewModel()
-        let breathingVM = BreathingViewModel(musicPlayerViewModel: musicPlayerVM, authViewModel: previewAuthVM)
-        
-        @State var showingHistoryPreview = false
-
-        return BreathingSessionView(
-            breathingViewModel: breathingVM,
-            showingSessionHistory: $showingHistoryPreview
-        )
-        .environmentObject(previewAuthVM)
     }
 }
