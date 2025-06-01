@@ -8,8 +8,6 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                
-                
                 ScrollView {
                     VStack(spacing: 0) {
                         // Header Section
@@ -22,19 +20,20 @@ struct HomeView: View {
                             
                             // Quiz Cards Section
                             VStack(spacing: 20) {
-                                VStack(spacing: 10) {
+                                VStack(spacing: 12) {
                                     Text("Check Your Mental Health")
-                                        .font(.system(size: 22, weight: .bold))
+                                        .font(.system(size: 24, weight: .bold))
                                         .foregroundColor(Color("navyBlue"))
                                     
                                     Text("For best results, this test is limited to one session per week.")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(Color.white)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(Color("navyBlue").opacity(0.8))
                                         .multilineTextAlignment(.center)
+                                        .padding(.horizontal, 10)
                                 }
                                 
                                 // Quiz Cards
-                                VStack(spacing: 15) {
+                                VStack(spacing: 16) {
                                     NavigationLink(
                                         destination: QuizView(type: "PHQ-9")
                                             .environmentObject(QuizViewModel(type: "PHQ-9"))
@@ -42,7 +41,8 @@ struct HomeView: View {
                                         label: {
                                             QuizCard(title: "PHQ-9",
                                                      subtitle: "Depression Assessment",
-                                                     icon: "heart.text.square")
+                                                     icon: "heart.text.square",
+                                                     gradientColors: [Color("skyBlue"), Color("skyBlue").opacity(0.8)])
                                         }
                                     )
                                     
@@ -53,21 +53,20 @@ struct HomeView: View {
                                         label: {
                                             QuizCard(title: "GAD-7",
                                                      subtitle: "Anxiety Assessment",
-                                                     icon: "brain.head.profile")
+                                                     icon: "brain.head.profile",
+                                                     gradientColors: [Color("coralOrange"), Color("coralOrange").opacity(0.8)])
                                         }
                                     )
                                 }
                             }
-                            
                         }
                         .padding(.horizontal, 35)
-                        .padding(.bottom, 50) // Padding untuk Tab Bar
-                        
-                        .background(Color("color1").opacity(0.8))
-                        
+                        .padding(.bottom, 50)
+                        .background(Color("lightGray1"))
                     }
                 }
             }
+            .background(Color("lightGray1"))
             .onChange(of: authVM.user?.uid ?? "", initial: true) { _, newUID in
                 if !newUID.isEmpty {
                     Task {
@@ -86,15 +85,15 @@ struct HomeView: View {
     
     private var headerSection: some View {
         HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("Hi \(authVM.myUser.name)")
-                    .font(.system(size: 30, weight: .bold))
+                    .font(.system(size: 32, weight: .bold))
                     .foregroundColor(Color("navyBlue"))
-                
                 
                 Text("Your journey matters.\nLet's see how you're growing.")
-                    .font(.system(size: 16))
-                    .foregroundColor(Color("navyBlue"))
+                    .font(.system(size: 17, weight: .medium))
+                    .foregroundColor(Color("navyBlue").opacity(0.8))
+                    .lineSpacing(2)
             }
             
             Spacer()
@@ -102,92 +101,138 @@ struct HomeView: View {
             Image("Image1")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 80, height: 80)
-        }
-        .padding(.top, 20)
-        .padding(.bottom, 30)
-        .padding(.horizontal, 25)
-        
-        
-    }
-    
-    private var freshStartSection: some View {
-        VStack(spacing: 15) {
-            Text("Your Fresh Start")
-                .font(.system(size: 24, weight: .medium))
-                .foregroundColor(Color("navyBlue"))
-            
-            Text("Welcome! Let's grow together,\none day at a time.")
-                .font(.system(size: 18))
-                .foregroundColor(Color.white)
-                .multilineTextAlignment(.center)
-            
-            // Graph Placeholder
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color("lightGray1"))
-                .frame(height: 180)
-                .overlay(
-                    VStack {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .font(.system(size: 40))
-                            .foregroundColor(.gray)
-                        Text("Overall Graph")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundColor(.gray)
-                    }
+                .frame(width: 85, height: 85)
+                .background(
+                    Circle()
+                        .fill(Color("skyBlue").opacity(0.1))
+                        .frame(width: 95, height: 95)
                 )
         }
         .padding(.top, 25)
+        .padding(.bottom, 35)
+        .padding(.horizontal, 30)
+        .background(Color("lightGray1"))
     }
     
-    
+    private var freshStartSection: some View {
+        VStack(spacing: 18) {
+            VStack(spacing: 8) {
+                Text("Your Fresh Start")
+                    .font(.system(size: 26, weight: .bold))
+                    .foregroundColor(Color("lightGray1"))
+                
+                Text("Welcome! Let's grow together,\none day at a time.")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundColor(Color("navyBlue").opacity(0.7))
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(3)
+            }
+            
+            // Enhanced Graph Placeholder
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(colors: [
+                            Color.white,
+                            Color("lightGray1").opacity(0.5)
+                        ]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(height: 190)
+                .overlay(
+                    VStack(spacing: 12) {
+                        ZStack {
+                            Circle()
+                                .fill(Color("skyBlue").opacity(0.1))
+                                .frame(width: 70, height: 70)
+                            
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                .font(.system(size: 28, weight: .medium))
+                                .foregroundColor(Color("skyBlue"))
+                        }
+                        
+                        VStack(spacing: 4) {
+                            Text("Overall Progress")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundColor(Color("navyBlue"))
+                            
+                            Text("Track your mental health journey")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(Color("skyBlue").opacity(0.6))
+                        }
+                    }
+                )
+                .shadow(color: Color("navyBlue").opacity(0.08), radius: 8, x: 0, y: 4)
+        }
+        .padding(.top, 30)
+    }
 }
 
-// MARK: - Components
+// MARK: - Enhanced Components
 
 struct QuizCard: View {
     let title: String
     let subtitle: String
     let icon: String
+    let gradientColors: [Color]
     
     var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.system(size: 24))
-                .foregroundColor(.white)
-                .frame(width: 50, height: 50)
-                .background(Color.white.opacity(0.2))
-                .clipShape(Circle())
+        HStack(spacing: 16) {
+            // Icon Container
+            ZStack {
+                Circle()
+                    .fill(Color.white.opacity(0.25))
+                    .frame(width: 55, height: 55)
+                
+                Image(systemName: icon)
+                    .font(.system(size: 26, weight: .medium))
+                    .foregroundColor(.white)
+            }
             
-            VStack(alignment: .leading, spacing: 4) {
+            // Content
+            VStack(alignment: .leading, spacing: 6) {
                 Text(title)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.white)
                 
                 Text(subtitle)
-                    .font(.system(size: 14))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.white.opacity(0.9))
             }
             
             Spacer()
             
-            Image(systemName: "chevron.right")
-                .foregroundColor(.white.opacity(0.7))
+            // Arrow
+            ZStack {
+                Circle()
+                    .fill(Color.white.opacity(0.2))
+                    .frame(width: 35, height: 35)
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+            }
         }
-        .padding()
+        .padding(.horizontal, 20)
+        .padding(.vertical, 18)
         .frame(maxWidth: .infinity)
-        .frame(height: 120)
+        .frame(height: 100)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue, Color.purple]),
+                gradient: Gradient(colors: gradientColors),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
         )
-        .cornerRadius(15)
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .cornerRadius(18)
+        .shadow(color: gradientColors.first?.opacity(0.3) ?? Color.clear, radius: 8, x: 0, y: 4)
     }
 }
+
+// MARK: - App Colors
+
 
 
 
