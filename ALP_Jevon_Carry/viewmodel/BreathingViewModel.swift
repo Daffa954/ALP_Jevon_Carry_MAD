@@ -5,22 +5,19 @@
 //  Created by student on 27/05/25.
 //
 
-// BreathingViewModel.swift (Create this new file)
-// Make sure to import Foundation, SwiftUI, Combine, FirebaseDatabase, FirebaseDatabaseSwift
-// BreathingViewModel.swift
-//
-//  BreathingViewModel.swift
-//  ALP_Jevon_Carry
-//
-//  Created by student on 27/05/25.
-//
-
 import Foundation
 import SwiftUI
 import Combine
 
+// Breathing phases for the session
+enum BreathingPhase {
+    case idle, inhale, hold, exhale
+}
+
+// Main ViewModel for breathing sessions - simplified and efficient
 @MainActor
 class BreathingViewModel: ObservableObject {
+    // Published properties for UI state
     @Published var breathingPhase: BreathingPhase = .idle
     @Published var instructionText: String = "Choose your music and begin your journey"
     @Published var circleScale: CGFloat = 0.6
@@ -33,34 +30,43 @@ class BreathingViewModel: ObservableObject {
     @Published var breathingRate: Double = 1.0
     @Published var isSaving: Bool = false
     @Published var saveError: String?
+    
+    // Available songs array
     let availableSongs = ["No Music", "song1", "song2"]
 
+    // View models and repositories
     @ObservedObject var musicPlayerViewModel: MusicPlayerViewModel
     private var authViewModel: AuthViewModel
     private let breathingRepo: FirebaseBreathingRepository
 
+    // Timers and session data
     private var breathingTimer: Timer?
     private var sessionDurationTimer: Timer?
     private var sessionStartTime: Date?
     private var cancellables = Set<AnyCancellable>()
 
+    // Color constants
     private let neutralColorPlaceholder: Color = Color.gray
     private let inhaleColorPlaceholder: Color = Color.blue.opacity(0.7)
     private let exhaleColorPlaceholder: Color = Color.orange
 
+    // Timing constants
     private let inhaleDuration: TimeInterval = 4.0
     private let exhaleDuration: TimeInterval = 6.0
     private let holdDuration: TimeInterval = 1.0
     private let maxCircleScale: CGFloat = 1.2
     private let minCircleScale: CGFloat = 0.6
 
+    // Initialize the ViewModel
     init(musicPlayerViewModel: MusicPlayerViewModel, authViewModel: AuthViewModel, breathingRepo: FirebaseBreathingRepository = FirebaseBreathingRepository()) {
         self.musicPlayerViewModel = musicPlayerViewModel
         self.authViewModel = authViewModel
         self.breathingRepo = breathingRepo
 
+        // Set initial circle color
         self.circleColor = neutralColorPlaceholder
 
+        // Listen for song finish events
         self.musicPlayerViewModel.didSongFinishPlaying
             .sink { [weak self] in
                 self?.handleSongFinished()
@@ -68,6 +74,7 @@ class BreathingViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // Get the active user ID from authentication
     private func getActiveUserID() -> String? {
         if let firebaseUser = authViewModel.user, !firebaseUser.uid.isEmpty {
             return firebaseUser.uid
@@ -78,6 +85,7 @@ class BreathingViewModel: ObservableObject {
         return nil
     }
 
+    // Toggle session start/stop
     func toggleSession() {
         if isSessionActive {
             stopSession()
@@ -86,41 +94,55 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Start a breathing session
     private func startSession() {
         guard authViewModel.isSigneIn, let currentUserID = getActiveUserID() else {
             instructionText = "Please sign in to start your mindful journey"
             return
         }
+        
+        // Set session state
         isSessionActive = true
         sessionStartTime = Date()
         sessionTimeElapsed = 0
         saveError = nil
+        
+        // Start timers
         startSessionDurationTimer()
 
+        // Play music if selected
         if selectedSong != "No Music" {
             musicPlayerViewModel.loadSong(fileName: selectedSong, autoPlay: true)
         }
 
+        // Start visual effects
         withAnimation(.easeInOut(duration: 0.8)) {
             pulseEffect = true
         }
+        
+        // Start breathing cycle
         startBreathingCycle()
         instructionText = "Find your center and breathe deeply..."
     }
 
+    // Stop the breathing session
     private func stopSession() {
         let wasActive = isSessionActive
         isSessionActive = false
+        
+        // Stop all timers and cycles
         stopBreathingCycle()
         stopSessionDurationTimer()
         musicPlayerViewModel.stop()
 
+        // Save session if it was long enough
         if wasActive && sessionTimeElapsed >= 5.0 {
             saveSessionToFirebase()
         } else if wasActive {
             instructionText = "Session too short to be recorded."
         }
 
+        // Reset visual state
         withAnimation(.easeOut(duration: 1.0)) {
             breathingPhase = .idle
             circleScale = minCircleScale
@@ -129,6 +151,7 @@ class BreathingViewModel: ObservableObject {
             pulseEffect = false
         }
 
+        // Set completion message
         if wasActive && sessionTimeElapsed >= 5.0 {
             let sessionMinutes = Int(sessionTimeElapsed / 60)
             instructionText = sessionMinutes > 0 ?
@@ -139,12 +162,14 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Handle when song finishes playing
     private func handleSongFinished() {
         if isSessionActive && selectedSong != "No Music" {
             stopSession()
         }
     }
 
+    // Handle song selection changes
     func songSelectionChanged(newSong: String) {
         self.selectedSong = newSong
 
@@ -159,16 +184,19 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Start the breathing cycle
     private func startBreathingCycle() {
         breathingTimer?.invalidate()
         performInhale()
     }
 
+    // Stop the breathing cycle
     private func stopBreathingCycle() {
         breathingTimer?.invalidate()
         breathingTimer = nil
     }
 
+    // Perform inhale phase
     private func performInhale() {
         breathingPhase = .inhale
         instructionText = "Breathe in... fill your lungs"
@@ -184,11 +212,13 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Perform hold phase
     private func performHold() {
         if holdDuration <= 0 {
             performExhale()
             return
         }
+        
         breathingPhase = .hold
         instructionText = "Hold..."
 
@@ -201,6 +231,7 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Perform exhale phase
     private func performExhale() {
         breathingPhase = .exhale
         instructionText = "Breathe out... release and relax"
@@ -218,6 +249,7 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Start session duration timer
     private func startSessionDurationTimer() {
         sessionDurationTimer?.invalidate()
         sessionDurationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
@@ -226,16 +258,18 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Stop session duration timer
     private func stopSessionDurationTimer() {
         sessionDurationTimer?.invalidate()
         sessionDurationTimer = nil
     }
 
+    // Update authentication view model
     func updateAuthViewModel(_ newAuthViewModel: AuthViewModel) {
         self.authViewModel = newAuthViewModel
     }
 
-    // MARK: - Firebase Operations
+    // Save session to Firebase
     private func saveSessionToFirebase() {
         guard let userID = getActiveUserID() else {
             self.saveError = "Unable to save session: User not identified. Please sign in again."
@@ -268,15 +302,12 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
+    // Retry saving session
     func retrySaveSession() {
         guard getActiveUserID() != nil, sessionStartTime != nil, sessionTimeElapsed >= 5 else {
             saveError = "Cannot retry: Missing data."
             return
         }
         saveSessionToFirebase()
-    }
-
-    enum BreathingPhase {
-        case idle, inhale, hold, exhale
     }
 }

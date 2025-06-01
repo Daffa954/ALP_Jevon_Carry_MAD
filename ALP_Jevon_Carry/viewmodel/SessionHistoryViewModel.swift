@@ -16,99 +16,73 @@
 //  Created by student on 27/05/25.
 //
 
-// SessionHistoryViewModel.swift
-// SessionHistoryViewModel.swift
+//
+//  SessionHistoryViewModel.swift
+//  ALP_Jevon_Carry
+//
+//  Created by student on 27/05/25.
+//
 
-// SessionHistoryViewModel.swift
 import Foundation
 import SwiftUI
 import Combine
 
-struct BreathingSessionDisplayData: Identifiable {
-    let id: String
-    let originalSession: BreathingSession
-    let timeText: String
-    let durationText: String
-}
-
-struct DatedSessionGroupDisplayData: Identifiable {
-    let id: Date
-    let formattedDateTitle: String
-    let sessions: [BreathingSessionDisplayData]
-    let sessionCountText: String
-}
-
-enum HistoryViewState {
-    case loading
-    case error(message: String)
-    case empty
-    case loaded(groups: [DatedSessionGroupDisplayData])
-
-    var description: String {
-        switch self {
-        case .loading: return "loading"
-        case .error(let message): return "error(\(message))"
-        case .empty: return "empty"
-        case .loaded(let groups): return "loaded(groups: \(groups.count))"
-        }
-    }
-}
-
+// Main ViewModel for session history - simplified and efficient
 @MainActor
 class SessionHistoryViewModel: ObservableObject {
-    @Published var viewState: HistoryViewState
+    // Published properties for UI state
+    @Published var isLoading = false
+    @Published var isEmpty = true
+    @Published var groupedSessions: [DatedSessionGroup] = []
+    
+    // Internal properties
     var isPreviewMode: Bool = false
     private var authViewModel: AuthViewModel
     private let sessionRepo: FirebaseSessionHistoryRepository
     private var cancellables = Set<AnyCancellable>()
     var isListening = false
 
+    // Date formatters
     private let sectionDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d"
         return formatter
     }()
+    
     private let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter
     }()
+    
     private let dayOfWeekFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
         return formatter
     }()
 
+    // Initialize the ViewModel
     init(authViewModel: AuthViewModel, sessionRepo: FirebaseSessionHistoryRepository = FirebaseSessionHistoryRepository()) {
         self.authViewModel = authViewModel
         self.sessionRepo = sessionRepo
 
+        // Check if running in preview mode
         if ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
             self.isPreviewMode = true
         }
 
+        // Set initial state based on authentication
         let initialIsSignedIn = authViewModel.isSigneIn
-        let initialUserIDIsAvailable: Bool
-        if let firebaseUID = authViewModel.user?.uid, !firebaseUID.isEmpty {
-            initialUserIDIsAvailable = true
-        } else if !authViewModel.myUser.uid.isEmpty {
-            initialUserIDIsAvailable = true
-        } else {
-            initialUserIDIsAvailable = false
-        }
+        let initialUserIDIsAvailable = getActiveUserID() != nil
 
         if initialIsSignedIn && initialUserIDIsAvailable {
-            if self.isPreviewMode {
-                self.viewState = .empty
-            } else {
-                self.viewState = .loading
+            if !self.isPreviewMode {
                 fetchSessionHistory()
             }
-        } else {
-            self.viewState = .error(message: "Please sign in to view history.")
         }
 
+        // Listen for authentication changes
         authViewModel.$isSigneIn
             .dropFirst()
             .receive(on: DispatchQueue.main)
@@ -118,12 +92,14 @@ class SessionHistoryViewModel: ObservableObject {
                 if isSignedIn && self.getActiveUserID() != nil {
                     self.fetchSessionHistory()
                 } else {
-                    self.viewState = .error(message: "Please sign in to view history.")
+                    self.groupedSessions = []
+                    self.isEmpty = true
                 }
             }
             .store(in: &cancellables)
     }
 
+    // Get the active user ID from authentication
     func getActiveUserID() -> String? {
         if let firebaseUser = self.authViewModel.user, !firebaseUser.uid.isEmpty {
             return firebaseUser.uid
@@ -134,34 +110,42 @@ class SessionHistoryViewModel: ObservableObject {
         return nil
     }
 
+    // Fetch session history from Firebase
     func fetchSessionHistory() {
         guard self.authViewModel.isSigneIn, let currentUserID = getActiveUserID() else {
-            self.viewState = .error(message: "Please sign in to view history.")
+            self.groupedSessions = []
+            self.isEmpty = true
             return
         }
-        self.viewState = .loading
+        
+        self.isLoading = true
         sessionRepo.fetchAllSessions(for: currentUserID) { [weak self] sessions in
             guard let self = self else { return }
+            self.isLoading = false
+            
             if sessions.isEmpty {
-                self.viewState = .empty
+                self.isEmpty = true
+                self.groupedSessions = []
             } else {
-                let groupedModelData = self.groupSessionsByDateModel(sessions: sessions)
-                let displayData = self.prepareDisplayData(from: groupedModelData)
-                self.viewState = .loaded(groups: displayData)
+                self.isEmpty = false
+                self.groupedSessions = self.groupSessionsByDate(sessions: sessions)
             }
         }
     }
 
-    private func groupSessionsByDateModel(sessions: [BreathingSession]) -> [DatedSessionGroup] {
+    // Group sessions by date and sort them
+    private func groupSessionsByDate(sessions: [BreathingSession]) -> [DatedSessionGroup] {
         let groupedByDay = Dictionary(grouping: sessions) { session -> Date in
             Calendar.current.startOfDay(for: session.sessionDate)
         }
+        
         return groupedByDay.map { date, sessionsOnDate -> DatedSessionGroup in
             DatedSessionGroup(id: date, sessions: sessionsOnDate.sorted(by: { $0.sessionDate > $1.sessionDate }))
         }.sorted(by: { $0.id > $1.id })
     }
 
-    private func formatSectionDateTitle(_ date: Date) -> String {
+    // Format date title for sections
+    func formatSectionDateTitle(_ date: Date) -> String {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) { return "Today" }
         if calendar.isDateInYesterday(date) { return "Yesterday" }
@@ -171,7 +155,8 @@ class SessionHistoryViewModel: ObservableObject {
         return sectionDateFormatter.string(from: date)
     }
 
-    private func formatSessionDuration(_ duration: TimeInterval) -> String {
+    // Format session duration
+    func formatSessionDuration(_ duration: TimeInterval) -> String {
         let totalSeconds = Int(duration)
         let minutes = totalSeconds / 60
         let seconds = totalSeconds % 60
@@ -180,61 +165,56 @@ class SessionHistoryViewModel: ObservableObject {
         return "\(seconds)s"
     }
 
-    private func prepareDisplayData(from modelGroups: [DatedSessionGroup]) -> [DatedSessionGroupDisplayData] {
-        modelGroups.map { group -> DatedSessionGroupDisplayData in
-            let displaySessions = group.sessions.map { session -> BreathingSessionDisplayData in
-                BreathingSessionDisplayData(
-                    id: session.id,
-                    originalSession: session,
-                    timeText: timeFormatter.string(from: session.sessionDate),
-                    durationText: formatSessionDuration(session.duration)
-                )
-            }
-            return DatedSessionGroupDisplayData(
-                id: group.id,
-                formattedDateTitle: formatSectionDateTitle(group.id),
-                sessions: displaySessions,
-                sessionCountText: "\(group.sessions.count) session\(group.sessions.count == 1 ? "" : "s")"
-            )
-        }
+    // Format session time
+    func formatSessionTime(_ date: Date) -> String {
+        return timeFormatter.string(from: date)
     }
 
-    func configureForPreview(state: HistoryViewState) {
+    // Format session count text
+    func formatSessionCountText(_ count: Int) -> String {
+        return "\(count) session\(count == 1 ? "" : "s")"
+    }
+
+    // Configure for preview mode
+    func configureForPreview(isEmpty: Bool = false, isLoading: Bool = false) {
         self.isPreviewMode = true
-        self.viewState = state
+        self.isEmpty = isEmpty
+        self.isLoading = isLoading
+        self.groupedSessions = []
     }
 
+    // Setup preview data
     func setupPreviewData(sampleSessions: [BreathingSession] = []) {
         self.isPreviewMode = true
         if sampleSessions.isEmpty {
-            self.viewState = .empty
-            return
+            self.isEmpty = true
+            self.groupedSessions = []
+        } else {
+            self.isEmpty = false
+            self.groupedSessions = self.groupSessionsByDate(sessions: sampleSessions)
         }
-        let modelGroups = self.groupSessionsByDateModel(sessions: sampleSessions)
-        let displayGroups = self.prepareDisplayData(from: modelGroups)
-        self.viewState = .loaded(groups: displayGroups)
     }
     
+    // Setup Firebase listener for real-time updates
     func setupFirebaseListener() {
         guard !isListening, let userID = getActiveUserID() else { return }
         isListening = true
         sessionRepo.startListening(for: userID) { [weak self] sessions in
             guard let self = self else { return }
             if sessions.isEmpty {
-                self.viewState = .empty
+                self.isEmpty = true
+                self.groupedSessions = []
             } else {
-                let groupedModelData = self.groupSessionsByDateModel(sessions: sessions)
-                let displayData = self.prepareDisplayData(from: groupedModelData)
-                self.viewState = .loaded(groups: displayData)
+                self.isEmpty = false
+                self.groupedSessions = self.groupSessionsByDate(sessions: sessions)
             }
         }
     }
 
+    // Remove Firebase listener
     func removeFirebaseListener() {
         sessionRepo.stopListening()
         isListening = false
     }
 }
-
-
 
