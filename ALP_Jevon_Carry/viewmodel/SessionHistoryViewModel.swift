@@ -134,7 +134,7 @@ class SessionHistoryViewModel: ObservableObject {
     }
 
     // Group sessions by date and sort them
-    private func groupSessionsByDate(sessions: [BreathingSession]) -> [DatedSessionGroup] {
+    func groupSessionsByDate(sessions: [BreathingSession]) -> [DatedSessionGroup] {
         let groupedByDay = Dictionary(grouping: sessions) { session -> Date in
             Calendar.current.startOfDay(for: session.sessionDate)
         }
