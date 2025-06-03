@@ -1,8 +1,9 @@
 //
 //  BreathingSessionView.swift
-//  ALP_Jevon_Carry
+//  ALP_Jevon_Carry_macOS
 //
 //  Created by Daffa Khoirul on 01/06/25.
+//  Adapted for macOS
 //
 
 import SwiftUI
@@ -16,255 +17,172 @@ struct BreathingSessionView: View {
     @State private var showingSongSelectionSheet = false
 
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                ZStack {
-                    // Static elegant background
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.white,
-                            Color("skyBlue").opacity(0.1),
-                            Color.white
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                // Static elegant background with macOS styling
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(NSColor.windowBackgroundColor),
+                        Color("skyBlue").opacity(0.08),
+                        Color(NSColor.windowBackgroundColor)
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
 
-                    ScrollView(showsIndicators: false) {
-                        VStack(spacing: 0) {
-                            // Header Section
-                            VStack(spacing: 16) {
-                                Text("Mindful Breathing")
-                                    .font(.system(size: 32, weight: .thin, design: .rounded))
-                                    .foregroundColor(Color.black)
-                                    .multilineTextAlignment(.center)
+                HStack(spacing: 0) {
+                    // Left Panel - Controls and Information
+                    VStack(spacing: 24) {
+                        // Header Section
+                        VStack(spacing: 16) {
+                            Text("Mindful Breathing")
+                                .font(.system(size: 28, weight: .thin, design: .rounded))
+                                .foregroundColor(.primary)
+                                .multilineTextAlignment(.center)
 
-                                // Music Selection Card
-                                Button(action: {
-                                    showingSongSelectionSheet = true
-                                }) {
-                                    HStack(spacing: 12) {
-                                        Image(systemName: breathingViewModel.selectedSong == "No Music" ? "music.note.list" : "music.note")
-                                            .font(.system(size: 18, weight: .medium))
-                                            .foregroundColor(Color("skyBlue"))
-                                            .frame(width: 24, height: 24)
-
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text("Background Music")
-                                                .font(.system(size: 12, weight: .medium))
-                                                .foregroundColor(Color.gray)
-
-                                            Text(breathingViewModel.selectedSong == "No Music" ? "Silent Session" : breathingViewModel.selectedSong.capitalized)
-                                                .font(.system(size: 16, weight: .semibold))
-                                                .foregroundColor(Color.black)
-                                        }
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                            .font(.system(size: 14, weight: .medium))
-                                            .foregroundColor(Color.gray)
-                                    }
-                                    .padding(.horizontal, 20)
-                                    .padding(.vertical, 16)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .fill(Color.white)
-                                            .shadow(color: Color("skyBlue").opacity(0.1), radius: 8, x: 0, y: 2)
-                                    )
-                                }
-                                .padding(.horizontal, 20)
-                            }
-                            .padding(.top, 20)
-
-                            // Breathing Circle Section
-                            VStack(spacing: 30) {
-                                let circleSize = min(geometry.size.width, geometry.size.height) * 0.65
-                                ZStack {
-                                    // Outer glow effect
-                                    Circle()
-                                        .fill(
-                                            RadialGradient(
-                                                gradient: Gradient(colors: [
-                                                    breathingViewModel.circleColor.opacity(0.3),
-                                                    breathingViewModel.circleColor.opacity(0.1),
-                                                    Color.clear
-                                                ]),
-                                                center: .center,
-                                                startRadius: circleSize * 0.3,
-                                                endRadius: circleSize * 0.6
-                                            )
-                                        )
-                                        .frame(width: circleSize * 1.2, height: circleSize * 1.2)
-                                        .scaleEffect(breathingViewModel.circleScale * 0.8)
-                                        .opacity(breathingViewModel.isSessionActive ? 0.6 : 0.3)
-
-                                    // Main breathing circle
-                                    Circle()
-                                        .fill(
-                                            RadialGradient(
-                                                gradient: Gradient(colors: [
-                                                    breathingViewModel.circleColor.opacity(0.8),
-                                                    breathingViewModel.circleColor.opacity(0.6),
-                                                    breathingViewModel.circleColor.opacity(0.4)
-                                                ]),
-                                                center: .center,
-                                                startRadius: 0,
-                                                endRadius: circleSize * 0.5
-                                            )
-                                        )
-                                        .frame(width: circleSize, height: circleSize)
-                                        .scaleEffect(breathingViewModel.circleScale)
-                                        .opacity(breathingViewModel.circleOpacity)
-
-                                    // Inner circle with breathing phase indicator
-                                    Circle()
-                                        .stroke(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [
-                                                    Color.white.opacity(0.8),
-                                                    Color.white.opacity(0.4)
-                                                ]),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 3
-                                        )
-                                        .frame(width: circleSize * 0.7, height: circleSize * 0.7)
-                                        .scaleEffect(breathingViewModel.circleScale * 0.9)
-
-                                    // Breathing instruction text and phase icon
-                                    VStack(spacing: 8) {
-                                        if breathingViewModel.isSessionActive {
-                                            Image(systemName:
-                                                breathingViewModel.breathingPhase == "inhale" ? "arrow.up.circle.fill" :
-                                                breathingViewModel.breathingPhase == "exhale" ? "arrow.down.circle.fill" :
-                                                breathingViewModel.breathingPhase == "hold" ? "pause.circle.fill" :
-                                                "pause.circle"
-                                            )
-                                            .font(.system(size: 24, weight: .light))
-                                            .foregroundColor(Color.black)
-                                        }
-                                        Text(breathingViewModel.instructionText)
-                                            .font(.system(size: 18, weight: .semibold, design: .rounded))
-                                            .foregroundColor(Color.black)
-                                            .multilineTextAlignment(.center)
-                                            .padding(.horizontal, 20)
-                                            .shadow(color: .white, radius: 2, x: 0, y: 0)
-                                    }
-                                }
-                            }
-                            .padding(.vertical, 40)
-
-                            // Session Info Section
-                            VStack(spacing: 16) {
-                                HStack {
-                                    Image(systemName: "clock")
+                            // Music Selection Card
+                            Button(action: {
+                                showingSongSelectionSheet = true
+                            }) {
+                                HStack(spacing: 12) {
+                                    Image(systemName: breathingViewModel.selectedSong == "No Music" ? "music.note.list" : "music.note")
                                         .font(.system(size: 16, weight: .medium))
                                         .foregroundColor(Color("skyBlue"))
+                                        .frame(width: 20, height: 20)
 
-                                    Text("Session Time")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(Color.gray)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("Background Music")
+                                            .font(.system(size: 11, weight: .medium))
+                                            .foregroundColor(.secondary)
 
+                                        Text(breathingViewModel.selectedSong == "No Music" ? "Silent Session" : breathingViewModel.selectedSong.capitalized)
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.primary)
+                                    }
                                     Spacer()
-
-                                    Text(String(format: "%02d:%02d", Int(breathingViewModel.sessionTimeElapsed) / 60, Int(breathingViewModel.sessionTimeElapsed) % 60))
-                                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                                        .foregroundColor(Color.black)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
                                 }
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 16)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color.white)
-                                        .shadow(color: Color("skyBlue").opacity(0.08), radius: 6, x: 0, y: 2)
+                                        .fill(Color(NSColor.controlBackgroundColor))
+                                        .shadow(color: Color("skyBlue").opacity(0.1), radius: 4, x: 0, y: 1)
                                 )
                             }
-                            .padding(.horizontal, 20)
+                            .buttonStyle(PlainButtonStyle())
+                        }
 
-                            // Music Controls Section (if applicable)
-                            if breathingViewModel.selectedSong != "No Music",
-                               breathingViewModel.musicPlayerViewModel.currentSongFileName != nil {
-                                VStack(spacing: 16) {
-                                    Text("Now Playing")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(Color.gray)
+                        // Session Info Section
+                        VStack(spacing: 16) {
+                            HStack {
+                                Image(systemName: "clock")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundColor(Color("skyBlue"))
 
-                                    VStack(spacing: 16) {
-                                        Text(breathingViewModel.musicPlayerViewModel.currentSongFileName?.capitalized ?? "No song loaded")
-                                            .font(.system(size: 16, weight: .semibold))
-                                            .foregroundColor(Color.black)
+                                Text("Session Time")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.secondary)
 
-                                        VStack(spacing: 8) {
-                                            Slider(
-                                                value: Binding(
-                                                    get: { breathingViewModel.musicPlayerViewModel.currentTime },
-                                                    set: { newValue in if isDraggingSlider { breathingViewModel.musicPlayerViewModel.currentTime = newValue }}
-                                                ),
-                                                in: 0...(breathingViewModel.musicPlayerViewModel.duration > 0 ? breathingViewModel.musicPlayerViewModel.duration : 1),
-                                                onEditingChanged: { editing in
-                                                    isDraggingSlider = editing
-                                                    if !editing {
-                                                        breathingViewModel.musicPlayerViewModel.seek(to: breathingViewModel.musicPlayerViewModel.currentTime)
-                                                    }
+                                Spacer()
+
+                                Text(String(format: "%02d:%02d", Int(breathingViewModel.sessionTimeElapsed) / 60, Int(breathingViewModel.sessionTimeElapsed) % 60))
+                                    .font(.system(size: 16, weight: .bold, design: .monospaced))
+                                    .foregroundColor(.primary)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color(NSColor.controlBackgroundColor))
+                                    .shadow(color: Color("skyBlue").opacity(0.08), radius: 3, x: 0, y: 1)
+                            )
+                        }
+
+                        // Music Controls Section (if applicable)
+                        if breathingViewModel.selectedSong != "No Music",
+                           breathingViewModel.musicPlayerViewModel.currentSongFileName != nil {
+                            VStack(spacing: 16) {
+                                Text("Now Playing")
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(.secondary)
+
+                                VStack(spacing: 12) {
+                                    Text(breathingViewModel.musicPlayerViewModel.currentSongFileName?.capitalized ?? "No song loaded")
+                                        .font(.system(size: 14, weight: .semibold))
+                                        .foregroundColor(.primary)
+                                        .multilineTextAlignment(.center)
+
+                                    VStack(spacing: 8) {
+                                        Slider(
+                                            value: Binding(
+                                                get: { breathingViewModel.musicPlayerViewModel.currentTime },
+                                                set: { newValue in if isDraggingSlider { breathingViewModel.musicPlayerViewModel.currentTime = newValue }}
+                                            ),
+                                            in: 0...(breathingViewModel.musicPlayerViewModel.duration > 0 ? breathingViewModel.musicPlayerViewModel.duration : 1),
+                                            onEditingChanged: { editing in
+                                                isDraggingSlider = editing
+                                                if !editing {
+                                                    breathingViewModel.musicPlayerViewModel.seek(to: breathingViewModel.musicPlayerViewModel.currentTime)
                                                 }
-                                            )
-                                            .accentColor(Color("skyBlue"))
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 2)
-                                                    .fill(Color("skyBlue").opacity(0.2))
-                                                    .frame(height: 4)
-                                            )
-
-                                            HStack {
-                                                Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.currentTime))
-                                                Spacer()
-                                                Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.duration))
                                             }
-                                            .font(.system(size: 12, weight: .medium, design: .monospaced))
-                                            .foregroundColor(Color.gray)
-                                        }
+                                        )
+                                        .controlSize(.small)
 
-                                        Button(action: {
-                                            breathingViewModel.musicPlayerViewModel.playPause()
-                                        }) {
-                                            Image(systemName: breathingViewModel.musicPlayerViewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                                                .font(.system(size: 44, weight: .light))
-                                                .foregroundColor(Color("skyBlue"))
+                                        HStack {
+                                            Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.currentTime))
+                                            Spacer()
+                                            Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.duration))
                                         }
-                                        .scaleEffect(breathingViewModel.musicPlayerViewModel.isPlaying ? 0.95 : 1.0)
-                                        .animation(.easeInOut(duration: 0.1), value: breathingViewModel.musicPlayerViewModel.isPlaying)
+                                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                        .foregroundColor(.secondary)
                                     }
-                                }
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 20)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.white)
-                                        .shadow(color: Color("skyBlue").opacity(0.08), radius: 8, x: 0, y: 3)
-                                )
-                                .padding(.horizontal, 20)
-                                .padding(.top, 20)
-                            }
 
-                            // Control Button Section
+                                    Button(action: {
+                                        breathingViewModel.musicPlayerViewModel.playPause()
+                                    }) {
+                                        Image(systemName: breathingViewModel.musicPlayerViewModel.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                            .font(.system(size: 32, weight: .light))
+                                            .foregroundColor(Color("skyBlue"))
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                    .scaleEffect(breathingViewModel.musicPlayerViewModel.isPlaying ? 0.95 : 1.0)
+                                    .animation(.easeInOut(duration: 0.1), value: breathingViewModel.musicPlayerViewModel.isPlaying)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 16)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color(NSColor.controlBackgroundColor))
+                                    .shadow(color: Color("skyBlue").opacity(0.08), radius: 4, x: 0, y: 2)
+                            )
+                        }
+
+                        Spacer()
+
+                        // Control Buttons Section
+                        VStack(spacing: 12) {
                             Button(action: {
                                 withAnimation(.easeInOut(duration: 0.2)) {
                                     breathingViewModel.toggleSession()
                                 }
                             }) {
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     Image(systemName: breathingViewModel.isSessionActive ? "stop.fill" : "play.fill")
-                                        .font(.system(size: 20, weight: .semibold))
+                                        .font(.system(size: 16, weight: .semibold))
 
                                     Text(breathingViewModel.isSessionActive ? "End Session" : "Begin Session")
-                                        .font(.system(size: 18, weight: .semibold, design: .rounded))
+                                        .font(.system(size: 14, weight: .semibold, design: .rounded))
                                 }
                                 .foregroundColor(.white)
-                                .padding(.vertical, 18)
+                                .padding(.vertical, 12)
                                 .frame(maxWidth: .infinity)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 16)
+                                    RoundedRectangle(cornerRadius: 12)
                                         .fill(
                                             LinearGradient(
                                                 gradient: Gradient(colors: [
@@ -276,40 +194,39 @@ struct BreathingSessionView: View {
                                             )
                                         )
                                         .shadow(color: (breathingViewModel.isSessionActive ? Color("coralOrange") : Color("color1")).opacity(0.3),
-                                                radius: 12, x: 0, y: 6)
+                                                radius: 6, x: 0, y: 3)
                                 )
                             }
+                            .buttonStyle(PlainButtonStyle())
                             .scaleEffect(breathingViewModel.isSessionActive ? 1.0 : 1.02)
                             .animation(.easeInOut(duration: 0.15), value: breathingViewModel.isSessionActive)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 30)
 
-                            // History Button Section
+                            // History Button
                             Button(action: {
                                 showingSessionHistory = true
                             }) {
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     Image(systemName: "clock.badge.checkmark")
-                                        .font(.system(size: 18, weight: .medium))
+                                        .font(.system(size: 14, weight: .medium))
                                         .foregroundColor(Color("skyBlue"))
 
-                                    Text("View Session History")
-                                        .font(.system(size: 16, weight: .medium, design: .rounded))
-                                        .foregroundColor(Color.black)
+                                    Text("Session History")
+                                        .font(.system(size: 14, weight: .medium, design: .rounded))
+                                        .foregroundColor(.primary)
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(Color.gray)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
                                 }
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 16)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
                                 .background(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .fill(Color.white)
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(Color(NSColor.controlBackgroundColor))
                                         .overlay(
-                                            RoundedRectangle(cornerRadius: 14)
+                                            RoundedRectangle(cornerRadius: 10)
                                                 .stroke(
                                                     LinearGradient(
                                                         gradient: Gradient(colors: [
@@ -322,94 +239,194 @@ struct BreathingSessionView: View {
                                                     lineWidth: 1
                                                 )
                                         )
-                                        .shadow(color: Color("skyBlue").opacity(0.05), radius: 4, x: 0, y: 2)
+                                        .shadow(color: Color("skyBlue").opacity(0.05), radius: 2, x: 0, y: 1)
                                 )
                             }
                             .buttonStyle(PlainButtonStyle())
-                            .animation(.easeInOut(duration: 0.1), value: showingSessionHistory)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 16)
-                            .padding(.bottom, 40)
                         }
                     }
-                }
-            }
-            .navigationTitle("")
-            .onAppear {
-                if authViewModel.user == nil && authViewModel.myUser.uid.isEmpty {
-                    breathingViewModel.instructionText = "Please sign in to begin your mindful journey"
-                }
-            }
-            .sheet(isPresented: $showingSongSelectionSheet) {
-                NavigationView {
-                    VStack(spacing: 0) {
-                        VStack(spacing: 8) {
-                            Text("Choose Your Sound")
-                                .font(.system(size: 24, weight: .bold, design: .rounded))
-                                .foregroundColor(Color.black)
-                            Text("Select background music for your session")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(Color.gray)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 20)
-                        .padding(.bottom, 16)
-                        Divider().padding(.horizontal, 20)
-                        ScrollView {
-                            LazyVStack(spacing: 12) {
-                                ForEach(breathingViewModel.availableSongs, id: \.self) { song in
-                                    Button(action: {
-                                        breathingViewModel.selectedSong = song
-                                        breathingViewModel.songSelectionChanged(newSong: song)
-                                        showingSongSelectionSheet = false
-                                    }) {
-                                        HStack(spacing: 16) {
-                                            Image(systemName: song == "No Music" ? "speaker.slash.fill" : "music.note")
-                                                .font(.system(size: 18, weight: .medium))
-                                                .foregroundColor(song == breathingViewModel.selectedSong ? Color("skyBlue") : Color.gray)
-                                                .frame(width: 24, height: 24)
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(song == "No Music" ? "Silent Session" : song.capitalized)
-                                                    .font(.system(size: 16, weight: .semibold))
-                                                    .foregroundColor(Color.black)
-                                                Text(song == "No Music" ? "Practice in peaceful silence" : "Relaxing background music")
-                                                    .font(.system(size: 12, weight: .medium))
-                                                    .foregroundColor(Color.gray)
-                                            }
-                                            Spacer()
-                                            if song == breathingViewModel.selectedSong {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .font(.system(size: 20, weight: .semibold))
-                                                    .foregroundColor(Color("skyBlue"))
-                                            }
-                                        }
-                                        .padding(.horizontal, 20)
-                                        .padding(.vertical, 16)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(song == breathingViewModel.selectedSong ? Color("skyBlue").opacity(0.1) : Color.clear)
-                                        )
-                                    }
+                    .frame(width: 280)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 32)
+
+                    // Vertical Divider
+                    Rectangle()
+                        .fill(Color(NSColor.separatorColor))
+                        .frame(width: 1)
+                        .opacity(0.5)
+
+                    // Right Panel - Breathing Circle
+                    VStack {
+                        Spacer()
+
+                        // Breathing Circle Section
+                        let availableSize = min(geometry.size.width - 320, geometry.size.height - 100)
+                        let circleSize = min(availableSize * 0.7, 400)
+
+                        ZStack {
+                            // Outer glow effect
+                            Circle()
+                                .fill(
+                                    RadialGradient(
+                                        gradient: Gradient(colors: [
+                                            breathingViewModel.circleColor.opacity(0.3),
+                                            breathingViewModel.circleColor.opacity(0.1),
+                                            Color.clear
+                                        ]),
+                                        center: .center,
+                                        startRadius: circleSize * 0.3,
+                                        endRadius: circleSize * 0.6
+                                    )
+                                )
+                                .frame(width: circleSize * 1.2, height: circleSize * 1.2)
+                                .scaleEffect(breathingViewModel.circleScale * 0.8)
+                                .opacity(breathingViewModel.isSessionActive ? 0.6 : 0.3)
+
+                            // Main breathing circle
+                            Circle()
+                                .fill(
+                                    RadialGradient(
+                                        gradient: Gradient(colors: [
+                                            breathingViewModel.circleColor.opacity(0.8),
+                                            breathingViewModel.circleColor.opacity(0.6),
+                                            breathingViewModel.circleColor.opacity(0.4)
+                                        ]),
+                                        center: .center,
+                                        startRadius: 0,
+                                        endRadius: circleSize * 0.5
+                                    )
+                                )
+                                .frame(width: circleSize, height: circleSize)
+                                .scaleEffect(breathingViewModel.circleScale)
+                                .opacity(breathingViewModel.circleOpacity)
+
+                            // Inner circle with breathing phase indicator
+                            Circle()
+                                .stroke(
+                                    LinearGradient(
+                                        gradient: Gradient(colors: [
+                                            Color.white.opacity(0.8),
+                                            Color.white.opacity(0.4)
+                                        ]),
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 2
+                                )
+                                .frame(width: circleSize * 0.7, height: circleSize * 0.7)
+                                .scaleEffect(breathingViewModel.circleScale * 0.9)
+
+                            // Breathing instruction text and phase icon
+                            VStack(spacing: 12) {
+                                if breathingViewModel.isSessionActive {
+                                    Image(systemName:
+                                        breathingViewModel.breathingPhase == "inhale" ? "arrow.up.circle.fill" :
+                                        breathingViewModel.breathingPhase == "exhale" ? "arrow.down.circle.fill" :
+                                        breathingViewModel.breathingPhase == "hold" ? "pause.circle.fill" :
+                                        "pause.circle"
+                                    )
+                                    .font(.system(size: 32, weight: .light))
+                                    .foregroundColor(.primary)
                                 }
+                                Text(breathingViewModel.instructionText)
+                                    .font(.system(size: 20, weight: .medium, design: .rounded))
+                                    .foregroundColor(.primary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 40)
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.top, 20)
                         }
+
                         Spacer()
                     }
-                    .background(Color.white.ignoresSafeArea())
-                    .toolbar {
-                        ToolbarItem() {
-                            Button("Done") {
-                                showingSongSelectionSheet = false
-                            }
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(Color("skyBlue"))
-                        }
-                    }
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
-      
+        .frame(minWidth: 800, minHeight: 600)
+        .onAppear {
+            if authViewModel.user == nil && authViewModel.myUser.uid.isEmpty {
+                breathingViewModel.instructionText = "Please sign in to begin your mindful journey"
+            }
+        }
+        .sheet(isPresented: $showingSongSelectionSheet) {
+            VStack(spacing: 0) {
+                // Header
+                VStack(spacing: 8) {
+                    Text("Choose Your Sound")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                    Text("Select background music for your session")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 24)
+                .padding(.bottom, 16)
+
+                Divider()
+
+                // Song List
+                ScrollView {
+                    LazyVStack(spacing: 8) {
+                        ForEach(breathingViewModel.availableSongs, id: \.self) { song in
+                            Button(action: {
+                                breathingViewModel.selectedSong = song
+                                breathingViewModel.songSelectionChanged(newSong: song)
+                                showingSongSelectionSheet = false
+                            }) {
+                                HStack(spacing: 12) {
+                                    Image(systemName: song == "No Music" ? "speaker.slash.fill" : "music.note")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(song == breathingViewModel.selectedSong ? Color("skyBlue") : .secondary)
+                                        .frame(width: 20, height: 20)
+
+                                    VStack(alignment: .leading, spacing: 3) {
+                                        Text(song == "No Music" ? "Silent Session" : song.capitalized)
+                                            .font(.system(size: 14, weight: .semibold))
+                                            .foregroundColor(.primary)
+                                        Text(song == "No Music" ? "Practice in peaceful silence" : "Relaxing background music")
+                                            .font(.system(size: 11, weight: .medium))
+                                            .foregroundColor(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    if song == breathingViewModel.selectedSong {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .font(.system(size: 16, weight: .semibold))
+                                            .foregroundColor(Color("skyBlue"))
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(song == breathingViewModel.selectedSong ? Color("skyBlue").opacity(0.1) : Color.clear)
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                }
+
+                Spacer()
+
+                // Bottom buttons
+                HStack {
+                    Spacer()
+                    Button("Done") {
+                        showingSongSelectionSheet = false
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 24)
+            }
+            .frame(width: 400, height: 500)
+            .background(Color(NSColor.windowBackgroundColor))
+        }
     }
 }
