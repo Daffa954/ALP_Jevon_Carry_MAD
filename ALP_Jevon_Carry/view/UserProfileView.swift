@@ -99,17 +99,17 @@ struct UserProfileView: View {
                                 Button(action: {
                                     showEditProfile = true
                                 }) {
-                                    HStack {
-                                        Image(systemName: "pencil")
-                                        Text("Edit Profile")
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                    }
-                                    .foregroundColor(.primary)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color(.systemBackground))
-                                    .cornerRadius(10)
+//                                    HStack {
+//                                        Image(systemName: "pencil")
+//                                        Text("Edit Profile")
+//                                        Spacer()
+//                                        Image(systemName: "chevron.right")
+//                                    }
+//                                    .foregroundColor(.primary)
+//                                    .padding()
+//                                    .frame(maxWidth: .infinity)
+//                                    .background(Color(.systemBackground))
+//                                    .cornerRadius(10)
                                 }
                                 
                                 Button(role: .destructive, action: {
