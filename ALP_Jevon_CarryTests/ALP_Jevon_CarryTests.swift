@@ -37,6 +37,12 @@ class MockSessionHistoryRepository: FirebaseSessionHistoryRepository {
     }
 }
 
+class journalRepository : FirebaseJournalRepository {
+    var listUserJournals: [JournalModel] = []
+    var fetchCalled = false
+    
+    
+}
 class MockAuthRepository: FirebaseAuthRepository {
     var mockUser: User?
     var mockMyUser: MyUser = MyUser()
@@ -64,7 +70,46 @@ class DummyMusicPlayerViewModel: MusicPlayerViewModel {
     override func stop() {}
 }
 
-// MARK: - Unified ViewModel Tests
+class MockOpenRouterService: OpenRouterService {
+    var didCallGetActivityRecommendations = false
+    var stubbedResult: Result<[String], Error>?
+    var lastPrompt: String?
+
+    override func getActivityRecommendations(prompt: String, completion: @escaping (Result<[String], Error>) -> Void) {
+        didCallGetActivityRecommendations = true
+        lastPrompt = prompt
+        if let result = stubbedResult {
+            completion(result)
+        }
+    }
+}
+
+class MockFirebaseJournalRepository: FirebaseJournalRepository {
+    var didAddJournal = false
+    var addJournalSuccess = true
+    var fetchedJournals: [JournalModel] = []
+    var fetchedJournalsThisWeek: [JournalModel] = []
+
+    override func addJournal(_ journal: JournalModel, completion: @escaping (Bool) -> Void) {
+        didAddJournal = true
+        completion(addJournalSuccess)
+    }
+
+    override func fetchAllJournals(for userID: String, completion: @escaping ([JournalModel]) -> Void) {
+        completion(fetchedJournals.filter { $0.userID == userID })
+    }
+
+    override func fetchJournalsThisWeek(for userID: String, completion: @escaping ([JournalModel]) -> Void) {
+        completion(fetchedJournalsThisWeek.filter { $0.userID == userID })
+    }
+}
+
+class MockCoreMLService: CoreMLService {
+    var stubbedLabel: String = "Joy"
+    override func classifyEmotion(from text: String) -> String {
+        return stubbedLabel
+    }
+}
 
 @MainActor
 final class ALP_Jevon_CarryTests: XCTestCase {
@@ -76,7 +121,8 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     var breathingVM: BreathingViewModel!
     var mockBreathingRepo: MockBreathingRepo!
     var musicVM: DummyMusicPlayerViewModel!
-
+    var journalViewModel: JournalViewModel!
+    
     override func setUp() {
         super.setUp()
         let authRepo = MockAuthRepository()
@@ -104,9 +150,119 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         musicVM = nil
         super.tearDown()
     }
+        // MARK: - SessionHistoryViewModel Tests
+    func testFetchAllJournalUpdatesAllJournalHistories() {
+           let mockRepo = MockFirebaseJournalRepository()
+           let userID = "user999"
+           let journals = [
+               JournalModel(title: "A", date: Date(), description: "descA", emotion: "Joy", score: 1, userID: userID),
+               JournalModel(title: "B", date: Date(), description: "descB", emotion: "Sad", score: 7, userID: userID)
+           ]
+           mockRepo.fetchedJournals = journals
+           let vm = ListJournalViewModel(journalRepository: mockRepo)
+           let expectation = self.expectation(description: "FetchAllJournal")
+           vm.fetchAllJournal(userID: userID)
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+               XCTAssertEqual(vm.allJournalHistories.count, 2)
+               XCTAssertEqual(vm.allJournalHistories[0].title, "A")
+               XCTAssertEqual(vm.allJournalHistories[1].title, "B")
+               expectation.fulfill()
+           }
+           wait(for: [expectation], timeout: 1)
+       }
 
-    // MARK: - SessionHistoryViewModel Tests
+       func testFetchJournalThisWeekUpdatesAllJournalThisWeek() {
+           let mockRepo = MockFirebaseJournalRepository()
+           let userID = "user88"
+           let journals = [
+               JournalModel(title: "A", date: Date(), description: "descA", emotion: "Joy", score: 1, userID: userID)
+           ]
+           mockRepo.fetchedJournalsThisWeek = journals
+           let vm = ListJournalViewModel(journalRepository: mockRepo)
+           let expectation = self.expectation(description: "FetchJournalThisWeek")
+           vm.fetchJournalThisWeek(userID: userID)
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+               XCTAssertEqual(vm.allJournalThisWeek.count, 1)
+               XCTAssertEqual(vm.allJournalThisWeek[0].title, "A")
+               expectation.fulfill()
+           }
+           wait(for: [expectation], timeout: 1)
+       }
+    func testScoreForEmotion() {
+            let vm = JournalViewModel()
+            XCTAssertEqual(vm.scoreForEmotion("anger"), 10)
+            XCTAssertEqual(vm.scoreForEmotion("fear"), 9)
+            XCTAssertEqual(vm.scoreForEmotion("disgust"), 8)
+            XCTAssertEqual(vm.scoreForEmotion("sadness"), 7)
+            XCTAssertEqual(vm.scoreForEmotion("surprise"), 6)
+            XCTAssertEqual(vm.scoreForEmotion("anticipation"), 5)
+            XCTAssertEqual(vm.scoreForEmotion("trust"), 3)
+            XCTAssertEqual(vm.scoreForEmotion("joy"), 1)
+            XCTAssertEqual(vm.scoreForEmotion("unknown"), 5)
+        }
 
+        func testGetRecommendationsSuccess() {
+            let mockOpenRouter = MockOpenRouterService()
+            mockOpenRouter.stubbedResult = .success(["A", "B", "C", "D", "E"])
+            let vm = JournalViewModel(
+                journalRepository: MockFirebaseJournalRepository(),
+                openRouterService: mockOpenRouter,
+                coreMLService: MockCoreMLService()
+            )
+            vm.result = JournalModel(title: "test", date: Date(), description: "desc", emotion: "Joy", score: 1, userID: "userX")
+            let expectation = self.expectation(description: "GetRecommendationsSuccess")
+            vm.getRecommendations()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                XCTAssertEqual(vm.recommendations, ["A", "B", "C", "D", "E"])
+                XCTAssertNil(vm.errorMessage)
+                XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 1)
+        }
+        
+        func testGetRecommendationsFailure() {
+            let mockOpenRouter = MockOpenRouterService()
+            let expectedError = NSError(domain: "", code: 999, userInfo: [NSLocalizedDescriptionKey: "Failed"])
+            mockOpenRouter.stubbedResult = .failure(expectedError)
+            let vm = JournalViewModel(
+                journalRepository: MockFirebaseJournalRepository(),
+                openRouterService: mockOpenRouter,
+                coreMLService: MockCoreMLService()
+            )
+            vm.result = JournalModel(title: "test", date: Date(), description: "desc", emotion: "Joy", score: 1, userID: "userX")
+            let expectation = self.expectation(description: "GetRecommendationsFailure")
+            vm.getRecommendations()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                XCTAssertEqual(vm.errorMessage, "Failed")
+                XCTAssertTrue(vm.recommendations.isEmpty)
+                XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 1)
+        }
+        
+        func testAnalyzeEmotionSetsResultAndEmoticonAndAddsJournal() {
+            let mockRepo = MockFirebaseJournalRepository()
+            let mockOpenRouter = MockOpenRouterService()
+            let mockCoreML = MockCoreMLService()
+            mockCoreML.stubbedLabel = "joy"
+            let vm = JournalViewModel(
+                journalRepository: mockRepo,
+                openRouterService: mockOpenRouter,
+                coreMLService: mockCoreML
+            )
+            vm.userInput = "I am happy"
+            let expectation = self.expectation(description: "AnalyzeEmotion")
+            vm.analyzeEmotion(userID: "user42")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                XCTAssertEqual(vm.result.emotion.lowercased(), "joy")
+                XCTAssertEqual(vm.emoticonSymbol, "😊")
+                XCTAssertTrue(mockRepo.didAddJournal)
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 1)
+        }
     func testFetchSessionHistory_EmptyState() {
         mockSessionRepo.sessionsToReturn = []
         sessionVM.fetchSessionHistory()

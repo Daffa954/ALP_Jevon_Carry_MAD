@@ -12,22 +12,37 @@ class JournalViewModel: ObservableObject {
     @Published var userInput = ""
     @Published var result : JournalModel
     @Published var emoticonSymbol = ""
-    private let openRouterService = OpenRouterService()
+    var openRouterService: OpenRouterService
     @Published var recommendations: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     private let journalRepository: FirebaseJournalRepository
+    var coreMLService: CoreMLService
 
-    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
-        self.result = JournalModel(
-            title: "",
-            date: Date(),
-            description: "",
-            emotion: "",
-            score: 0
-        )
-        self.journalRepository = journalRepository
-    }
+//    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
+//        self.result = JournalModel(
+//            title: "",
+//            date: Date(),
+//            description: "",
+//            emotion: "",
+//            score: 0
+//        )
+//        self.journalRepository = journalRepository
+//    }
+    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository(),
+            openRouterService: OpenRouterService = OpenRouterService(),
+            coreMLService: CoreMLService = CoreMLService.shared) {
+           self.result = JournalModel(
+               title: "",
+               date: Date(),
+               description: "",
+               emotion: "",
+               score: 0
+           )
+           self.journalRepository = journalRepository
+        self.openRouterService = openRouterService
+           self.coreMLService = coreMLService
+       }
     private func emoticon(for emotion: String) -> String {
         switch emotion.lowercased() {
         case "joy": return "😊"
