@@ -217,11 +217,11 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     func testStopSession_NoUser_SetsError() {
         authVM.isSigneIn = false
         authVM.myUser.uid = ""
+        authVM.user = nil
         // Simulate an active session
         breathingVM.isSessionActive = true
         breathingVM.sessionStartTime = Date()
         breathingVM.sessionTimeElapsed = 10
-        // Call stopSession directly (make it internal for testing)
         breathingVM.stopSession()
         XCTAssertEqual(breathingVM.saveError, "Unable to save session: User not identified. Please sign in again.")
         XCTAssertFalse(mockBreathingRepo.addSessionCalled)
