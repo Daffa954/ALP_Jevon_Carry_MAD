@@ -32,7 +32,7 @@ class BreathingViewModel: ObservableObject {
 
     private var breathingTimer: Timer?
     private var sessionDurationTimer: Timer?
-    private var sessionStartTime: Date?
+    var sessionStartTime: Date?
     private var cancellables = Set<AnyCancellable>()
 
     private let neutralColorPlaceholder: Color = Color.gray
@@ -76,7 +76,7 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
-    private func startSession() {
+    func startSession() {
         guard authViewModel.isSigneIn, let _ = getActiveUserID() else {
             instructionText = "Please sign in to start your mindful journey"
             return
@@ -98,7 +98,7 @@ class BreathingViewModel: ObservableObject {
         instructionText = "Find your center and breathe deeply..."
     }
 
-    private func stopSession() {
+    func stopSession() {
         let wasActive = isSessionActive
         isSessionActive = false
         stopBreathingCycle()
@@ -208,7 +208,7 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
-    private func startSessionDurationTimer() {
+    func startSessionDurationTimer() {
         sessionDurationTimer?.invalidate()
         sessionDurationTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self, self.isSessionActive else { return }
@@ -216,7 +216,7 @@ class BreathingViewModel: ObservableObject {
         }
     }
 
-    private func stopSessionDurationTimer() {
+    func stopSessionDurationTimer() {
         sessionDurationTimer?.invalidate()
         sessionDurationTimer = nil
     }
