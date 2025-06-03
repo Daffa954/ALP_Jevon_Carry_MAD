@@ -21,7 +21,7 @@ struct AddJournalView: View {
             ZStack {
                 // Background gradient
                 LinearGradient(
-                    colors: [Color("lightGray1"), Color( "lightGray1").opacity(0.8)],
+                    colors: [Color.white, Color.white],
                     startPoint: .top,
                     endPoint: .bottom
                 )

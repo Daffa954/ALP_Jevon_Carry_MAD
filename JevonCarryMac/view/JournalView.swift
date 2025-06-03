@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts // Keep Charts import if it's used elsewhere, though not directly in this file's main body
 
 struct JournalView: View {
     @State var isAdding: Bool = false
@@ -13,43 +14,48 @@ struct JournalView: View {
     @EnvironmentObject var listJournalVM: ListJournalViewModel
     @EnvironmentObject var authVM: AuthViewModel
     
+    // Define custom colors from your palette
+    private let primaryBlue = Color(hex: "#498FD0") // Sky Blue
+    private let navyBlue = Color(hex: "#2C3E50")    // Navy Blue
+    private let coralOrange = Color(hex: "#F27E63") // Coral Orange
+    private let lightGray = Color(hex: "#F5F7FA")   // Light Gray
+    private let emeraldGreen = Color(hex: "#3DBE8B") // Emerald Green
+    
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             ZStack {
-                // Background gradient
-                LinearGradient(
-                    colors: [Color("lightGray1"), Color("lightGray1").opacity(0.8)],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                // Background color (lighter for macOS, better for both modes)
+                // Using a solid color or a subtle gradient that adapts better
+                lightGray // Neutral background
+                    .ignoresSafeArea()
                 
-                ScrollView{
-                    VStack(spacing: 20) {
+                ScrollView {
+                    VStack(spacing: 30) { // Increased spacing for desktop layout
                         // Header Section
-                        VStack(spacing: 8) {
+                        VStack(alignment: .leading, spacing: 6) { // Align header to leading, increased spacing
                             Text("My Journal")
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
-                                .foregroundStyle(Color( "navyBlue"))
+                                .foregroundColor(navyBlue) // Navy Blue for strong headings
                             
                             Text("Welcome back, \(authVM.myUser.name)!")
-                                .font(.subheadline)
-                                .foregroundStyle(Color( "skyBlue"))
+                                .font(.title3) // Slightly larger subheadline for macOS
+                                .foregroundColor(primaryBlue) // Sky Blue for a friendly greeting
                         }
-                        
+                        .frame(maxWidth: .infinity, alignment: .leading) // Ensure header is leading aligned
+                        .padding(.horizontal) // Add horizontal padding for the header
                         
                         // Weekly Stress Chart Section
-                        VStack(spacing: 16) {
-                            VStack(spacing: 4) {
+                        VStack(alignment: .leading, spacing: 20) { // Increased spacing for desktop
+                            VStack(alignment: .leading, spacing: 6) {
                                 Text("Your Weekly Stress Level")
                                     .font(.title2)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(Color( "navyBlue"))
+                                    .foregroundColor(navyBlue)
                                 
                                 Text("From your journal entries")
-                                    .font(.caption)
-                                    .foregroundStyle(Color( "#skyBlue"))
+                                    .font(.callout) // Adjusted font size
+                                    .foregroundColor(.secondary) // System secondary for adaptability
                             }
                             
                             // Chart container with enhanced styling
@@ -57,56 +63,57 @@ struct JournalView: View {
                                 JournalChartView(journalData: listJournalVM.allJournalThisWeek)
                                     .padding()
                             }
-                            .background(Color.white)
-                            .cornerRadius(16)
-                            .shadow(color: Color( "skyBlue").opacity(0.1), radius: 8, x: 0, y: 4)
+                            .background(Color.white) // White background for the chart
+                            .cornerRadius(18) // More rounded corners
+                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 5) // Softer, slightly larger shadow
                         }
-                        .padding(.horizontal, 4)
+                        .padding(.horizontal) // Add horizontal padding for the chart section
                         
                         // History Section
-                        VStack(alignment: .leading, spacing: 16) {
+                        VStack(alignment: .leading, spacing: 20) { // Increased spacing
                             HStack {
                                 Text("Recent Entries")
                                     .font(.title2)
                                     .fontWeight(.semibold)
-                                    .foregroundStyle(Color( "navyBlue"))
+                                    .foregroundColor(navyBlue)
                                 
                                 Spacer()
                                 
                                 if !listJournalVM.allJournalHistories.isEmpty {
                                     Text("\(listJournalVM.allJournalHistories.count) entries this week")
                                         .font(.caption)
-                                        .foregroundStyle(Color("emeraldGreen"))
-                                        .padding(.horizontal, 12)
-                                        .padding(.vertical, 4)
-                                        .background(Color( "emeraldGreen").opacity(0.1))
-                                        .cornerRadius(12)
+                                        .foregroundColor(emeraldGreen) // Emerald Green for positive count
+                                        .padding(.horizontal, 14) // Slightly more padding
+                                        .padding(.vertical, 6)
+                                        .background(emeraldGreen.opacity(0.15)) // Slightly stronger background for clarity
+                                        .cornerRadius(15) // More rounded corners
                                 }
                             }
                             
                             // Journal entries
-                            LazyVStack(spacing: 12) {
+                            LazyVStack(spacing: 15) { // Increased spacing between cards
                                 if listJournalVM.allJournalThisWeek.isEmpty {
                                     // Empty state
-                                    VStack(spacing: 16) {
+                                    VStack(spacing: 20) { // Increased spacing
                                         Image(systemName: "book.closed")
-                                            .font(.system(size: 48))
-                                            .foregroundColor(Color( "skyBlue").opacity(0.6))
+                                            .font(.system(size: 60)) // Larger icon
+                                            .foregroundColor(primaryBlue.opacity(0.7)) // More prominent Sky Blue
                                         
-                                        VStack(spacing: 8) {
+                                        VStack(spacing: 10) { // Increased spacing
                                             Text("No entries yet")
-                                                .font(.headline)
-                                                .foregroundColor(Color("navyBlue"))
+                                                .font(.title2)
+                                                .foregroundColor(navyBlue)
                                             
-                                            Text("Start your journaling journey by tapping the + button")
-                                                .font(.subheadline)
-                                                .foregroundColor(Color("skyBlue")).multilineTextAlignment(.center)
+                                            Text("Start your journaling journey by clicking the + button above.") // Adjusted text for macOS
+                                                .font(.body) // Changed to body for readability
+                                                .foregroundColor(.secondary) // System secondary color
+                                                .multilineTextAlignment(.center)
                                         }
                                     }
-                                    .padding(.vertical, 40)
+                                    .padding(.vertical, 50) // More vertical padding
                                     .frame(maxWidth: .infinity)
-                                    .background(Color.white.opacity(0.5))
-                                    .cornerRadius(16)
+                                    .background(Color.white.opacity(0.7)) // Slightly more opaque background
+                                    .cornerRadius(18) // More rounded corners
                                 } else {
                                     ForEach(listJournalVM.allJournalHistories, id: \.id) { journal in
                                         JournalCardView(journal: journal)
@@ -114,36 +121,28 @@ struct JournalView: View {
                                 }
                             }
                         }
+                        .padding(.horizontal) // Add horizontal padding for the history section
                         
-                        Spacer(minLength: 100) // Space for floating button
+                        Spacer(minLength: 80) // Space for floating button
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.vertical, 20) // Add vertical padding to the overall scroll content
                 }
             }
             .toolbar {
-                ToolbarItem() {
+                ToolbarItem() { // Use trailing for macOS toolbar
                     Button(action: {
                         isAdding = true
                     }) {
-                        Image(systemName: "plus")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .frame(width: 44, height: 44)
-                            .background(
-                                LinearGradient(
-                                    colors: [Color("coralOrange"), Color( "coralOrange").opacity(0.8)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .clipShape(Circle())
-                            .shadow(color: Color( "coralOrange").opacity(0.3), radius: 6, x: 0, y: 3)
+                        Image(systemName: "plus.circle.fill") // A more prominent plus icon
+                            .font(.system(size: 30)) // Larger icon
+                            .foregroundColor(coralOrange) // Coral Orange for the accent button
+                            .symbolRenderingMode(.palette) // Ensures color application
+                            .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2) // Subtle shadow
                     }
-                    .accessibilityIdentifier("addBookButton")
+                    .buttonStyle(.plain) // Use plain button style for toolbar items
+                    .accessibilityIdentifier("addJournalButton") // Updated identifier
                 }
             }
-           
             .navigationDestination(isPresented: $isAdding, destination: {
                 AddJournalView(isAddJournal: $isAdding, userID: userId)
             })
@@ -159,6 +158,8 @@ struct JournalView: View {
         }
     }
 }
+
+
 #Preview {
     JournalView(userId: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
         .environmentObject(ListJournalViewModel())
