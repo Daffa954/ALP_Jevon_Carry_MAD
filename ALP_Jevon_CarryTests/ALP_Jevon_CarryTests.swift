@@ -16,7 +16,7 @@ struct User {
 }
 
 
-
+//Bikin mock/dummy data
 class MockSessionHistoryRepository: FirebaseSessionHistoryRepository {
     var sessionsToReturn: [BreathingSession] = []
     var fetchCalled = false
