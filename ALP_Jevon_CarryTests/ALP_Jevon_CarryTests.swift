@@ -53,7 +53,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         }
     }
         
-        
+    //Buat test Quiz
     @MainActor func testPHQ9_Questions_is_9() {
         let vm = QuizViewModel(type: "PHQ-9")
         XCTAssertEqual(vm.questions.count, 9)
@@ -92,7 +92,9 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(vm.getSummary(score: 12), "Moderate anxiety")
         XCTAssertEqual(vm.getSummary(score: 16), "Severe anxiety")
     }
-
+    
+    
+    //Buat test History
     @MainActor func testSaveHistory_PHQ9() {
         let vm = QuizViewModel(type: "PHQ-9")
         vm.selectedAnswers = [0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1]
@@ -116,6 +118,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     }
         
         
+    //Test save History + fetch History
     func testAddHistory_ShouldCallRepository() {
         let mockRepo = MockHistoryRepository()
         let viewModel = HistoryViewModel(historyRepository: mockRepo)
