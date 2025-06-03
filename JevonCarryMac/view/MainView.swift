@@ -11,17 +11,55 @@ struct MainView: View {
     @EnvironmentObject var authViewModel: AuthViewModel
     @EnvironmentObject var listJournalViewModel: ListJournalViewModel
     @State var showAuthSheet = false
+    
+    // Breathing session related state
+    @StateObject private var musicPlayerViewModel = MusicPlayerViewModel()
+    @State private var breathingViewModel: BreathingViewModel?
+    @State private var sessionHistoryViewModel: SessionHistoryViewModel?
+    @State private var showingSessionHistory = false
+    
     var body: some View {
-        TabView{
-            HomeView().tabItem{
-                    Label("Home", systemImage: "house")
-                }
-            
-            
-            SchedulleView().tabItem{
-                Label("Breathing", systemImage: "lungs.fill")
+        TabView {
+            HomeView().tabItem {
+                Label("Home", systemImage: "house")
             }
             
+            // Direct breathing session view
+            Group {
+                if let breathingVM = breathingViewModel {
+                    BreathingSessionView(
+                        breathingViewModel: breathingVM,
+                        showingSessionHistory: $showingSessionHistory
+                    )
+                } else {
+                    // Simple loading state
+                    VStack(spacing: 20) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(Color("AccentColor"))
+                        
+                        Text("Preparing your breathing session...")
+                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                            .foregroundColor(.primary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.white,
+                                Color("skyBlue").opacity(0.1),
+                                Color.white
+                            ]),
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .ignoresSafeArea()
+                    )
+                }
+            }
+            .tabItem {
+                Label("Breathing", systemImage: "lungs.fill")
+            }
             
             JournalView(userId: authViewModel.user?.uid ?? "")
                 .tabItem{
@@ -33,10 +71,32 @@ struct MainView: View {
                     Label("Profile", systemImage: "person.circle")
                 }
         }
+//        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+//            showAuthSheet = !isSignedIn
+//        }.sheet(isPresented: $showAuthSheet){
+//            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+//        }
         .onAppear {
+            // Show auth sheet if not signed in
             showAuthSheet = !authViewModel.isSigneIn
-        }.sheet(isPresented: $showAuthSheet){
+            
+            // Initialize breathing view model if needed
+            if breathingViewModel == nil {
+                breathingViewModel = BreathingViewModel(
+                    musicPlayerViewModel: musicPlayerViewModel,
+                    authViewModel: authViewModel
+                )
+                sessionHistoryViewModel = SessionHistoryViewModel(authViewModel: authViewModel)
+            }
+        }
+        .sheet(isPresented: $showAuthSheet) {
             LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+        }
+        .sheet(isPresented: $showingSessionHistory) {
+            if let historyVM = sessionHistoryViewModel {
+                SessionHistoryView(historyViewModel: historyVM)
+                    .environmentObject(authViewModel)
+            }
         }
     }
 }
@@ -48,5 +108,6 @@ struct MainView: View {
         .environmentObject(ListJournalViewModel())
         .environmentObject(JournalViewModel())
         .environmentObject(QuizViewModel(type: "PHQ-9"))
+        .environmentObject(HistoryViewModel())
 
 }

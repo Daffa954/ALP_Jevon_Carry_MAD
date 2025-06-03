@@ -2,10 +2,8 @@
 //  UserModel.swift
 //  JevonCarryMac
 //
-//  Created by Daffa Khoirul on 29/05/25.
+//  Created by Daffa Khoirul on 03/06/25.
 //
-
-
 
 import Foundation
 struct MyUser: Codable {

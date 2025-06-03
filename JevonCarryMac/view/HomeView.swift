@@ -4,6 +4,9 @@ struct HomeView: View {
     @State private var selectedQuizType: String = ""
     let cornerRadius: CGFloat = 30
     @EnvironmentObject var authVM: AuthViewModel
+    @State private var showQuizPHQ = false
+    @State private var showQuizGAD = false
+    @State private var showQuizHistory = false
     
     var body: some View {
         NavigationStack {
@@ -20,53 +23,96 @@ struct HomeView: View {
                             
                             // Quiz Cards Section
                             VStack(spacing: 20) {
-                                VStack(spacing: 12) {
+                                VStack(spacing: 10) {
                                     Text("Check Your Mental Health")
-                                        .font(.system(size: 24, weight: .bold))
+                                        .font(.system(size: 22, weight: .bold))
                                         .foregroundColor(Color("navyBlue"))
                                     
                                     Text("For best results, this test is limited to one session per week.")
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(Color("navyBlue").opacity(0.8))
+                                        .font(.system(size: 16))
+                                        .foregroundColor(Color.white)
                                         .multilineTextAlignment(.center)
-                                        .padding(.horizontal, 10)
                                 }
                                 
                                 // Quiz Cards
-                                VStack(spacing: 16) {
-                                    NavigationLink(
-                                        destination: QuizView(type: "PHQ-9")
-                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
-                                            .environmentObject(HistoryViewModel()),
-                                        label: {
-                                            QuizCard(title: "PHQ-9",
-                                                     subtitle: "Depression Assessment",
-                                                     icon: "heart.text.square",
-                                                     gradientColors: [Color("skyBlue"), Color("skyBlue").opacity(0.8)])
-                                        }
-                                    )
-                                    
-                                    NavigationLink(
-                                        destination: QuizView(type: "GAD-7")
-                                            .environmentObject(QuizViewModel(type: "GAD-7"))
-                                            .environmentObject(HistoryViewModel()),
-                                        label: {
-                                            QuizCard(title: "GAD-7",
-                                                     subtitle: "Anxiety Assessment",
-                                                     icon: "brain.head.profile",
-                                                     gradientColors: [Color("coralOrange"), Color("coralOrange").opacity(0.8)])
-                                        }
-                                    )
+                                //START COMMENT
+//                                VStack(spacing: 15) {
+//                                    NavigationLink(
+//                                        destination: QuizView(type: "PHQ-9", tab: $tab)
+//                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
+//                                            .environmentObject(HistoryViewModel()),
+//                                        label: {
+//                                            QuizCard(title: "PHQ-9",
+//                                                     subtitle: "Depression Assessment",
+//                                                     icon: "heart.text.square")
+//                                        }
+//                                    )
+//                                    
+//                                    NavigationLink(
+//                                        destination: QuizView(type: "GAD-7", tab: $tab)
+//                                            .environmentObject(QuizViewModel(type: "GAD-7"))
+//                                            .environmentObject(HistoryViewModel()),
+//                                        label: {
+//                                            QuizCard(title: "GAD-7",
+//                                                     subtitle: "Anxiety Assessment",
+//                                                     icon: "brain.head.profile")
+//                                        }
+//                                    )
+//                                }
+                                //END COMMENT
+                                
+                                NavigationLink(destination: QuizView(type: "PHQ-9")){
+                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
                                 }
+                                
+                                NavigationLink(destination: QuizView(type: "GAD-7")){
+                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
+                                }
+                                
+//                                Button {
+//                                    showQuizPHQ = true
+//                                } label: {
+//                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizPHQ) {
+//                                    QuizView(type: "PHQ-9", tab: $tab, isPresented: $showQuizPHQ)
+//                                        .environmentObject(QuizViewModel(type: "PHQ-9"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
+                                
+//                                Button {
+//                                    showQuizGAD = true
+//                                } label: {
+//                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
+//                                }
+//                                .fullScreenCover(isPresented: $showQuizGAD) {
+//                                    QuizView(type: "GAD-7", tab: $tab, isPresented: $showQuizGAD)
+//                                        .environmentObject(QuizViewModel(type: "GAD-7"))
+//                                        .environmentObject(HistoryViewModel())
+//                                }
+                                
+                                Button {
+                                    showQuizHistory = true
+                                } label: {
+                                    QuizCard(title: "Test History", subtitle: "See your history results", icon: "book.pages.fill")
+                                }
+                                .sheet(isPresented: $showQuizHistory) {
+                                    QuizHistory()
+                                }
+                                
+                                
+                                
                             }
+                            
                         }
                         .padding(.horizontal, 35)
-                        .padding(.bottom, 50)
-                        .background(Color("lightGray1"))
+                        .padding(.bottom, 50) // Padding untuk Tab Bar
+                        
+                        .background(Color("color1").opacity(0.8))
+//                        .clipShape(RoundedCorner(radius: cornerRadius, corners: [.topLeft, .topRight]))
                     }
                 }
             }
-            .background(Color("lightGray1"))
             .onChange(of: authVM.user?.uid ?? "", initial: true) { _, newUID in
                 if !newUID.isEmpty {
                     Task {
@@ -85,15 +131,15 @@ struct HomeView: View {
     
     private var headerSection: some View {
         HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Hi \(authVM.myUser.name)")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 30, weight: .bold))
                     .foregroundColor(Color("navyBlue"))
                 
+                
                 Text("Your journey matters.\nLet's see how you're growing.")
-                    .font(.system(size: 17, weight: .medium))
-                    .foregroundColor(Color("navyBlue").opacity(0.8))
-                    .lineSpacing(2)
+                    .font(.system(size: 16))
+                    .foregroundColor(Color("navyBlue"))
             }
             
             Spacer()
@@ -101,143 +147,106 @@ struct HomeView: View {
             Image("Image1")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 85, height: 85)
-                .background(
-                    Circle()
-                        .fill(Color("skyBlue").opacity(0.1))
-                        .frame(width: 95, height: 95)
-                )
+                .frame(width: 80, height: 80)
         }
-        .padding(.top, 25)
-        .padding(.bottom, 35)
-        .padding(.horizontal, 30)
-        .background(Color("lightGray1"))
+        .padding(.top, 20)
+        .padding(.bottom, 30)
+        .padding(.horizontal, 25)
+        
+        
     }
     
     private var freshStartSection: some View {
-        VStack(spacing: 18) {
-            VStack(spacing: 8) {
-                Text("Your Fresh Start")
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundColor(Color("lightGray1"))
-                
-                Text("Welcome! Let's grow together,\none day at a time.")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundColor(Color("navyBlue").opacity(0.7))
-                    .multilineTextAlignment(.center)
-                    .lineSpacing(3)
-            }
+        VStack(spacing: 15) {
+            Text("Your Fresh Start")
+                .font(.system(size: 24, weight: .medium))
+                .foregroundColor(Color("navyBlue"))
             
-            // Enhanced Graph Placeholder
+            Text("Welcome! Let's grow together,\none day at a time.")
+                .font(.system(size: 18))
+                .foregroundColor(Color.white)
+                .multilineTextAlignment(.center)
+            
+            // Graph Placeholder
             RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color.white,
-                            Color("lightGray1").opacity(0.5)
-                        ]),
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(height: 190)
+                .fill(Color("lightGray1"))
+                .frame(height: 180)
                 .overlay(
-                    VStack(spacing: 12) {
-                        ZStack {
-                            Circle()
-                                .fill(Color("skyBlue").opacity(0.1))
-                                .frame(width: 70, height: 70)
-                            
-                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                .font(.system(size: 28, weight: .medium))
-                                .foregroundColor(Color("skyBlue"))
-                        }
-                        
-                        VStack(spacing: 4) {
-                            Text("Overall Progress")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(Color("navyBlue"))
-                            
-                            Text("Track your mental health journey")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(Color("skyBlue").opacity(0.6))
-                        }
+                    VStack {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                            .font(.system(size: 40))
+                            .foregroundColor(.gray)
+                        Text("Overall Graph")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(.gray)
                     }
                 )
-                .shadow(color: Color("navyBlue").opacity(0.08), radius: 8, x: 0, y: 4)
         }
-        .padding(.top, 30)
+        .padding(.top, 25)
     }
+    
+    
 }
 
-// MARK: - Enhanced Components
+// MARK: - Components
 
 struct QuizCard: View {
     let title: String
     let subtitle: String
     let icon: String
-    let gradientColors: [Color]
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Icon Container
-            ZStack {
-                Circle()
-                    .fill(Color.white.opacity(0.25))
-                    .frame(width: 55, height: 55)
-                
-                Image(systemName: icon)
-                    .font(.system(size: 26, weight: .medium))
-                    .foregroundColor(.white)
-            }
+        HStack {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundColor(.white)
+                .frame(width: 50, height: 50)
+                .background(Color.white.opacity(0.2))
+                .clipShape(Circle())
             
-            // Content
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 18, weight: .semibold))
                     .foregroundColor(.white)
                 
                 Text(subtitle)
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.system(size: 14))
                     .foregroundColor(.white.opacity(0.9))
             }
             
             Spacer()
             
-            // Arrow
-            ZStack {
-                Circle()
-                    .fill(Color.white.opacity(0.2))
-                    .frame(width: 35, height: 35)
-                
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-            }
+            Image(systemName: "chevron.right")
+                .foregroundColor(.white.opacity(0.7))
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 18)
+        .padding()
         .frame(maxWidth: .infinity)
-        .frame(height: 100)
+        .frame(height: 120)
         .background(
             LinearGradient(
-                gradient: Gradient(colors: gradientColors),
+                gradient: Gradient(colors: [Color.blue, Color.purple]),
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
         )
-        .cornerRadius(18)
-        .shadow(color: gradientColors.first?.opacity(0.3) ?? Color.clear, radius: 8, x: 0, y: 4)
+        .cornerRadius(15)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }
 
-// MARK: - App Colors
-
-
-
+//struct RoundedCorner: Shape {
+//    var radius: CGFloat = .infinity
+//    var corners: UIRectCorner = .allCorners
+//    
+//    func path(in rect: CGRect) -> Path {
+//        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+//        return Path(path.cgPath)
+//    }
+//}
 
 #Preview {
     HomeView()
         .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
         .environmentObject(QuizViewModel(type: "PHQ-9"))
+        .environmentObject(HistoryViewModel())
 }

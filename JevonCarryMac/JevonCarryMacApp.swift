@@ -1,40 +1,10 @@
+////
+////  JevonCarryMacApp.swift
+////  JevonCarryMac
+////
+////  Created by Daffa Khoirul on 29/05/25.
+////
 //
-//  JevonCarryMacApp.swift
-//  JevonCarryMac
-//
-//  Created by Daffa Khoirul on 29/05/25.
-//
-
-import SwiftUI
-import Firebase
-import FirebaseAppCheck
-
-//struct JevonCarryMacApp: App {
-//    @StateObject private var authViewModel = AuthViewModel(repository: FirebaseAuthRepository())
-//    @StateObject private var historyViewModel = HistoryViewModel()
-//    @StateObject private var quizViewModel = QuizViewModel(type: "PHQ-9")
-//    @StateObject private var listJournalViewModel = ListJournalViewModel()
-//    
-//    @StateObject private var journalViewModel = JournalViewModel()
-//    init(){
-//        if let plistPath = Bundle.main.path(forResource: "GoogleService-Info-macOS", ofType: "plist"),
-//           let firebaseOptions = FirebaseOptions(contentsOfFile: plistPath) {
-//            FirebaseApp.configure(options: firebaseOptions)
-//        } else {
-//            fatalError("Could not load GoogleService-Info-macOS.plist. Check its name and target membership.")
-//        }
-//#if DEBUG
-//        let providerFactory = AppCheckDebugProviderFactory()
-//        AppCheck.setAppCheckProviderFactory(providerFactory)
-//#endif
-//    }
-//    var body: some Scene {
-//        WindowGroup {
-//            SplashScreenView()
-//                .environmentObject(authViewModel)
-//        }
-//    }
-//}
 import SwiftUI
 import Firebase
 import FirebaseAppCheck
@@ -45,21 +15,33 @@ struct JevonCarryMacApp: App {
     @StateObject private var historyViewModel = HistoryViewModel()
     @StateObject private var quizViewModel = QuizViewModel(type: "PHQ-9")
     @StateObject private var listJournalViewModel = ListJournalViewModel()
+
+    // Friend's original ViewModels
     @StateObject private var journalViewModel = JournalViewModel()
 
+    // Your view models that can be initialized directly
+    @StateObject private var musicPlayerViewModel = MusicPlayerViewModel()
+
+    // These depend on other view models, so we'll initialize them lazily
+    @StateObject private var breathingViewModel: BreathingViewModel
+    @StateObject private var sessionHistoryViewModel: SessionHistoryViewModel
+
     init() {
-        
-            if let plistPath = Bundle.main.path(forResource: "GoogleService-Info-macOs", ofType: "plist"), // Pastikan nama file ini benar
-               let firebaseOptions = FirebaseOptions(contentsOfFile: plistPath) {
-                FirebaseApp.configure(options: firebaseOptions)
-            } else {
-                fatalError("Error: GoogleService-Info-macOS.plist tidak ditemukan atau tidak valid.")
-            }
-         
+        FirebaseApp.configure()
         #if DEBUG
         let providerFactory = AppCheckDebugProviderFactory()
         AppCheck.setAppCheckProviderFactory(providerFactory)
         #endif
+
+        // Create temporary instances for initialization (matching your actual AuthViewModel init)
+        let tempAuthVM = AuthViewModel(repository: FirebaseAuthRepository())
+        let tempMusicPlayerVM = MusicPlayerViewModel()
+        
+        // Initialize dependent view models with temporary instances
+        _breathingViewModel = StateObject(wrappedValue: BreathingViewModel(musicPlayerViewModel: tempMusicPlayerVM, authViewModel: tempAuthVM))
+        _sessionHistoryViewModel = StateObject(wrappedValue: SessionHistoryViewModel(authViewModel: tempAuthVM))
+
+        print("🔥 Firebase configured at: \(Date())")
     }
 
     var body: some Scene {
@@ -68,6 +50,9 @@ struct JevonCarryMacApp: App {
                 .environmentObject(authViewModel)
                 .environmentObject(journalViewModel)
                 .environmentObject(listJournalViewModel)
+                .environmentObject(musicPlayerViewModel)
+                .environmentObject(breathingViewModel)
+                .environmentObject(sessionHistoryViewModel)
                 .environmentObject(historyViewModel)
                 .environmentObject(quizViewModel)
         }

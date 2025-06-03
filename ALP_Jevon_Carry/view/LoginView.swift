@@ -52,7 +52,8 @@ struct LoginRegisterSheet: View {
                     if !registerClicked {
                         CustomTextField(
                             placeholder: "Name",
-                            text: $authVM.myUser.name
+                            text: $authVM.myUser.name,
+                            icon: "person"
                         )
                         VStack(alignment: .leading) {
                             Text("Select Your Hobbies")
@@ -80,14 +81,16 @@ struct LoginRegisterSheet: View {
                     
                     CustomTextField(
                         placeholder: "Email",
-                        text: $authVM.myUser.email
+                        text: $authVM.myUser.email,
+                        icon: "person"
                     )
                     .keyboardType(.emailAddress)
                     
                     
                     CustomSecureField(
                         placeholder: "Password",
-                        text: $authVM.myUser.password
+                        text: $authVM.myUser.password,
+                        icon: "lock"
                     )
                     
                     if authVM.falseCredential {

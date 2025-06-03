@@ -16,123 +16,97 @@ struct JournalView: View {
     var body: some View {
         NavigationStack{
             ZStack {
-                // Enhanced background gradient
+                // Background gradient
                 LinearGradient(
-                    colors: [Color("lightGray1"), Color("lightGray1").opacity(0.6)],
+                    colors: [Color("lightGray1"), Color("lightGray1").opacity(0.8)],
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
                 
                 ScrollView{
-                    VStack(spacing: 25) {
-                        
-                        // Enhanced Header Section
-                        VStack(spacing: 12) {
+                    VStack(spacing: 20) {
+                        // Header Section
+                        VStack(spacing: 8) {
                             Text("My Journal")
-                                .font(.system(size: 34, weight: .bold))
-                                .foregroundStyle(Color("navyBlue"))
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .foregroundStyle(Color( "navyBlue"))
                             
                             Text("Welcome back, \(authVM.myUser.name)!")
-                                .font(.system(size: 18, weight: .medium))
-                                .foregroundStyle(Color("navyBlue"))
+                                .font(.subheadline)
+                                .foregroundStyle(Color( "skyBlue"))
                         }
-                        .padding(.top, 10)
                         
-                        // Enhanced Weekly Stress Chart Section
-                        VStack(spacing: 18) {
-                            VStack(spacing: 6) {
+                        
+                        // Weekly Stress Chart Section
+                        VStack(spacing: 16) {
+                            VStack(spacing: 4) {
                                 Text("Your Weekly Stress Level")
-                                    .font(.system(size: 22, weight: .bold))
-                                    .foregroundStyle(Color("navyBlue"))
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color( "navyBlue"))
                                 
-                                Text("Insights from your journal entries")
-                                    .font(.system(size: 15, weight: .medium))
-                                    .foregroundStyle(Color("navyBlue").opacity(0.8))
+                                Text("From your journal entries")
+                                    .font(.caption)
+                                    .foregroundStyle(Color( "#skyBlue"))
                             }
                             
-                            // Enhanced Chart container
+                            // Chart container with enhanced styling
                             VStack {
                                 JournalChartView(journalData: listJournalVM.allJournalThisWeek)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 20)
+                                    .padding()
                             }
-                            .background(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(Color.white)
-                                    .shadow(color: Color("navyBlue").opacity(0.15), radius: 12, x: 0, y: 6)
-                            )
+                            .background(Color.white)
+                            .cornerRadius(16)
+                            .shadow(color: Color( "skyBlue").opacity(0.1), radius: 8, x: 0, y: 4)
                         }
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, 4)
                         
-                        // Enhanced History Section
-                        VStack(alignment: .leading, spacing: 18) {
+                        // History Section
+                        VStack(alignment: .leading, spacing: 16) {
                             HStack {
                                 Text("Recent Entries")
-                                    .font(.system(size: 22, weight: .bold))
-                                    .foregroundStyle(Color("navyBlue"))
+                                    .font(.title2)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color( "navyBlue"))
                                 
                                 Spacer()
                                 
                                 if !listJournalVM.allJournalHistories.isEmpty {
-                                    HStack(spacing: 6) {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(Color("emeraldGreen"))
-                                        
-                                        Text("\(listJournalVM.allJournalHistories.count) entries this week")
-                                            .font(.system(size: 13, weight: .semibold))
-                                            .foregroundStyle(Color("emeraldGreen"))
-                                    }
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(
-                                        Capsule()
-                                            .fill(Color("emeraldGreen").opacity(0.12))
-                                    )
+                                    Text("\(listJournalVM.allJournalHistories.count) entries this week")
+                                        .font(.caption)
+                                        .foregroundStyle(Color("emeraldGreen"))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 4)
+                                        .background(Color( "emeraldGreen").opacity(0.1))
+                                        .cornerRadius(12)
                                 }
                             }
                             
-                            // Enhanced Journal entries
-                            LazyVStack(spacing: 14) {
+                            // Journal entries
+                            LazyVStack(spacing: 12) {
                                 if listJournalVM.allJournalThisWeek.isEmpty {
-                                    // Enhanced Empty state
-                                    VStack(spacing: 20) {
-                                        ZStack {
-                                            Circle()
-                                                .fill(Color("skyBlue").opacity(0.1))
-                                                .frame(width: 80, height: 80)
-                                            
-                                            Image(systemName: "book.closed")
-                                                .font(.system(size: 32, weight: .medium))
-                                                .foregroundColor(Color("skyBlue"))
-                                        }
+                                    // Empty state
+                                    VStack(spacing: 16) {
+                                        Image(systemName: "book.closed")
+                                            .font(.system(size: 48))
+                                            .foregroundColor(Color( "skyBlue").opacity(0.6))
                                         
-                                        VStack(spacing: 10) {
+                                        VStack(spacing: 8) {
                                             Text("No entries yet")
-                                                .font(.system(size: 20, weight: .semibold))
+                                                .font(.headline)
                                                 .foregroundColor(Color("navyBlue"))
                                             
                                             Text("Start your journaling journey by tapping the + button")
-                                                .font(.system(size: 16, weight: .medium))
-                                                .foregroundColor(Color("navyBlue").opacity(0.8))
-                                                .multilineTextAlignment(.center)
-                                                .lineSpacing(2)
+                                                .font(.subheadline)
+                                                .foregroundColor(Color("skyBlue")).multilineTextAlignment(.center)
                                         }
                                     }
-                                    .padding(.vertical, 45)
+                                    .padding(.vertical, 40)
                                     .frame(maxWidth: .infinity)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 18)
-                                            .fill(
-                                                LinearGradient(
-                                                    colors: [Color.white, Color.white.opacity(0.8)],
-                                                    startPoint: .topLeading,
-                                                    endPoint: .bottomTrailing
-                                                )
-                                            )
-                                            .shadow(color: Color("navyBlue").opacity(0.06), radius: 8, x: 0, y: 4)
-                                    )
+                                    .background(Color.white.opacity(0.5))
+                                    .cornerRadius(16)
                                 } else {
                                     ForEach(listJournalVM.allJournalHistories, id: \.id) { journal in
                                         JournalCardView(journal: journal)
@@ -143,7 +117,7 @@ struct JournalView: View {
                         
                         Spacer(minLength: 100) // Space for floating button
                     }
-                    .padding(.horizontal, 22)
+                    .padding(.horizontal, 20)
                 }
             }
             .toolbar {
@@ -151,28 +125,25 @@ struct JournalView: View {
                     Button(action: {
                         isAdding = true
                     }) {
-                        ZStack {
-                            // Enhanced button design
-                            RoundedRectangle(cornerRadius: 14)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [Color("coralOrange"), Color("coralOrange").opacity(0.85)],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    )
+                        Image(systemName: "plus")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(width: 44, height: 44)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color("coralOrange"), Color( "coralOrange").opacity(0.8)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
                                 )
-                                .frame(width: 48, height: 48)
-                                .shadow(color: Color("coralOrange").opacity(0.4), radius: 8, x: 0, y: 4)
-                            
-                            Image(systemName: "plus")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundStyle(.white)
-                        }
+                            )
+                            .clipShape(Circle())
+                            .shadow(color: Color( "coralOrange").opacity(0.3), radius: 6, x: 0, y: 3)
                     }
                     .accessibilityIdentifier("addBookButton")
                 }
             }
-            
+           
             .navigationDestination(isPresented: $isAdding, destination: {
                 AddJournalView(isAddJournal: $isAdding, userID: userId)
             })
@@ -188,9 +159,6 @@ struct JournalView: View {
         }
     }
 }
-
-
-
 #Preview {
     JournalView(userId: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
         .environmentObject(ListJournalViewModel())

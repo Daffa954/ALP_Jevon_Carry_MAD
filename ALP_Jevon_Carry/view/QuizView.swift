@@ -207,3 +207,4 @@ struct QuizView: View {
         .environmentObject(HistoryViewModel())
         .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
 }
+

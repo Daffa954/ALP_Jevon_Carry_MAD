@@ -7,20 +7,74 @@
 
 import SwiftUI
 
+// MARK: - Custom Components
+
 struct CustomTextField: View {
     let placeholder: String
     @Binding var text: String
+    let icon: String
     
     var body: some View {
-        TextField(placeholder, text: $text)
-            .padding()
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundColor(.blue)
+                .font(.system(size: 16, weight: .medium))
+                .frame(width: 20)
             
-            .background(Color(.systemGray6))
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color(.systemGray4), lineWidth: 1)
-            )
+            TextField(placeholder, text: $text)
+                .font(.system(size: 16))
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 16)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(.systemGray4), lineWidth: 1)
+        )
+    }
+}
+
+struct CustomSecureField: View {
+    let placeholder: String
+    @Binding var text: String
+    let icon: String
+    @State private var isSecure: Bool = true
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundColor(.blue)
+                .font(.system(size: 16, weight: .medium))
+                .frame(width: 20)
+            
+            Group {
+                if isSecure {
+                    SecureField(placeholder, text: $text)
+                } else {
+                    TextField(placeholder, text: $text)
+                }
+            }
+            .font(.system(size: 16))
+            
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    isSecure.toggle()
+                }
+            }) {
+                Image(systemName: isSecure ? "eye" : "eye.slash")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 16, weight: .medium))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 16)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color(.systemGray4), lineWidth: 1)
+        )
     }
 }
 
@@ -28,54 +82,24 @@ struct HobbyChip: View {
     let hobby: String
     let isSelected: Bool
     let action: () -> Void
-
+    
     var body: some View {
         Button(action: action) {
             Text(hobby)
-                .font(.subheadline)
-                .frame(width: 104, height: 36) // Ukuran seragam
-                .background(isSelected ? Color.blue : Color.gray.opacity(0.1))
+                .font(.system(size: 14, weight: .medium))
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(isSelected ? Color.blue : Color(.systemGray6))
+                )
                 .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(20)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(isSelected ? Color.blue : Color(.systemGray3), lineWidth: 1)
+                        .stroke(isSelected ? Color.blue : Color(.systemGray4), lineWidth: 1)
                 )
+                .scaleEffect(isSelected ? 1.05 : 1.0)
         }
         .buttonStyle(.plain)
     }
 }
-
-struct CustomSecureField: View {
-    let placeholder: String
-    @Binding var text: String
-    @State private var isSecure: Bool = true
-    
-    var body: some View {
-        HStack {
-            // Conditional field based on security state
-            if isSecure {
-                SecureField(placeholder, text: $text)
-            } else {
-                TextField(placeholder, text: $text)
-            }
-            
-            // Show/Hide button
-            Button(action: {
-                isSecure.toggle()
-            }) {
-                Image(systemName: isSecure ? "eye" : "eye.slash")
-                    .foregroundColor(.gray)
-            }
-        }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(.systemGray4), lineWidth: 1)
-        )
-    }
-}
-
-
