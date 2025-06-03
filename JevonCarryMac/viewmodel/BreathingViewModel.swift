@@ -24,7 +24,7 @@ class BreathingViewModel: ObservableObject {
     @Published var breathingRate: Double = 1.0
     @Published var isSaving: Bool = false
     @Published var saveError: String?
-    let availableSongs = ["No Music", "song1", "song2"]
+    let availableSongs = ["No Music", "song1", "song2", "song3"]
 
     @ObservedObject var musicPlayerViewModel: MusicPlayerViewModel
     private var authViewModel: AuthViewModel
