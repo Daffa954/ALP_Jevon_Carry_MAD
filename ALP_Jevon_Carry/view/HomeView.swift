@@ -18,10 +18,8 @@ struct HomeView: View {
                         
                         // Main Content
                         VStack(spacing: 25) {
-                            // Fresh Start Section
                             freshStartSection
                             
-                            // Quiz Cards Section
                             VStack(spacing: 20) {
                                 VStack(spacing: 10) {
                                     Text("Check Your Mental Health")
@@ -34,33 +32,6 @@ struct HomeView: View {
                                         .multilineTextAlignment(.center)
                                 }
                                 
-                                // Quiz Cards
-                                //START COMMENT
-//                                VStack(spacing: 15) {
-//                                    NavigationLink(
-//                                        destination: QuizView(type: "PHQ-9", tab: $tab)
-//                                            .environmentObject(QuizViewModel(type: "PHQ-9"))
-//                                            .environmentObject(HistoryViewModel()),
-//                                        label: {
-//                                            QuizCard(title: "PHQ-9",
-//                                                     subtitle: "Depression Assessment",
-//                                                     icon: "heart.text.square")
-//                                        }
-//                                    )
-//                                    
-//                                    NavigationLink(
-//                                        destination: QuizView(type: "GAD-7", tab: $tab)
-//                                            .environmentObject(QuizViewModel(type: "GAD-7"))
-//                                            .environmentObject(HistoryViewModel()),
-//                                        label: {
-//                                            QuizCard(title: "GAD-7",
-//                                                     subtitle: "Anxiety Assessment",
-//                                                     icon: "brain.head.profile")
-//                                        }
-//                                    )
-//                                }
-                                //END COMMENT
-                                
                                 NavigationLink(destination: QuizView(type: "PHQ-9")){
                                     QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
                                 }
@@ -68,28 +39,6 @@ struct HomeView: View {
                                 NavigationLink(destination: QuizView(type: "GAD-7")){
                                     QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
                                 }
-                                
-//                                Button {
-//                                    showQuizPHQ = true
-//                                } label: {
-//                                    QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square")
-//                                }
-//                                .fullScreenCover(isPresented: $showQuizPHQ) {
-//                                    QuizView(type: "PHQ-9", tab: $tab, isPresented: $showQuizPHQ)
-//                                        .environmentObject(QuizViewModel(type: "PHQ-9"))
-//                                        .environmentObject(HistoryViewModel())
-//                                }
-                                
-//                                Button {
-//                                    showQuizGAD = true
-//                                } label: {
-//                                    QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile")
-//                                }
-//                                .fullScreenCover(isPresented: $showQuizGAD) {
-//                                    QuizView(type: "GAD-7", tab: $tab, isPresented: $showQuizGAD)
-//                                        .environmentObject(QuizViewModel(type: "GAD-7"))
-//                                        .environmentObject(HistoryViewModel())
-//                                }
                                 
                                 Button {
                                     showQuizHistory = true
@@ -106,7 +55,7 @@ struct HomeView: View {
                             
                         }
                         .padding(.horizontal, 35)
-                        .padding(.bottom, 50) // Padding untuk Tab Bar
+                        .padding(.bottom, 50)
                         
                         .background(Color("color1").opacity(0.8))
                         .clipShape(RoundedCorner(radius: cornerRadius, corners: [.topLeft, .topRight]))
