@@ -7,6 +7,36 @@
 
 import XCTest
 @testable import ALP_Jevon_Carry
+struct User {
+    var uid: String
+}
+
+
+
+class journalRepository : FirebaseJournalRepository {
+    
+}
+class MockFirebaseJournalRepository: FirebaseJournalRepository {
+    
+}
+//    var sessionsToReturn: [BreathingSession] = []
+//    var fetchCalled = false
+//    var listenCallback: (([BreathingSession]) -> Void)?
+//
+//    override func fetchAllSessions(for userID: String, completion: @escaping ([BreathingSession]) -> Void) {
+//        fetchCalled = true
+//        completion(sessionsToReturn)
+//    }
+//
+//    override func startListening(for userID: String, onChange: @escaping ([BreathingSession]) -> Void) {
+//        listenCallback = onChange
+//        onChange(sessionsToReturn)
+//    }
+//
+//    override func stopListening() {
+//        listenCallback = nil
+//    }
+
 
 final class ALP_Jevon_CarryTests: XCTestCase {
 
