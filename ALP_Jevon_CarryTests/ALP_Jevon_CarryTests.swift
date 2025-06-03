@@ -8,6 +8,7 @@
 
 import XCTest
 import Combine
+import SwiftUI
 @testable import ALP_Jevon_Carry
 
 struct User {
@@ -15,22 +16,22 @@ struct User {
 }
 
 
-// MARK: - Mock Classes
 
 class MockSessionHistoryRepository: FirebaseSessionHistoryRepository {
     var sessionsToReturn: [BreathingSession] = []
     var fetchCalled = false
     var listenCallback: (([BreathingSession]) -> Void)?
-    
+
     override func fetchAllSessions(for userID: String, completion: @escaping ([BreathingSession]) -> Void) {
         fetchCalled = true
         completion(sessionsToReturn)
     }
-    // Make sure to match the actual protocol signature (argument label)
+
     override func startListening(for userID: String, onChange: @escaping ([BreathingSession]) -> Void) {
         listenCallback = onChange
         onChange(sessionsToReturn)
     }
+
     override func stopListening() {
         listenCallback = nil
     }
@@ -40,7 +41,7 @@ class MockAuthRepository: FirebaseAuthRepository {
     var mockUser: User?
     var mockMyUser: MyUser = MyUser()
     var signOutCalled = false
-    
+
     func getCurrentUser() -> User? { mockUser }
     override func signOut() throws { signOutCalled = true }
 }
@@ -66,29 +67,24 @@ class DummyMusicPlayerViewModel: MusicPlayerViewModel {
 // MARK: - Unified ViewModel Tests
 
 @MainActor
-final class UnifiedALP_Jevon_CarryTests: XCTestCase {
-    // SessionHistoryViewModel properties
+final class ALP_Jevon_CarryTests: XCTestCase {
     var authVM: AuthViewModel!
     var mockSessionRepo: MockSessionHistoryRepository!
     var sessionVM: SessionHistoryViewModel!
     var cancellables: Set<AnyCancellable> = []
-    
-    // BreathingViewModel properties
+
     var breathingVM: BreathingViewModel!
     var mockBreathingRepo: MockBreathingRepo!
     var musicVM: DummyMusicPlayerViewModel!
-    
+
     override func setUp() {
         super.setUp()
-        // Setup Auth & SessionHistory
         let authRepo = MockAuthRepository()
         authVM = AuthViewModel(repository: authRepo)
         mockSessionRepo = MockSessionHistoryRepository()
         authVM.isSigneIn = true
         authVM.myUser = MyUser(uid: "testUser", name: "Test", email: "test@mail.com")
         sessionVM = SessionHistoryViewModel(authViewModel: authVM, sessionRepo: mockSessionRepo)
-        
-        // Setup Breathing
         musicVM = DummyMusicPlayerViewModel()
         mockBreathingRepo = MockBreathingRepo()
         breathingVM = BreathingViewModel(
@@ -97,7 +93,7 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
             breathingRepo: mockBreathingRepo
         )
     }
-    
+
     override func tearDown() {
         authVM = nil
         mockSessionRepo = nil
@@ -108,16 +104,16 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         musicVM = nil
         super.tearDown()
     }
-    
+
     // MARK: - SessionHistoryViewModel Tests
-    
+
     func testFetchSessionHistory_EmptyState() {
         mockSessionRepo.sessionsToReturn = []
         sessionVM.fetchSessionHistory()
         XCTAssertTrue(sessionVM.isEmpty)
         XCTAssertTrue(sessionVM.groupedSessions.isEmpty)
     }
-    
+
     func testFetchSessionHistory_WithSessions() {
         let now = Date()
         let session = BreathingSession(userID: "testUser", sessionDate: now, duration: 60)
@@ -128,7 +124,7 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(sessionVM.groupedSessions.first?.sessions.count, 1)
         XCTAssertEqual(sessionVM.groupedSessions.first?.sessions.first?.userID, "testUser")
     }
-    
+
     func testGroupSessionsByDate_SortsAndGroups() {
         let today = Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
@@ -140,7 +136,7 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         XCTAssertTrue(grouped.first!.sessions.contains(where: { Calendar.current.isDate($0.sessionDate, inSameDayAs: today) }))
         XCTAssertTrue(grouped.last!.sessions.contains(where: { Calendar.current.isDate($0.sessionDate, inSameDayAs: yesterday) }))
     }
-    
+
     func testFormatSectionDateTitle() {
         let today = Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
@@ -149,13 +145,18 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         let resultYesterday = sessionVM.formatSectionDateTitle(yesterday)
         XCTAssertTrue(resultToday == "Today")
         XCTAssertTrue(resultYesterday == "Yesterday")
-        // Accepts day-of-week or formatted string for not-today/yesterday
         let resultDayOfWeek = sessionVM.formatSectionDateTitle(lastWeek)
         XCTAssertFalse(resultDayOfWeek.isEmpty)
     }
-    
+
+    func testFormatSessionDuration() {
+        XCTAssertEqual(sessionVM.formatSessionDuration(65), "1m 5s")
+        XCTAssertEqual(sessionVM.formatSessionDuration(120), "2m")
+        XCTAssertEqual(sessionVM.formatSessionDuration(40), "40s")
+    }
+
     // MARK: - BreathingViewModel Tests
-    
+
     func testStartSession_UpdatesStateAndInstruction() {
         breathingVM.selectedSong = "No Music"
         breathingVM.toggleSession()
@@ -163,7 +164,27 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(breathingVM.instructionText, "Find your center and breathe deeply...")
         XCTAssertTrue(breathingVM.pulseEffect)
     }
-    
+
+    func testStartSession_WhenNotSignedIn() {
+        authVM.isSigneIn = false
+        authVM.myUser.uid = ""
+        breathingVM.toggleSession()
+        XCTAssertFalse(breathingVM.isSessionActive)
+        XCTAssertEqual(breathingVM.instructionText, "Please sign in to start your mindful journey")
+    }
+
+    func testSongSelectionChanged_WithMusic() {
+        breathingVM.songSelectionChanged(newSong: "song1")
+        XCTAssertEqual(breathingVM.selectedSong, "song1")
+        XCTAssertEqual(breathingVM.instructionText, "Ready to breathe with Song1")
+    }
+
+    func testSongSelectionChanged_NoMusic() {
+        breathingVM.songSelectionChanged(newSong: "No Music")
+        XCTAssertEqual(breathingVM.selectedSong, "No Music")
+        XCTAssertEqual(breathingVM.instructionText, "Ready for a peaceful silent session")
+    }
+
     func testStopSession_ShortSession_WontSave() {
         breathingVM.selectedSong = "No Music"
         breathingVM.toggleSession()
@@ -173,7 +194,7 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         XCTAssertFalse(mockBreathingRepo.addSessionCalled)
         XCTAssertNil(breathingVM.saveError)
     }
-    
+
     func testStopSession_SavesIfLongEnough() {
         breathingVM.selectedSong = "No Music"
         breathingVM.toggleSession()
@@ -182,24 +203,44 @@ final class UnifiedALP_Jevon_CarryTests: XCTestCase {
         XCTAssertTrue(mockBreathingRepo.addSessionCalled)
         XCTAssertNil(breathingVM.saveError)
     }
-    
-    func testSaveSessionToFirebase_FailsIfNoUser() {
-        authVM.isSigneIn = false
+
+    func testStopSession_SavesIfLongEnough_Fail() {
+        mockBreathingRepo.addSessionSuccess = false
+        breathingVM.selectedSong = "No Music"
         breathingVM.toggleSession()
         breathingVM.sessionTimeElapsed = 10
         breathingVM.toggleSession()
+        XCTAssertTrue(mockBreathingRepo.addSessionCalled)
+        XCTAssertEqual(breathingVM.saveError, "Failed to save session.")
+    }
+
+    func testStopSession_NoUser_SetsError() {
+        authVM.isSigneIn = false
+        authVM.myUser.uid = ""
+        // Simulate an active session
+        breathingVM.isSessionActive = true
+        breathingVM.sessionStartTime = Date()
+        breathingVM.sessionTimeElapsed = 10
+        // Call stopSession directly (make it internal for testing)
+        breathingVM.stopSession()
         XCTAssertEqual(breathingVM.saveError, "Unable to save session: User not identified. Please sign in again.")
+        XCTAssertFalse(mockBreathingRepo.addSessionCalled)
     }
-    
-    func testSongSelectionChanged_UpdatesSelectedSong() {
-        breathingVM.songSelectionChanged(newSong: "song1")
-        XCTAssertEqual(breathingVM.selectedSong, "song1")
-        XCTAssertEqual(breathingVM.instructionText, "Ready to breathe with Song1")
+
+    func testRetrySaveSession_Success() {
+        breathingVM.selectedSong = "No Music"
+        breathingVM.toggleSession()
+        breathingVM.sessionTimeElapsed = 10
+        breathingVM.toggleSession() // saves once
+        mockBreathingRepo.addSessionSuccess = true
+        breathingVM.retrySaveSession()
+        XCTAssertTrue(mockBreathingRepo.addSessionCalled)
+        XCTAssertNil(breathingVM.saveError)
     }
-    
-    func testFormatSessionDuration() {
-        XCTAssertEqual(sessionVM.formatSessionDuration(65), "1m 5s")
-        XCTAssertEqual(sessionVM.formatSessionDuration(120), "2m")
-        XCTAssertEqual(sessionVM.formatSessionDuration(40), "40s")
+
+    func testRetrySaveSession_MissingData_SetsError() {
+        breathingVM.sessionTimeElapsed = 10
+        breathingVM.retrySaveSession()
+        XCTAssertEqual(breathingVM.saveError, "Cannot retry: Missing data.")
     }
 }
