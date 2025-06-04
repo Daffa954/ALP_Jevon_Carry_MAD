@@ -27,6 +27,18 @@ struct QuizHistory: View {
                             .foregroundColor(.secondary)
                             .fontWeight(.medium)
                     }
+                    HStack{
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .padding(8)
+                                .font(.title2)
+                                .foregroundColor(.blue)
+                        }
+                        Spacer()
+                    }
+                    
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 24)
@@ -152,6 +164,7 @@ struct QuizHistory: View {
         .onAppear {
             historyViewModel.fetchHistory(userID: authViewModel.user?.uid ?? "")
         }
+        
     }
 }
 

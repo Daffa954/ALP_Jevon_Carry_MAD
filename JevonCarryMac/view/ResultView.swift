@@ -10,10 +10,7 @@ import SwiftUI
 struct ResultView: View {
     let result: HistoryModel
     @Environment(\.dismiss) var dismiss
-//    @State private var backHome = false
     @Binding var goHome: Bool
-//    @Binding var tab: TabItemEnum
-//    @Binding var isPresented: Bool
 
     var body: some View {
         let mainColor = Color(red: 0.286, green: 0.561, blue: 0.816)
@@ -169,62 +166,31 @@ struct ResultView: View {
                         
                         Spacer(minLength: 40)
                         
-                        //                    NavigationLink(
-                        //                        destination: HomeView(),
-                        //                        label: {
-                        //                            HStack {
-                        //                                Image(systemName: "house.fill")
-                        //                                Text("Back to Home")
-                        //                                    .fontWeight(.semibold)
-                        //                            }
-                        //                            .foregroundColor(.white)
-                        //                            .frame(maxWidth: .infinity)
-                        //                            .padding(.vertical, 16)
-                        //                            .background(mainColor)
-                        //                            .cornerRadius(12)
-                        //                            .shadow(color: mainColor.opacity(0.3), radius: 8, x: 0, y: 4)
-                        //                        }
-                        //                    )
-                        
-                        
-//                        NavigationLink(destination: HomeView()){
-                            Button(action: {
-//                                tab = TabItemEnum.home
-//                                isPresented = false
+                        Button(action: {
                                 goHome.toggle()
                                 dismiss()
-                            }) {
-                                HStack {
-                                    Image(systemName: "house.fill")
-                                    Text("Back to Home")
-                                        .fontWeight(.semibold)
-                                }
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(mainColor)
-                                .cornerRadius(12)
-                                .shadow(color: mainColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        }) {
+                            HStack {
+                                Image(systemName: "house.fill")
+                                Text("Back to Home")
+                                    .fontWeight(.semibold)
                             }
-                            .padding(.horizontal)
-    //                        NavigationLink("", destination: HomeView(), isActive: $backHome)
-    //                            .hidden()
-                            
-                            Spacer(minLength: 20)
-//                        }
-//                        .padding(.horizontal)
-////                        NavigationLink("", destination: HomeView(), isActive: $backHome)
-////                            .hidden()
-//                        
-//                        Spacer(minLength: 20)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(mainColor)
+                            .cornerRadius(12)
+                            .shadow(color: mainColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                        }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 20)
                     }
                     .padding(.horizontal, 20)
                 }
-//                .sheet(isPresented: $backHome){
-//                    HomeView()
-//                }
             }
         }
+
     }
 }
 

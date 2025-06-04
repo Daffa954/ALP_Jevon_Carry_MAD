@@ -104,20 +104,20 @@ struct UserProfileView: View {
                             
                             // Actions Section
                             VStack(spacing: 12) { // Tighter spacing for buttons
-                                Button(action: {
-                                    showEditProfile = true
-                                }) {
-                                    HStack {
-                                        Image(systemName: "pencil")
-                                            .font(.title3) // Larger icon
-                                        Text("Edit Profile")
-                                            .font(.body)
-                                        Spacer()
-                                        Image(systemName: "chevron.right")
-                                    }
-                                    .contentShape(Rectangle()) // Make the whole area tappable
-                                }
-                                .buttonStyle(ProfileButtonStyle(foregroundColor: navyBlue)) // Custom button style
+//                                Button(action: {
+//                                    showEditProfile = true
+//                                }) {
+//                                    HStack {
+//                                        Image(systemName: "pencil")
+//                                            .font(.title3) // Larger icon
+//                                        Text("Edit Profile")
+//                                            .font(.body)
+//                                        Spacer()
+//                                        Image(systemName: "chevron.right")
+//                                    }
+//                                    .contentShape(Rectangle()) // Make the whole area tappable
+//                                }
+//                                .buttonStyle(ProfileButtonStyle(foregroundColor: navyBlue)) // Custom button style
                                 
                                 Button(role: .destructive, action: {
                                     showLogoutAlert = true
