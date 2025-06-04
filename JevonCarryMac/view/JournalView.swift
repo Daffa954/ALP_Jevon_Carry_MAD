@@ -133,7 +133,7 @@ struct JournalView: View {
                     Button(action: {
                         isAdding = true
                     }) {
-                        Image(systemName: "plus.circle.fill") // A more prominent plus icon
+                        Image(systemName: "plus") // A more prominent plus icon
                             .font(.system(size: 30)) // Larger icon
                             .foregroundColor(coralOrange) // Coral Orange for the accent button
                             .symbolRenderingMode(.palette) // Ensures color application
