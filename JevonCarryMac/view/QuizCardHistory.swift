@@ -44,12 +44,12 @@ struct QuizCardHistory: View {
                     HStack(spacing: 4) {
                         Image(systemName: "chart.bar.fill")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                         
                         Text("Score: \(history.totalScore)")
                             .font(.subheadline)
                             .fontWeight(.medium)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.blue)
                     }
                 }
                 
@@ -59,17 +59,17 @@ struct QuizCardHistory: View {
                     HStack{
                         Image(systemName: "calendar")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                         Text("Date")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.blue)
                     }
                     
                     
                     Text(history.date.formatted(date: .abbreviated, time: .omitted))
                         .font(.caption)
                         .fontWeight(.medium)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.blue)
                 }
             }
             
@@ -82,7 +82,7 @@ struct QuizCardHistory: View {
                     Text("Assessment Summary")
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.blue)
                         .textCase(.uppercase)
                         .tracking(0.5)
                 }

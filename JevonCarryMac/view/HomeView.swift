@@ -50,25 +50,23 @@ struct HomeView: View {
                                 .padding(.horizontal, 20) // Padding for this text block
                                 
                                 // Quiz Cards
-                                VStack(spacing: 15) { // Spacing between quiz cards
-                                    // Using direct NavigationLink for simplicity as in your uncommented code
+                                VStack(spacing: 15) { 
                                     NavigationLink(destination: QuizView(type: "PHQ-9")) {
                                         QuizCard(title: "PHQ-9", subtitle: "Depression Assessment", icon: "heart.text.square", cardColor: Color("navyBlue")) // Pass primaryBlue
                                     }
                                     .buttonStyle(.plain) // Ensure no default button styling
                                     
                                     NavigationLink(destination: QuizView(type: "GAD-7")) {
-                                        QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile", cardColor: Color("emeraldGreen")) // Pass emeraldGreen
+                                        QuizCard(title: "GAD-7", subtitle: "Anxiety Assessment", icon: "brain.head.profile", cardColor: Color("emeraldGreen"))
                                     }
-                                    .buttonStyle(.plain) // Ensure no default button styling
+                                    .buttonStyle(.plain)
                                     
-                                    // Use sheet for QuizHistory (as per original code)
                                     Button {
                                         showQuizHistory = true
                                     } label: {
-                                        QuizCard(title: "Test History", subtitle: "See your history results", icon: "book.pages.fill", cardColor: Color("coralOrange")) // Pass coralOrange
+                                        QuizCard(title: "Test History", subtitle: "See your history results", icon: "book.pages.fill", cardColor: Color("coralOrange"))
                                     }
-                                    .buttonStyle(.plain) // Ensure no default button styling
+                                    .buttonStyle(.plain)
                                     .sheet(isPresented: $showQuizHistory) {
                                         QuizHistory()
                                     }
