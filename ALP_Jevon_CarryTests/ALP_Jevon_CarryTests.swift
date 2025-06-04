@@ -423,29 +423,29 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     }
         
     //Buat test Quiz
-    @MainActor func testPHQ9_Questions_is_9() {
+    func testPHQ9_Questions_is_9() {
         let vm = QuizViewModel(type: "PHQ-9")
         XCTAssertEqual(vm.questions.count, 9)
     }
         
-    @MainActor func testGAD7_Questions_is_7() {
+    func testGAD7_Questions_is_7() {
         let vm = QuizViewModel(type: "GAD-7")
         XCTAssertEqual(vm.questions.count, 7)
     }
         
-    @MainActor func testTotalScoreCalculation_PHQ9() {
+    func testTotalScoreCalculation_PHQ9() {
         let vm = QuizViewModel(type: "PHQ-9")
         vm.selectedAnswers = [0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1]
         XCTAssertEqual(vm.totalScore(), 9)
     }
     
-    @MainActor func testTotalScoreCalculation_GAD7() {
+    func testTotalScoreCalculation_GAD7() {
         let vm = QuizViewModel(type: "GAD-7")
         vm.selectedAnswers = [0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1]
         XCTAssertEqual(vm.totalScore(), 7)
     }
         
-    @MainActor func testSummary_PHQ9() {
+    func testSummary_PHQ9() {
         let vm = QuizViewModel(type: "PHQ-9")
         XCTAssertEqual(vm.getSummary(score: 3), "Minimal or no depression")
         XCTAssertEqual(vm.getSummary(score: 7), "Mild depression")
@@ -454,7 +454,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(vm.getSummary(score: 21), "Severe depression")
     }
         
-    @MainActor func testSummary_GAD7() {
+    func testSummary_GAD7() {
         let vm = QuizViewModel(type: "GAD-7")
         XCTAssertEqual(vm.getSummary(score: 2), "Minimal anxiety")
         XCTAssertEqual(vm.getSummary(score: 6), "Mild anxiety")
@@ -464,7 +464,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     
     
     //Buat test History
-    @MainActor func testSaveHistory_PHQ9() {
+    func testSaveHistory_PHQ9() {
         let vm = QuizViewModel(type: "PHQ-9")
         vm.selectedAnswers = [0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1, 7: 1, 8: 1]
         let history = vm.saveHistory(userID: "user123")
@@ -475,7 +475,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(history.summary, "Mild depression")
     }
     
-    @MainActor func testSaveHistory_GAD7() {
+    func testSaveHistory_GAD7() {
         let vm = QuizViewModel(type: "GAD-7")
         vm.selectedAnswers = [0: 1, 1: 1, 2: 1, 3: 1, 4: 1, 5: 1, 6: 1]
         let history = vm.saveHistory(userID: "user123")
