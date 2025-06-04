@@ -10,8 +10,8 @@ class MusicPlayerViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
 
     let didSongFinishPlaying = PassthroughSubject<Void, Never>()
 
-    private var audioPlayer: AVAudioPlayer?
-    private var timer: Timer?
+    var audioPlayer: AVAudioPlayer?
+    var timer: Timer?
 
     override init() {
         super.init()
@@ -110,7 +110,7 @@ class MusicPlayerViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
         return String(format: "%02d:%02d", minutes, seconds)
     }
 
-    private func startTimer() {
+ func startTimer() {
         stopTimer()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
             guard let self = self, let player = self.audioPlayer, player.isPlaying else {
@@ -124,12 +124,12 @@ class MusicPlayerViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
 
-    private func stopTimer() {
+func stopTimer() {
         timer?.invalidate()
         timer = nil
     }
 
-    private func stopTimerAndUpdateState(isPlaying: Bool, resetCurrentTime: Bool = false) {
+    func stopTimerAndUpdateState(isPlaying: Bool, resetCurrentTime: Bool = false) {
         self.isPlaying = isPlaying
         if !isPlaying {
             stopTimer()
@@ -142,7 +142,7 @@ class MusicPlayerViewModel: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
 
-    private func resetPlayerState() {
+    func resetPlayerState() {
         self.audioPlayer?.stop()
         self.audioPlayer = nil
         self.duration = 0
