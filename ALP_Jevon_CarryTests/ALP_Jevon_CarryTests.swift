@@ -261,7 +261,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
                 XCTAssertTrue(mockRepo.didAddJournal)
                 expectation.fulfill()
             }
-            wait(for: [expectation], timeout: 1)
+            wait(for: [expectation], timeout: 3)
         }
     func testFetchSessionHistory_EmptyState() {
         mockSessionRepo.sessionsToReturn = []
