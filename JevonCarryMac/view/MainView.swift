@@ -94,8 +94,11 @@ struct MainView: View {
         }
         .sheet(isPresented: $showingSessionHistory) {
             if let historyVM = sessionHistoryViewModel {
-                SessionHistoryView(historyViewModel: historyVM)
-                    .environmentObject(authViewModel)
+                SessionHistoryView(
+                    historyViewModel: historyVM,
+                    showingSessionHistory: $showingSessionHistory 
+                )
+                .environmentObject(authViewModel)
             }
         }
     }

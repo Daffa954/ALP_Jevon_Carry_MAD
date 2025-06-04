@@ -6,6 +6,7 @@
 //  Adapted for macOS
 //
 
+
 import SwiftUI
 
 struct BreathingSessionView: View {
@@ -19,12 +20,12 @@ struct BreathingSessionView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // Static elegant background with macOS styling
+                // Light mode background
                 LinearGradient(
                     gradient: Gradient(colors: [
-                        Color(NSColor.windowBackgroundColor),
-                        Color("skyBlue").opacity(0.08),
-                        Color(NSColor.windowBackgroundColor)
+                        Color.white,
+                        Color("skyBlue").opacity(0.1),
+                        Color.white
                     ]),
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -38,7 +39,7 @@ struct BreathingSessionView: View {
                         VStack(spacing: 16) {
                             Text("Mindful Breathing")
                                 .font(.system(size: 28, weight: .thin, design: .rounded))
-                                .foregroundColor(.primary)
+                                .foregroundColor(.black)
                                 .multilineTextAlignment(.center)
 
                             // Music Selection Card
@@ -47,29 +48,29 @@ struct BreathingSessionView: View {
                             }) {
                                 HStack(spacing: 12) {
                                     Image(systemName: breathingViewModel.selectedSong == "No Music" ? "music.note.list" : "music.note")
-                                        .font(.system(size: 16, weight: .medium))
+                                        .font(.system(size: 18, weight: .medium))
                                         .foregroundColor(Color("skyBlue"))
-                                        .frame(width: 20, height: 20)
+                                        .frame(width: 24, height: 24)
 
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text("Background Music")
-                                            .font(.system(size: 11, weight: .medium))
-                                            .foregroundColor(.secondary)
+                                            .font(.system(size: 12, weight: .medium))
+                                            .foregroundColor(.gray)
 
                                         Text(breathingViewModel.selectedSong == "No Music" ? "Silent Session" : breathingViewModel.selectedSong.capitalized)
                                             .font(.system(size: 14, weight: .semibold))
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(.black)
                                     }
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.gray)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12)
-                                        .fill(Color(NSColor.controlBackgroundColor))
+                                        .fill(Color.white)
                                         .shadow(color: Color("skyBlue").opacity(0.1), radius: 4, x: 0, y: 1)
                                 )
                             }
@@ -85,19 +86,19 @@ struct BreathingSessionView: View {
 
                                 Text("Session Time")
                                     .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.gray)
 
                                 Spacer()
 
                                 Text(String(format: "%02d:%02d", Int(breathingViewModel.sessionTimeElapsed) / 60, Int(breathingViewModel.sessionTimeElapsed) % 60))
                                     .font(.system(size: 16, weight: .bold, design: .monospaced))
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.black)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .fill(Color(NSColor.controlBackgroundColor))
+                                    .fill(Color.white)
                                     .shadow(color: Color("skyBlue").opacity(0.08), radius: 3, x: 0, y: 1)
                             )
                         }
@@ -108,12 +109,12 @@ struct BreathingSessionView: View {
                             VStack(spacing: 16) {
                                 Text("Now Playing")
                                     .font(.system(size: 12, weight: .medium))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.gray)
 
                                 VStack(spacing: 12) {
                                     Text(breathingViewModel.musicPlayerViewModel.currentSongFileName?.capitalized ?? "No song loaded")
                                         .font(.system(size: 14, weight: .semibold))
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.black)
                                         .multilineTextAlignment(.center)
 
                                     VStack(spacing: 8) {
@@ -131,6 +132,7 @@ struct BreathingSessionView: View {
                                             }
                                         )
                                         .controlSize(.small)
+                                        .accentColor(Color("skyBlue"))
 
                                         HStack {
                                             Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.currentTime))
@@ -138,7 +140,7 @@ struct BreathingSessionView: View {
                                             Text(breathingViewModel.musicPlayerViewModel.formatTime(breathingViewModel.musicPlayerViewModel.duration))
                                         }
                                         .font(.system(size: 10, weight: .medium, design: .monospaced))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.gray)
                                     }
 
                                     Button(action: {
@@ -157,7 +159,7 @@ struct BreathingSessionView: View {
                             .padding(.vertical, 16)
                             .background(
                                 RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color(NSColor.controlBackgroundColor))
+                                    .fill(Color.white)
                                     .shadow(color: Color("skyBlue").opacity(0.08), radius: 4, x: 0, y: 2)
                             )
                         }
@@ -212,19 +214,19 @@ struct BreathingSessionView: View {
 
                                     Text("Session History")
                                         .font(.system(size: 14, weight: .medium, design: .rounded))
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(.black)
 
                                     Spacer()
 
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.gray)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .background(
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color(NSColor.controlBackgroundColor))
+                                        .fill(Color.white)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 10)
                                                 .stroke(
@@ -251,9 +253,8 @@ struct BreathingSessionView: View {
 
                     // Vertical Divider
                     Rectangle()
-                        .fill(Color(NSColor.separatorColor))
+                        .fill(Color.gray.opacity(0.3))
                         .frame(width: 1)
-                        .opacity(0.5)
 
                     // Right Panel - Breathing Circle
                     VStack {
@@ -326,13 +327,14 @@ struct BreathingSessionView: View {
                                         "pause.circle"
                                     )
                                     .font(.system(size: 32, weight: .light))
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.black)
                                 }
                                 Text(breathingViewModel.instructionText)
                                     .font(.system(size: 20, weight: .medium, design: .rounded))
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(.black)
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal, 40)
+                                    .shadow(color: .white, radius: 2, x: 0, y: 0)
                             }
                         }
 
@@ -354,10 +356,10 @@ struct BreathingSessionView: View {
                 VStack(spacing: 8) {
                     Text("Choose Your Sound")
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
+                        .foregroundColor(.black)
                     Text("Select background music for your session")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.gray)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 24)
@@ -377,16 +379,16 @@ struct BreathingSessionView: View {
                                 HStack(spacing: 12) {
                                     Image(systemName: song == "No Music" ? "speaker.slash.fill" : "music.note")
                                         .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(song == breathingViewModel.selectedSong ? Color("skyBlue") : .secondary)
+                                        .foregroundColor(song == breathingViewModel.selectedSong ? Color("skyBlue") : .gray)
                                         .frame(width: 20, height: 20)
 
                                     VStack(alignment: .leading, spacing: 3) {
                                         Text(song == "No Music" ? "Silent Session" : song.capitalized)
                                             .font(.system(size: 14, weight: .semibold))
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(.black)
                                         Text(song == "No Music" ? "Practice in peaceful silence" : "Relaxing background music")
                                             .font(.system(size: 11, weight: .medium))
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(.gray)
                                     }
 
                                     Spacer()
@@ -426,7 +428,7 @@ struct BreathingSessionView: View {
                 .padding(.bottom, 24)
             }
             .frame(width: 400, height: 500)
-            .background(Color(NSColor.windowBackgroundColor))
+            .background(Color.white)
         }
     }
 }
