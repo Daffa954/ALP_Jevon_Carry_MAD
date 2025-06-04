@@ -96,7 +96,7 @@ struct MainView: View {
             if let historyVM = sessionHistoryViewModel {
                 SessionHistoryView(
                     historyViewModel: historyVM,
-                    showingSessionHistory: $showingSessionHistory 
+                    showingSessionHistory: $showingSessionHistory
                 )
                 .environmentObject(authViewModel)
             }
