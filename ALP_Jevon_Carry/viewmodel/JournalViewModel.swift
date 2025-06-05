@@ -18,31 +18,22 @@ class JournalViewModel: ObservableObject {
     @Published var errorMessage: String?
     private let journalRepository: FirebaseJournalRepository
     var coreMLService: CoreMLService
-
-//    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
-//        self.result = JournalModel(
-//            title: "",
-//            date: Date(),
-//            description: "",
-//            emotion: "",
-//            score: 0
-//        )
-//        self.journalRepository = journalRepository
-//    }
+    
+    
     init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository(),
-            openRouterService: OpenRouterService = OpenRouterService(),
-            coreMLService: CoreMLService = CoreMLService.shared) {
-           self.result = JournalModel(
-               title: "",
-               date: Date(),
-               description: "",
-               emotion: "",
-               score: 0
-           )
-           self.journalRepository = journalRepository
+         openRouterService: OpenRouterService = OpenRouterService(),
+         coreMLService: CoreMLService = CoreMLService.shared) {
+        self.result = JournalModel(
+            title: "",
+            date: Date(),
+            description: "",
+            emotion: "",
+            score: 0
+        )
+        self.journalRepository = journalRepository
         self.openRouterService = openRouterService
-           self.coreMLService = coreMLService
-       }
+        self.coreMLService = coreMLService
+    }
     private func emoticon(for emotion: String) -> String {
         switch emotion.lowercased() {
         case "joy": return "😊"
@@ -99,6 +90,7 @@ class JournalViewModel: ObservableObject {
                     print("gagal")
                 }
             }
+            
         }
     }
     func scoreForEmotion(_ emotion: String) -> Int {
@@ -115,28 +107,48 @@ class JournalViewModel: ObservableObject {
         }
     }
     
+//    func getRecommendations() {
+//        guard !result.emotion.isEmpty else { return }
+//        
+//        isLoading = true
+//        errorMessage = nil
+//        recommendations = []
+//        
+//        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
+//            DispatchQueue.main.async {
+//                //stop the loading
+//                self?.isLoading = false
+//                
+//                //send the result
+//                switch result {
+//                case .success(let activities):
+//                    self?.recommendations = activities
+//                case .failure(let error):
+//                    self?.errorMessage = error.localizedDescription
+//                }
+//            }
+//        }
+//    }
+    
     func getRecommendations() {
         guard !result.emotion.isEmpty else { return }
         
         isLoading = true
         errorMessage = nil
-        recommendations = []
         
-        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
-            DispatchQueue.main.async {
-                //stop the loading
-                self?.isLoading = false
-                
-                //send the result
-                switch result {
-                case .success(let activities):
-                    self?.recommendations = activities
-                case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+        Task {
+            do {
+                let activities = try await openRouterService.getActivityRecommendations(prompt: result.emotion)
+                DispatchQueue.main.async {
+                    self.recommendations = activities
+                    self.isLoading = false
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
                 }
             }
         }
     }
-    
-    
 }

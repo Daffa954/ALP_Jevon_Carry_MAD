@@ -144,7 +144,7 @@ struct JournalView: View {
                 }
             }
             .navigationDestination(isPresented: $isAdding, destination: {
-                AddJournalView(isAddJournal: $isAdding, userID: userId)
+                AddJournalView(isAddJournal: $isAdding, userID: authVM.myUser.uid)
             })
             .onChange(of: authVM.user?.uid ?? "", initial: true) { oldUID, newUID in
                 if !newUID.isEmpty {

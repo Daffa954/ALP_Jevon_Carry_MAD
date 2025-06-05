@@ -6,36 +6,58 @@
 //
 
 import Foundation
-
-
-import Foundation
 struct OpenRouterRequest: Codable {
     let model: String
     let messages: [Message]
     
-    struct Message: Codable {
-        let role: String
-        let content: String
-    }
+   
 }
-
+struct Message: Codable {
+    let role: String
+    let content: String
+}
+//struct OpenRouterResponse: Codable {
+//    struct Choice: Codable {
+//        struct Message: Codable {
+//            let content: String
+//        }
+//        let message: Message
+//    }
+//    let choices: [Choice]
+//    let error: ErrorResponse?
+//    
+//    struct ErrorResponse: Codable {
+//        let message: String
+//    }
+//}
+//
+//// Add this new model for structured array responses
+//struct ActivityRecommendationResponse: Codable {
+//    let recommendation: [String]
+//}
+//
 struct OpenRouterResponse: Codable {
+    let choices: [Choice]?
+    let error: ErrorResponse?
+    
     struct Choice: Codable {
-        struct Message: Codable {
-            let content: String
-        }
         let message: Message
     }
-    let choices: [Choice]
-    let error: ErrorResponse?
+    
+    struct Message: Codable {
+        let content: String
+    }
     
     struct ErrorResponse: Codable {
         let message: String
     }
 }
 
-// Add this new model for structured array responses
 struct ActivityRecommendationResponse: Codable {
-    let recommendation: [String]
+    let recommendations: [String]  // Ubah dari "recommendation" ke "recommendations"
+    
+    // Tambahkan coding keys jika diperlukan
+    enum CodingKeys: String, CodingKey {
+        case recommendations = "recommendation"
+    }
 }
-

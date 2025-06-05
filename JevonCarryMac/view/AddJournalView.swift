@@ -13,6 +13,7 @@ struct AddJournalView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var journalViewModel: JournalViewModel
+    @EnvironmentObject var userViewModel: AuthViewModel
     @State var isAnalyzed: Bool = true
     @State var userID: String
     
@@ -271,7 +272,9 @@ struct AddJournalView: View {
 
 #Preview {
     NavigationStack {
-        AddJournalView(isAddJournal: .constant(true), userID: "fBdMKF5GIvMuufer7JqzgPgVwEI2")
+        AddJournalView(isAddJournal: .constant(true), userID: "")
             .environmentObject(JournalViewModel())
+            .environmentObject(AuthViewModel(repository: FirebaseAuthRepository()))
+
     }
 }

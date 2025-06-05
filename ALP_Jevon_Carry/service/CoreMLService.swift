@@ -21,10 +21,10 @@ class CoreMLService {
 
 
     func classifyEmotion(from text: String) -> String {
-        if let model2 = model2, let prediction = try? model2.prediction(text: text) {
+        if let model = model, let prediction = try? model.prediction(text: text) {
             return prediction.label
         } else if let model2 = model2, let prediction = try? model2.prediction(text: text) {
-            return prediction.label + " model 2"
+            return prediction.label
         } else {
             return "Unknown"
         }
