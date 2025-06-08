@@ -16,26 +16,7 @@ struct Message: Codable {
     let role: String
     let content: String
 }
-//struct OpenRouterResponse: Codable {
-//    struct Choice: Codable {
-//        struct Message: Codable {
-//            let content: String
-//        }
-//        let message: Message
-//    }
-//    let choices: [Choice]
-//    let error: ErrorResponse?
-//    
-//    struct ErrorResponse: Codable {
-//        let message: String
-//    }
-//}
-//
-//// Add this new model for structured array responses
-//struct ActivityRecommendationResponse: Codable {
-//    let recommendation: [String]
-//}
-//
+
 struct OpenRouterResponse: Codable {
     let choices: [Choice]?
     let error: ErrorResponse?
@@ -54,10 +35,6 @@ struct OpenRouterResponse: Codable {
 }
 
 struct ActivityRecommendationResponse: Codable {
-    let recommendations: [String]  // Ubah dari "recommendation" ke "recommendations"
+    let recommendation: [String]
     
-    // Tambahkan coding keys jika diperlukan
-    enum CodingKeys: String, CodingKey {
-        case recommendations = "recommendation"
-    }
 }

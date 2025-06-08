@@ -71,11 +71,11 @@ struct MainView: View {
                     Label("Profile", systemImage: "person.circle")
                 }
         }
-//        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
-//            showAuthSheet = !isSignedIn
-//        }.sheet(isPresented: $showAuthSheet){
-//            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
-//        }
+        //        .onChange(of: authViewModel.isSigneIn) { isSignedIn in
+        //            showAuthSheet = !isSignedIn
+        //        }.sheet(isPresented: $showAuthSheet){
+        //            LoginRegisterSheet(showAuthSheet: $showAuthSheet)
+        //        }
         .onAppear {
             // Show auth sheet if not signed in
             showAuthSheet = !authViewModel.isSigneIn
@@ -89,6 +89,7 @@ struct MainView: View {
                 sessionHistoryViewModel = SessionHistoryViewModel(authViewModel: authViewModel)
             }
         }
+        
         .sheet(isPresented: $showAuthSheet) {
             LoginRegisterSheet(showAuthSheet: $showAuthSheet)
         }
@@ -109,5 +110,5 @@ struct MainView: View {
         .environmentObject(JournalViewModel())
         .environmentObject(QuizViewModel(type: "PHQ-9"))
         .environmentObject(HistoryViewModel())
-
+    
 }

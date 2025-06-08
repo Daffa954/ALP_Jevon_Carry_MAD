@@ -31,6 +31,7 @@ struct AddJournalView: View {
                 ScrollView {
                     VStack(spacing: 24) {
                         // Header Section
+                        Text(userID)
                         VStack(spacing: 12) {
                             ZStack {
                                 Circle()

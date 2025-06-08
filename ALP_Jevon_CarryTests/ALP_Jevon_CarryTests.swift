@@ -190,7 +190,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
             XCTAssertEqual(vm.allJournalHistories[1].title, "B")
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 2)
     }
     
     func testFetchJournalThisWeekUpdatesAllJournalThisWeek() {

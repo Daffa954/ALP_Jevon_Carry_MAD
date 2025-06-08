@@ -71,6 +71,7 @@ class JournalViewModel: ObservableObject {
     func analyzeEmotion(userID: String) {
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
         let score = scoreForEmotion(emotion)
+        
         DispatchQueue.main.async {
             self.result = JournalModel(
                 title: emotion,

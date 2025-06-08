@@ -23,6 +23,7 @@ struct CustomTextField: View {
             
             TextField(placeholder, text: $text)
                 .font(.system(size: 16))
+                .foregroundColor(.black)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 16)
@@ -56,7 +57,8 @@ struct CustomSecureField: View {
                 }
             }
             .font(.system(size: 16))
-            
+            .foregroundColor(.black)
+
             Button(action: {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isSecure.toggle()
