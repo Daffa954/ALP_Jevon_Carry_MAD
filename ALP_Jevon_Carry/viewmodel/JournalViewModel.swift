@@ -139,7 +139,16 @@ class JournalViewModel: ObservableObject {
         
         Task {
             do {
-                let activities = try await openRouterService.getActivityRecommendations(prompt: result.emotion)
+                let userPrompt = """
+                 You are a helpful activity recommendation assistant. 
+                 Return exactly 5 activity recommendations based on Plutchik emotions.
+                 Only respond with valid JSON in this exact format:
+                 {
+                   "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+                 }
+                 The emotion is: \(result.emotion)
+                 """
+                let activities = try await openRouterService.getActivityRecommendations(prompt: userPrompt)
                 DispatchQueue.main.async {
                     self.recommendations = activities
                     self.isLoading = false

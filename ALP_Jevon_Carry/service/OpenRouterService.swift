@@ -128,15 +128,7 @@ class OpenRouterService {
             throw URLError(.badURL)
         }
         
-        let userPrompt = """
-        You are a helpful activity recommendation assistant. 
-        Return exactly 5 activity recommendations based on Plutchik emotions.
-        Only respond with valid JSON in this exact format:
-        {
-          "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
-        }
-        The emotion is: \(prompt)
-        """
+        
         //setup http method
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -151,7 +143,7 @@ class OpenRouterService {
         let requestBody = OpenRouterRequest(
             model: "deepseek/deepseek-chat:free",
             messages: [
-                Message(role: "user", content: userPrompt)
+                Message(role: "user", content: prompt)
             ]
         )
         //kirim data ke htttp dan rubah ke JSON
