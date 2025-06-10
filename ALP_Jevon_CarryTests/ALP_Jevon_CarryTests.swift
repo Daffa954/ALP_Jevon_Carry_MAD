@@ -306,7 +306,15 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(vm.recommendations, ["A", "B", "C", "D", "E"])
         XCTAssertNil(vm.errorMessage)
         XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
-        XCTAssertEqual(mockOpenRouter.lastPrompt, "Joy")
+        XCTAssertEqual(mockOpenRouter.lastPrompt, """
+                 You are a helpful activity recommendation assistant. 
+                 Return exactly 5 activity recommendations based on Plutchik emotions.
+                 Only respond with valid JSON in this exact format:
+                 {
+                   "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+                 }
+                 The emotion is: \(vm.result.emotion)
+                 """)
         XCTAssertFalse(vm.isLoading) // Should be false after completion
     }
     
@@ -352,7 +360,15 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(vm.errorMessage, "Failed")
         XCTAssertTrue(vm.recommendations.isEmpty)
         XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
-        XCTAssertEqual(mockOpenRouter.lastPrompt, "Joy")
+        XCTAssertEqual(mockOpenRouter.lastPrompt, """
+                 You are a helpful activity recommendation assistant. 
+                 Return exactly 5 activity recommendations based on Plutchik emotions.
+                 Only respond with valid JSON in this exact format:
+                 {
+                   "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+                 }
+                 The emotion is: \(vm.result.emotion)
+                 """)
         XCTAssertFalse(vm.isLoading) // Should be false after completion
     }
     
