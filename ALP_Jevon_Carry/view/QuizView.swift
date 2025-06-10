@@ -161,6 +161,7 @@ struct QuizView: View {
                             let history = quizVM.saveHistory(userID: authViewModel.user?.uid ?? "")
                             result = history
                             historyViewModel.addHistory(history)
+                            historyViewModel.getRecommendations(history)//Recomendasi e nde sini
                             showResult = true
                         }) {
                             HStack {

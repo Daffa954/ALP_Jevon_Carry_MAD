@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ResultView: View {
     let result: HistoryModel
+    @EnvironmentObject var historyViewModel: HistoryViewModel
     @Environment(\.dismiss) var dismiss
     @Binding var goHome: Bool
 
@@ -166,27 +167,38 @@ struct ResultView: View {
                         
                         Spacer(minLength: 40)
                         
-                            Button(action: {
-                                goHome.toggle()
-                                dismiss()
-                            }) {
-                                HStack {
-                                    Image(systemName: "house.fill")
-                                    Text("Back to Home")
-                                        .fontWeight(.semibold)
-                                }
-                                .foregroundColor(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
-                                .background(mainColor)
-                                .cornerRadius(12)
-                                .shadow(color: mainColor.opacity(0.3), radius: 8, x: 0, y: 4)
-                            }
-                            .padding(.horizontal)
+                        //sisa tambah loading
+                        
+                        ForEach(historyViewModel.recommendations, id: \.self) { activity in
+                            RecommendationCardView(activity: activity)
+                        }
+                        
+                        
+                            
                             
                             Spacer(minLength: 20)
                     }
                     .padding(.horizontal, 20)
+                }
+                VStack{
+                    Spacer()
+                    Button(action: {
+                        goHome.toggle()
+                        dismiss()
+                    }) {
+                        HStack {
+                            Image(systemName: "house.fill")
+                            Text("Back to Home")
+                                .fontWeight(.semibold)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(mainColor)
+                        .cornerRadius(12)
+                        .shadow(color: mainColor.opacity(0.3), radius: 8, x: 0, y: 4)
+                    }
+                    .padding(.horizontal)
                 }
             }
         }
