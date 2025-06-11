@@ -179,9 +179,6 @@ struct ResultView: View {
                             RecommendationCardView(activity: activity)
                         }
                         
-                        
-                        
-                        //sisa tambah loading
                         if quizViewModel.isLoading {
                             ProgressView()
                                 .scaleEffect(0.8)

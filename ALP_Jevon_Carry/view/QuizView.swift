@@ -21,14 +21,9 @@ struct QuizView: View {
     @State private var showResult = false
     @Environment(\.dismiss) var dismiss
     
-    //    @Binding var tab: TabItemEnum
-    //    @Binding var isPresented: Bool
-    
     init(type: String) {
         self.type = type
         _quizVM = StateObject(wrappedValue: QuizViewModel(type: type))
-        //        self._tab = tab
-        //        self._isPresented = isPresented
     }
     var body: some View {
         let mainColor = Color(red: 0.286, green: 0.561, blue: 0.816) // #498FD0
@@ -36,16 +31,6 @@ struct QuizView: View {
         NavigationStack {
             
             HStack{
-                //                HStack {
-                //                    Image(systemName: "chevron.backward")
-                //                        .foregroundColor(.blue)
-                //                    Text("Back")
-                //                        .foregroundStyle(.blue)
-                //                }
-                //                .padding(.leading)
-                //                .onTapGesture {
-                //                    dismiss()
-                //                }
                 Spacer()
             }
             Spacer()
@@ -162,7 +147,7 @@ struct QuizView: View {
                             let history = quizVM.saveHistory(userID: authViewModel.user?.uid ?? "")
                             result = history
                             historyViewModel.addHistory(history)
-                            quizViewModel.getRecommendations(history)//Recomendasi e nde sini
+                            quizViewModel.getRecommendations(history)
                             showResult = true
                         }) {
                             HStack {

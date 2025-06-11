@@ -99,6 +99,9 @@ class QuizViewModel: ObservableObject {
     }
     
     func getRecommendations(_ history: HistoryModel) {
+        
+        self.recommendations = []
+        
         guard !history.summary.isEmpty else { return }
         
         isLoading = true
