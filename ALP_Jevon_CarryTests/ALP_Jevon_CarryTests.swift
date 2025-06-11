@@ -7,6 +7,7 @@
 
 
 import XCTest
+import AVFoundation
 import Combine
 import SwiftUI
 @testable import ALP_Jevon_Carry
@@ -144,6 +145,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     var mockBreathingRepo: MockBreathingRepo!
     var musicVM: DummyMusicPlayerViewModel!
     var journalViewModel: JournalViewModel!
+    var musicPlayerVM: MusicPlayerViewModel!
     
     override func setUp() {
         super.setUp()
@@ -154,6 +156,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         authVM.myUser = MyUser(uid: "testUser", name: "Test", email: "test@mail.com")
         sessionVM = SessionHistoryViewModel(authViewModel: authVM, sessionRepo: mockSessionRepo)
         musicVM = DummyMusicPlayerViewModel()
+        musicPlayerVM = MusicPlayerViewModel()
         mockBreathingRepo = MockBreathingRepo()
         breathingVM = BreathingViewModel(
             musicPlayerViewModel: musicVM,
@@ -170,6 +173,8 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         breathingVM = nil
         mockBreathingRepo = nil
         musicVM = nil
+        musicPlayerVM?.stop()
+        musicPlayerVM = nil
         super.tearDown()
     }
     
@@ -644,6 +649,204 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         
         wait(for: [expectation], timeout: 2.0)
     }
+    
+    func testGetRecommendationQuiz() async throws {
+        let mockOpenRouter = MockOpenRouterService()
+        mockOpenRouter.stubbedResult = .success(["A", "B", "C"])
+
+        let vm = QuizViewModel(type: "PHQ-9", openRouterService: mockOpenRouter)
+        let history = HistoryModel(
+            type: "PHQ-9",
+            totalScore: 5,
+            date: Date(),
+            summary: "Mild depression",
+            userID: "user123"
+        )
+
+        let expectation = XCTestExpectation(description: "Recommendations should be set")
+
+        vm.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+
+        vm.getRecommendations(history)
+
+        await fulfillment(of: [expectation], timeout: 2.0)
+
+        XCTAssertEqual(vm.recommendations, ["A", "B", "C"])
+        XCTAssertNil(vm.errorMessage)
+        XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
+        XCTAssertFalse(vm.isLoading)
+    }
+    
+    func testGetRecommendationQuizFail() async throws {
+        let mockOpenRouter = MockOpenRouterService()
+        let expectedError = NSError(domain: "Test", code: 999, userInfo: [NSLocalizedDescriptionKey: "Mocked failure"])
+        mockOpenRouter.stubbedResult = .failure(expectedError)
+
+        let vm = QuizViewModel(type: "GAD-7", openRouterService: mockOpenRouter)
+        let history = HistoryModel(
+            type: "GAD-7",
+            totalScore: 10,
+            date: Date(),
+            summary: "Moderate anxiety",
+            userID: "user456"
+        )
+
+        let expectation = XCTestExpectation(description: "Error should be set")
+
+        vm.$isLoading
+            .dropFirst()
+            .sink { isLoading in
+                if !isLoading {
+                    expectation.fulfill()
+                }
+            }
+            .store(in: &cancellables)
+
+        vm.getRecommendations(history)
+
+        await fulfillment(of: [expectation], timeout: 2.0)
+
+        XCTAssertEqual(vm.errorMessage, "Mocked failure")
+        XCTAssertTrue(vm.recommendations.isEmpty)
+        XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
+        XCTAssertFalse(vm.isLoading)
+    }
+    
+    func testMusicPlayer_InitialState() {
+           XCTAssertFalse(musicPlayerVM.isPlaying)
+           XCTAssertEqual(musicPlayerVM.currentTime, 0)
+           XCTAssertEqual(musicPlayerVM.duration, 0)
+           XCTAssertNil(musicPlayerVM.currentSongFileName)
+       }
+
+       func testMusicPlayer_LoadSong_Success_NoAutoPlay() {
+        
+           musicPlayerVM.loadSong(fileName: "song1", autoPlay: false)
+           
+        
+           XCTAssertNotEqual(musicPlayerVM.duration, 0, "Duration should be loaded from the file.")
+           XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
+           XCTAssertFalse(musicPlayerVM.isPlaying, "Player should not be playing with autoPlay: false.")
+           XCTAssertEqual(musicPlayerVM.currentTime, 0)
+       }
+
+       func testMusicPlayer_LoadSong_Success_WithAutoPlay() {
+           
+           musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
+           
+       
+           XCTAssertNotEqual(musicPlayerVM.duration, 0)
+           XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
+           XCTAssertTrue(musicPlayerVM.isPlaying, "Player should be playing with autoPlay: true.")
+       }
+
+       func testMusicPlayer_LoadSong_Failure_InvalidFile() {
+          
+           musicPlayerVM.loadSong(fileName: "non_existent_song")
+        
+           XCTAssertEqual(musicPlayerVM.duration, 0)
+           XCTAssertNil(musicPlayerVM.currentSongFileName)
+           XCTAssertFalse(musicPlayerVM.isPlaying)
+           XCTAssertEqual(musicPlayerVM.currentTime, 0)
+       }
+
+       func testMusicPlayer_PlayAndPause() {
+          
+           musicPlayerVM.loadSong(fileName: "song1")
+        
+           
+           musicPlayerVM.play()
+           XCTAssertTrue(musicPlayerVM.isPlaying)
+           
+         
+           musicPlayerVM.pause()
+           XCTAssertFalse(musicPlayerVM.isPlaying)
+       }
+
+       func testMusicPlayer_PlayPauseToggle() {
+           
+           musicPlayerVM.loadSong(fileName: "song1")
+           
+           
+           musicPlayerVM.playPause()
+           XCTAssertTrue(musicPlayerVM.isPlaying)
+           
+           
+           musicPlayerVM.playPause()
+           XCTAssertFalse(musicPlayerVM.isPlaying)
+       }
+
+       func testMusicPlayer_Stop() {
+           
+           musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
+           let expectation = XCTestExpectation(description: "Play for a short time before stopping")
+           
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+               XCTAssertTrue(self.musicPlayerVM.isPlaying, "Player should be playing.")
+               XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0, "Time should have progressed.")
+               
+            
+               self.musicPlayerVM.stop()
+            
+               
+               XCTAssertFalse(self.musicPlayerVM.isPlaying, "Player should not be playing after stop.")
+               XCTAssertEqual(self.musicPlayerVM.currentTime, 0, "Current time should reset to 0 on stop.")
+               
+               expectation.fulfill()
+           }
+           
+           wait(for: [expectation], timeout: 2.0)
+       }
+
+       func testMusicPlayer_Seek() {
+     
+           musicPlayerVM.loadSong(fileName: "song1")
+           guard musicPlayerVM.duration > 1 else {
+               XCTFail("Test song 'song1.mp3' duration is too short for seek test. Must be > 1s.")
+               return
+           }
+    
+           musicPlayerVM.seek(to: 1.0)
+           
+         
+           XCTAssertEqual(musicPlayerVM.currentTime, 1.0, accuracy: 0.1)
+       }
+       
+       func testMusicPlayer_CurrentTimeUpdatesWhilePlaying() {
+           musicPlayerVM.loadSong(fileName: "song1")
+           musicPlayerVM.play()
+           
+           let expectation = XCTestExpectation(description: "Wait for time to progress")
+           
+           
+           DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+               XCTAssertTrue(self.musicPlayerVM.isPlaying)
+               XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0)
+               self.musicPlayerVM.stop() // Cleanup
+               expectation.fulfill()
+           }
+           
+           wait(for: [expectation], timeout: 2.0)
+       }
+
+       func testMusicPlayer_FormatTime() {
+           XCTAssertEqual(musicPlayerVM.formatTime(0), "00:00")
+           XCTAssertEqual(musicPlayerVM.formatTime(59), "00:59")
+           XCTAssertEqual(musicPlayerVM.formatTime(60), "01:00")
+           XCTAssertEqual(musicPlayerVM.formatTime(65.4), "01:05")
+           XCTAssertEqual(musicPlayerVM.formatTime(121.5), "02:01")
+       }
+
+      
+
+
     
     
     
