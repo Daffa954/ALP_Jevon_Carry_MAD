@@ -20,7 +20,7 @@ struct JournalChartView: View {
                     y: .value("Score", entry.score)
                 )
                 .interpolationMethod(.catmullRom)
-                .foregroundStyle(Color("navyBlue")) // Use Primary Blue for the line
+                .foregroundStyle(Color("navyBlue"))
                 .symbol(.circle) // Use built-in circle symbol
                 .symbolSize(80) // Slightly larger symbols for desktop
             }
@@ -30,12 +30,15 @@ struct JournalChartView: View {
             .chartXAxis {
                 AxisMarks(values: journalData.map { $0.date }) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [2]))
-                    AxisTick(length: 5) // Solid, slightly longer ticks, adapts to dark mode
+                        .foregroundStyle(.gray)
+
+                    AxisTick(length: 5)
+                        .foregroundStyle(.gray)
                     if let date = value.as(Date.self) {
                         AxisValueLabel {
                             Text(date.formatted(.dateTime.day().month(.abbreviated)))
-                                .font(.caption) // Smaller font for axis labels
-                                .foregroundColor(Color("navyBlue")) // System secondary for adaptability
+                                .font(.caption)
+                                .foregroundColor(Color("navyBlue"))
                         }
                     }
                 }
@@ -57,8 +60,7 @@ struct JournalChartView: View {
             .chartYScale(domain: 0...10) // Changed to 0...10 for better visual range if scores go higher
             .frame(height: 280) // Slightly taller chart for macOS
         }
-        // Applying a consistent background for the chart area
-        // Using `Color.clear` here, so the parent `VStack` in JournalView should have a background.
+       
         .background(Color.clear)
         .cornerRadius(18) // Maintain corner radius
     }

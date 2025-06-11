@@ -35,6 +35,10 @@ struct OpenRouterResponse: Codable {
 }
 
 struct ActivityRecommendationResponse: Codable {
-    let recommendation: [String]
-    
+    let recommendations: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case recommendations = "recommendation"
+    }
 }
+

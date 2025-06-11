@@ -63,7 +63,7 @@ class OpenRouterService {
         
         do {
             let activityResponse = try JSONDecoder().decode(ActivityRecommendationResponse.self, from: jsonData)
-            return activityResponse.recommendation
+            return activityResponse.recommendations
         } catch {
             print("Decoding error: \(error)")
             throw NSError(domain: "", code: -4, userInfo: [NSLocalizedDescriptionKey: "Failed to parse recommendations: \(error.localizedDescription)"])

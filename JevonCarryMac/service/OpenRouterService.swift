@@ -44,7 +44,9 @@ class OpenRouterService {
         
         // Debug: Print raw response
         print(String(data: data, encoding: .utf8) ?? "No data")
-        
+       
+        print(String(data: data, encoding: .utf8) ?? "Invalid JSON")
+
         // MERUBAH RESPON JSON ke OpenRouter Response model
         let decodedResponse = try JSONDecoder().decode(OpenRouterResponse.self, from: data)
         //pengecekan proses decode
@@ -63,7 +65,7 @@ class OpenRouterService {
         
         do {
             let activityResponse = try JSONDecoder().decode(ActivityRecommendationResponse.self, from: jsonData)
-            return activityResponse.recommendation
+            return activityResponse.recommendations
         } catch {
             print("Decoding error: \(error)")
             throw NSError(domain: "", code: -4, userInfo: [NSLocalizedDescriptionKey: "Failed to parse recommendations: \(error.localizedDescription)"])

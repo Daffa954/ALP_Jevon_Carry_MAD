@@ -5,6 +5,7 @@
 //  Created by student on 28/05/25.
 //
 
+
 import SwiftUI
 
 struct ResultView: View {
@@ -165,28 +166,86 @@ struct ResultView: View {
                             .shadow(color: Color.primary.opacity(0.05), radius: 8, x: 0, y: 2)
                         }
                         
-                        if !quizViewModel.isLoading {
-                            Text("Activity Recommendation for You")
+                        // Recommendations Section
+                        if !quizViewModel.isLoading && (!quizViewModel.recommendations.isEmpty || !quizViewModel.errorMessage.isEmpty) {
+                            Text("Activity Recommendations")
                                 .font(.headline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.primary)
                                 .padding(.top, 20)
                         }
                         
-                        ForEach(quizViewModel.recommendations, id: \.self) { activity in
-                            RecommendationCardView(activity: activity)
-                        }
-                        
+                        // Loading Indicator
                         if quizViewModel.isLoading {
                             ProgressView()
                                 .scaleEffect(1.5)
                                 .tint(.orange)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .frame(maxWidth: .infinity)
                                 .padding()
                         }
                         
-                        Spacer(minLength: 40)
+                        // Display Recommendations
+                        ForEach(quizViewModel.recommendations, id: \.self) { activity in
+                            RecommendationCardView(activity: activity)
+                        }
                         
+                        // Error Message Display
+                        if !quizViewModel.errorMessage.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .font(.title)
+                                    .foregroundColor(.red)
+                                
+                                Text(quizViewModel.errorMessage)
+                                    .font(.subheadline)
+                                    .foregroundColor(.red)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal)
+                                
+                                Button(action: {
+                                    quizViewModel.getRecommendations(result)
+                                }) {
+                                    Text("Try Again")
+                                        .font(.subheadline.weight(.semibold))
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 16)
+                                        .background(Color.blue)
+                                        .foregroundColor(.white)
+                                        .cornerRadius(8)
+                                }
+                                .padding(.top, 8)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                        }
+                        
+                        // Empty State (no recommendations but no error)
+                        if quizViewModel.recommendations.isEmpty &&
+                           !quizViewModel.isLoading &&
+                           quizViewModel.errorMessage.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "info.circle.fill")
+                                    .font(.title)
+                                    .foregroundColor(.blue)
+                                
+                                Text("No recommendations available")
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                        }
+                        
+                        Spacer(minLength: 20)
+                        
+                        // Back to Home Button
                         Button(action: {
                             goHome.toggle()
                             dismiss()
@@ -196,17 +255,21 @@ struct ResultView: View {
                                 Text("Back to Home")
                                     .fontWeight(.semibold)
                             }
-                            .foregroundColor(.black)
+                            .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
+                            .padding()
+                            .background(mainColor)
                             .cornerRadius(12)
                         }
                         .padding(.horizontal)
-                        
-                        Spacer(minLength: 20)
+                        .padding(.bottom, 20)
                     }
                     .padding(.horizontal, 20)
                 }
+            }
+            .navigationBarBackButtonHidden(true)
+            .onAppear {
+                quizViewModel.getRecommendations(result)
             }
         }
     }

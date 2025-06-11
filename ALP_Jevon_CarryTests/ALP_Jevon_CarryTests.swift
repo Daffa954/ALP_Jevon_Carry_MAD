@@ -83,19 +83,6 @@ class MockOpenRouterService: OpenRouterService {
         return try stubbedResult.get()
     }
 }
-//class MockOpenRouterService: OpenRouterService {
-//    var didCallGetActivityRecommendations = false
-//    var stubbedResult: Result<[String], Error>?
-//    var lastPrompt: String?
-//
-//    override func getActivityRecommendations(prompt: String, completion: @escaping (Result<[String], Error>) -> Void) {
-//        didCallGetActivityRecommendations = true
-//        lastPrompt = prompt
-//        if let result = stubbedResult {
-//            completion(result)
-//        }
-//    }
-//}
 
 class MockFirebaseJournalRepository: FirebaseJournalRepository {
     var didAddJournal = false
@@ -113,9 +100,6 @@ class MockFirebaseJournalRepository: FirebaseJournalRepository {
         completion(fetchedJournals.filter { $0.userID == userID })
     }
     
-    //    override func fetchJournalsThisWeek(for userID: String, completion: @escaping ([JournalModel]) -> Void) {
-    //        completion(fetchedJournalsThisWeek.filter { $0.userID == userID })
-    //    }
     override func fetchJournalsThisWeek(for userID: String, completion: @escaping ([JournalModel]) -> Void) {
         let calendar = Calendar.current
         let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date()
@@ -221,6 +205,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         }
         wait(for: [expectation], timeout: 1)
     }
+    
     func testScoreForEmotion() {
         let vm = JournalViewModel()
         XCTAssertEqual(vm.scoreForEmotion("anger"), 10)
@@ -234,49 +219,8 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(vm.scoreForEmotion("unknown"), 5)
     }
     
-    //        func testGetRecommendationsSuccess() {
-    //            let mockOpenRouter = MockOpenRouterService()
-    //            mockOpenRouter.stubbedResult = .success(["A", "B", "C", "D", "E"])
-    //            let vm = JournalViewModel(
-    //                journalRepository: MockFirebaseJournalRepository(),
-    //                openRouterService: mockOpenRouter,
-    //                coreMLService: MockCoreMLService()
-    //            )
-    //            vm.result = JournalModel(title: "test", date: Date(), description: "desc", emotion: "Joy", score: 1, userID: "userX")
-    //            let expectation = self.expectation(description: "GetRecommendationsSuccess")
-    //            vm.getRecommendations()
-    //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-    //                XCTAssertEqual(vm.recommendations, ["A", "B", "C", "D", "E"])
-    //                XCTAssertNil(vm.errorMessage)
-    //                XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
-    //                expectation.fulfill()
-    //            }
-    //            wait(for: [expectation], timeout: 1)
-    //        }
-    //
-    //        func testGetRecommendationsFailure() {
-    //            let mockOpenRouter = MockOpenRouterService()
-    //            let expectedError = NSError(domain: "", code: 999, userInfo: [NSLocalizedDescriptionKey: "Failed"])
-    //            mockOpenRouter.stubbedResult = .failure(expectedError)
-    //            let vm = JournalViewModel(
-    //                journalRepository: MockFirebaseJournalRepository(),
-    //                openRouterService: mockOpenRouter,
-    //                coreMLService: MockCoreMLService()
-    //            )
-    //            vm.result = JournalModel(title: "test", date: Date(), description: "desc", emotion: "Joy", score: 1, userID: "userX")
-    //            let expectation = self.expectation(description: "GetRecommendationsFailure")
-    //            vm.getRecommendations()
-    //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-    //                XCTAssertEqual(vm.errorMessage, "Failed")
-    //                XCTAssertTrue(vm.recommendations.isEmpty)
-    //                XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
-    //                expectation.fulfill()
-    //            }
-    //            wait(for: [expectation], timeout: 1)
-    //        }
-    //
+    
     func testGetRecommendationsSuccess() async throws {
-        // Arrange
         let mockOpenRouter = MockOpenRouterService()
         mockOpenRouter.stubbedResult = .success(["A", "B", "C", "D", "E"])
         
@@ -306,8 +250,6 @@ final class ALP_Jevon_CarryTests: XCTestCase {
             .store(in: &cancellables)
         vm.getRecommendations()
         await fulfillment(of: [expectation], timeout: 2.0)
-        
-        // Assert
         XCTAssertEqual(vm.recommendations, ["A", "B", "C", "D", "E"])
         XCTAssertNil(vm.errorMessage)
         XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
@@ -324,17 +266,14 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     }
     
     func testGetRecommendationsFailure() async throws {
-        // Arrange
         let mockOpenRouter = MockOpenRouterService()
         let expectedError = NSError(domain: "Test", code: 999, userInfo: [NSLocalizedDescriptionKey: "Failed"])
         mockOpenRouter.stubbedResult = .failure(expectedError)
-        
         let vm = JournalViewModel(
             journalRepository: MockFirebaseJournalRepository(),
             openRouterService: mockOpenRouter,
             coreMLService: MockCoreMLService()
         )
-        
         vm.result = JournalModel(
             title: "test",
             date: Date(),
@@ -343,9 +282,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
             score: 1,
             userID: "userX"
         )
-        
         let expectation = XCTestExpectation(description: "Error message should be set after async update")
-        
         vm.$isLoading
             .dropFirst()
             .sink { isLoading in
@@ -354,13 +291,10 @@ final class ALP_Jevon_CarryTests: XCTestCase {
                 }
             }
             .store(in: &cancellables)
-        
         // Act
         vm.getRecommendations()
-        
         // Wait for the expectation to be fulfilled
         await fulfillment(of: [expectation], timeout: 2.0) // Provide a reasonable timeout
-        
         // Assert
         XCTAssertEqual(vm.errorMessage, "Failed")
         XCTAssertTrue(vm.recommendations.isEmpty)
@@ -446,7 +380,6 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         XCTAssertEqual(sessionVM.formatSessionDuration(40), "40s")
     }
     
-    // MARK: - BreathingViewModel Tests
     
     func testStartSession_UpdatesStateAndInstruction() {
         breathingVM.selectedSong = "No Music"
@@ -539,6 +472,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     
     
     class MockHistoryRepository: HistoryRepository {
+        
         var isAddCalled = false
         var addedHistory: HistoryModel?
         var fetchCompletion: (([HistoryModel]) -> Void)?
@@ -653,7 +587,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     func testGetRecommendationQuiz() async throws {
         let mockOpenRouter = MockOpenRouterService()
         mockOpenRouter.stubbedResult = .success(["A", "B", "C"])
-
+        
         let vm = QuizViewModel(type: "PHQ-9", openRouterService: mockOpenRouter)
         let history = HistoryModel(
             type: "PHQ-9",
@@ -662,9 +596,9 @@ final class ALP_Jevon_CarryTests: XCTestCase {
             summary: "Mild depression",
             userID: "user123"
         )
-
+        
         let expectation = XCTestExpectation(description: "Recommendations should be set")
-
+        
         vm.$isLoading
             .dropFirst()
             .sink { isLoading in
@@ -673,11 +607,11 @@ final class ALP_Jevon_CarryTests: XCTestCase {
                 }
             }
             .store(in: &cancellables)
-
+        
         vm.getRecommendations(history)
-
+        
         await fulfillment(of: [expectation], timeout: 2.0)
-
+        
         XCTAssertEqual(vm.recommendations, ["A", "B", "C"])
         XCTAssertNil(vm.errorMessage)
         XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
@@ -688,7 +622,7 @@ final class ALP_Jevon_CarryTests: XCTestCase {
         let mockOpenRouter = MockOpenRouterService()
         let expectedError = NSError(domain: "Test", code: 999, userInfo: [NSLocalizedDescriptionKey: "Mocked failure"])
         mockOpenRouter.stubbedResult = .failure(expectedError)
-
+        
         let vm = QuizViewModel(type: "GAD-7", openRouterService: mockOpenRouter)
         let history = HistoryModel(
             type: "GAD-7",
@@ -697,9 +631,9 @@ final class ALP_Jevon_CarryTests: XCTestCase {
             summary: "Moderate anxiety",
             userID: "user456"
         )
-
+        
         let expectation = XCTestExpectation(description: "Error should be set")
-
+        
         vm.$isLoading
             .dropFirst()
             .sink { isLoading in
@@ -708,11 +642,11 @@ final class ALP_Jevon_CarryTests: XCTestCase {
                 }
             }
             .store(in: &cancellables)
-
+        
         vm.getRecommendations(history)
-
+        
         await fulfillment(of: [expectation], timeout: 2.0)
-
+        
         XCTAssertEqual(vm.errorMessage, "Mocked failure")
         XCTAssertTrue(vm.recommendations.isEmpty)
         XCTAssertTrue(mockOpenRouter.didCallGetActivityRecommendations)
@@ -720,135 +654,129 @@ final class ALP_Jevon_CarryTests: XCTestCase {
     }
     
     func testMusicPlayer_InitialState() {
-           XCTAssertFalse(musicPlayerVM.isPlaying)
-           XCTAssertEqual(musicPlayerVM.currentTime, 0)
-           XCTAssertEqual(musicPlayerVM.duration, 0)
-           XCTAssertNil(musicPlayerVM.currentSongFileName)
-       }
-
-       func testMusicPlayer_LoadSong_Success_NoAutoPlay() {
+        XCTAssertFalse(musicPlayerVM.isPlaying)
+        XCTAssertEqual(musicPlayerVM.currentTime, 0)
+        XCTAssertEqual(musicPlayerVM.duration, 0)
+        XCTAssertNil(musicPlayerVM.currentSongFileName)
+    }
+    
+    func testMusicPlayer_LoadSong_Success_NoAutoPlay() {
         
-           musicPlayerVM.loadSong(fileName: "song1", autoPlay: false)
-           
+        musicPlayerVM.loadSong(fileName: "song1", autoPlay: false)
         
-           XCTAssertNotEqual(musicPlayerVM.duration, 0, "Duration should be loaded from the file.")
-           XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
-           XCTAssertFalse(musicPlayerVM.isPlaying, "Player should not be playing with autoPlay: false.")
-           XCTAssertEqual(musicPlayerVM.currentTime, 0)
-       }
-
-       func testMusicPlayer_LoadSong_Success_WithAutoPlay() {
-           
-           musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
-           
-       
-           XCTAssertNotEqual(musicPlayerVM.duration, 0)
-           XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
-           XCTAssertTrue(musicPlayerVM.isPlaying, "Player should be playing with autoPlay: true.")
-       }
-
-       func testMusicPlayer_LoadSong_Failure_InvalidFile() {
-          
-           musicPlayerVM.loadSong(fileName: "non_existent_song")
         
-           XCTAssertEqual(musicPlayerVM.duration, 0)
-           XCTAssertNil(musicPlayerVM.currentSongFileName)
-           XCTAssertFalse(musicPlayerVM.isPlaying)
-           XCTAssertEqual(musicPlayerVM.currentTime, 0)
-       }
-
-       func testMusicPlayer_PlayAndPause() {
-          
-           musicPlayerVM.loadSong(fileName: "song1")
+        XCTAssertNotEqual(musicPlayerVM.duration, 0, "Duration should be loaded from the file.")
+        XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
+        XCTAssertFalse(musicPlayerVM.isPlaying, "Player should not be playing with autoPlay: false.")
+        XCTAssertEqual(musicPlayerVM.currentTime, 0)
+    }
+    
+    func testMusicPlayer_LoadSong_Success_WithAutoPlay() {
         
-           
-           musicPlayerVM.play()
-           XCTAssertTrue(musicPlayerVM.isPlaying)
-           
-         
-           musicPlayerVM.pause()
-           XCTAssertFalse(musicPlayerVM.isPlaying)
-       }
-
-       func testMusicPlayer_PlayPauseToggle() {
-           
-           musicPlayerVM.loadSong(fileName: "song1")
-           
-           
-           musicPlayerVM.playPause()
-           XCTAssertTrue(musicPlayerVM.isPlaying)
-           
-           
-           musicPlayerVM.playPause()
-           XCTAssertFalse(musicPlayerVM.isPlaying)
-       }
-
-       func testMusicPlayer_Stop() {
-           
-           musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
-           let expectation = XCTestExpectation(description: "Play for a short time before stopping")
-           
-           DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-               XCTAssertTrue(self.musicPlayerVM.isPlaying, "Player should be playing.")
-               XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0, "Time should have progressed.")
-               
+        musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
+        
+        
+        XCTAssertNotEqual(musicPlayerVM.duration, 0)
+        XCTAssertEqual(musicPlayerVM.currentSongFileName, "song1")
+        XCTAssertTrue(musicPlayerVM.isPlaying, "Player should be playing with autoPlay: true.")
+    }
+    
+    func testMusicPlayer_LoadSong_Failure_InvalidFile() {
+        
+        musicPlayerVM.loadSong(fileName: "non_existent_song")
+        
+        XCTAssertEqual(musicPlayerVM.duration, 0)
+        XCTAssertNil(musicPlayerVM.currentSongFileName)
+        XCTAssertFalse(musicPlayerVM.isPlaying)
+        XCTAssertEqual(musicPlayerVM.currentTime, 0)
+    }
+    
+    func testMusicPlayer_PlayAndPause() {
+        
+        musicPlayerVM.loadSong(fileName: "song1")
+        
+        
+        musicPlayerVM.play()
+        XCTAssertTrue(musicPlayerVM.isPlaying)
+        
+        
+        musicPlayerVM.pause()
+        XCTAssertFalse(musicPlayerVM.isPlaying)
+    }
+    
+    func testMusicPlayer_PlayPauseToggle() {
+        
+        musicPlayerVM.loadSong(fileName: "song1")
+        
+        
+        musicPlayerVM.playPause()
+        XCTAssertTrue(musicPlayerVM.isPlaying)
+        
+        
+        musicPlayerVM.playPause()
+        XCTAssertFalse(musicPlayerVM.isPlaying)
+    }
+    
+    func testMusicPlayer_Stop() {
+        
+        musicPlayerVM.loadSong(fileName: "song1", autoPlay: true)
+        let expectation = XCTestExpectation(description: "Play for a short time before stopping")
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            XCTAssertTrue(self.musicPlayerVM.isPlaying, "Player should be playing.")
+            XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0, "Time should have progressed.")
             
-               self.musicPlayerVM.stop()
             
-               
-               XCTAssertFalse(self.musicPlayerVM.isPlaying, "Player should not be playing after stop.")
-               XCTAssertEqual(self.musicPlayerVM.currentTime, 0, "Current time should reset to 0 on stop.")
-               
-               expectation.fulfill()
-           }
-           
-           wait(for: [expectation], timeout: 2.0)
-       }
-
-       func testMusicPlayer_Seek() {
-     
-           musicPlayerVM.loadSong(fileName: "song1")
-           guard musicPlayerVM.duration > 1 else {
-               XCTFail("Test song 'song1.mp3' duration is too short for seek test. Must be > 1s.")
-               return
-           }
+            self.musicPlayerVM.stop()
+            
+            
+            XCTAssertFalse(self.musicPlayerVM.isPlaying, "Player should not be playing after stop.")
+            XCTAssertEqual(self.musicPlayerVM.currentTime, 0, "Current time should reset to 0 on stop.")
+            
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 2.0)
+    }
     
-           musicPlayerVM.seek(to: 1.0)
-           
-         
-           XCTAssertEqual(musicPlayerVM.currentTime, 1.0, accuracy: 0.1)
-       }
-       
-       func testMusicPlayer_CurrentTimeUpdatesWhilePlaying() {
-           musicPlayerVM.loadSong(fileName: "song1")
-           musicPlayerVM.play()
-           
-           let expectation = XCTestExpectation(description: "Wait for time to progress")
-           
-           
-           DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-               XCTAssertTrue(self.musicPlayerVM.isPlaying)
-               XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0)
-               self.musicPlayerVM.stop() // Cleanup
-               expectation.fulfill()
-           }
-           
-           wait(for: [expectation], timeout: 2.0)
-       }
-
-       func testMusicPlayer_FormatTime() {
-           XCTAssertEqual(musicPlayerVM.formatTime(0), "00:00")
-           XCTAssertEqual(musicPlayerVM.formatTime(59), "00:59")
-           XCTAssertEqual(musicPlayerVM.formatTime(60), "01:00")
-           XCTAssertEqual(musicPlayerVM.formatTime(65.4), "01:05")
-           XCTAssertEqual(musicPlayerVM.formatTime(121.5), "02:01")
-       }
-
-      
-
-
+    func testMusicPlayer_Seek() {
+        
+        musicPlayerVM.loadSong(fileName: "song1")
+        guard musicPlayerVM.duration > 1 else {
+            XCTFail("Test song 'song1.mp3' duration is too short for seek test. Must be > 1s.")
+            return
+        }
+        
+        musicPlayerVM.seek(to: 1.0)
+        
+        
+        XCTAssertEqual(musicPlayerVM.currentTime, 1.0, accuracy: 0.1)
+    }
     
+    func testMusicPlayer_CurrentTimeUpdatesWhilePlaying() {
+        musicPlayerVM.loadSong(fileName: "song1")
+        musicPlayerVM.play()
+        
+        let expectation = XCTestExpectation(description: "Wait for time to progress")
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            XCTAssertTrue(self.musicPlayerVM.isPlaying)
+            XCTAssertGreaterThan(self.musicPlayerVM.currentTime, 0)
+            self.musicPlayerVM.stop() // Cleanup
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 2.0)
+    }
     
+    func testMusicPlayer_FormatTime() {
+        XCTAssertEqual(musicPlayerVM.formatTime(0), "00:00")
+        XCTAssertEqual(musicPlayerVM.formatTime(59), "00:59")
+        XCTAssertEqual(musicPlayerVM.formatTime(60), "01:00")
+        XCTAssertEqual(musicPlayerVM.formatTime(65.4), "01:05")
+        XCTAssertEqual(musicPlayerVM.formatTime(121.5), "02:01")
+    }
     
 }
 
