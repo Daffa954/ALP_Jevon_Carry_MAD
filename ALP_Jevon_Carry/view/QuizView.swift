@@ -9,6 +9,7 @@ import SwiftUI
 
 struct QuizView: View {
     @EnvironmentObject var historyViewModel: HistoryViewModel
+    @EnvironmentObject var quizViewModel: QuizViewModel
     @EnvironmentObject var authViewModel: AuthViewModel
     
     @State private var result: HistoryModel? = nil
@@ -161,7 +162,7 @@ struct QuizView: View {
                             let history = quizVM.saveHistory(userID: authViewModel.user?.uid ?? "")
                             result = history
                             historyViewModel.addHistory(history)
-                            historyViewModel.getRecommendations(history)//Recomendasi e nde sini
+                            quizViewModel.getRecommendations(history)//Recomendasi e nde sini
                             showResult = true
                         }) {
                             HStack {

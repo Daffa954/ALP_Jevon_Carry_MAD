@@ -120,7 +120,7 @@ struct AddJournalView: View {
                             .foregroundColor(Color("coralOrange"))
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
-                            .background(Color( "coralOrange").opacity(0.1))
+                            .background(Color( "coralOrange"))
                             .cornerRadius(12)
                             
                             Button(action: {

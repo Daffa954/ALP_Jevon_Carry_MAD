@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ResultView: View {
     let result: HistoryModel
-    @EnvironmentObject var historyViewModel: HistoryViewModel
+    @EnvironmentObject var quizViewModel: QuizViewModel
     @Environment(\.dismiss) var dismiss
     @Binding var goHome: Bool
 
@@ -165,13 +165,31 @@ struct ResultView: View {
                             .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
                         }
                         
-                        Spacer(minLength: 40)
                         
-                        //sisa tambah loading
                         
-                        ForEach(historyViewModel.recommendations, id: \.self) { activity in
+                        if !quizViewModel.isLoading {
+                            Text("Activity Recommendation for You")
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                                .padding(.top, 20)
+                        }
+                        
+                        ForEach(quizViewModel.recommendations, id: \.self) { activity in
                             RecommendationCardView(activity: activity)
                         }
+                        
+                        
+                        
+                        //sisa tambah loading
+                        if quizViewModel.isLoading {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                                .tint(.blue)
+                        }
+                        
+                        Spacer(minLength: 40)
+                        
                         
                         
                             

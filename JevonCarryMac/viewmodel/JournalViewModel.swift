@@ -12,13 +12,17 @@ class JournalViewModel: ObservableObject {
     @Published var userInput = ""
     @Published var result : JournalModel
     @Published var emoticonSymbol = ""
-    private let openRouterService = OpenRouterService()
+    var openRouterService: OpenRouterService
     @Published var recommendations: [String] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     private let journalRepository: FirebaseJournalRepository
-
-    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository()) {
+    var coreMLService: CoreMLService
+    
+    
+    init(journalRepository: FirebaseJournalRepository = FirebaseJournalRepository(),
+         openRouterService: OpenRouterService = OpenRouterService(),
+         coreMLService: CoreMLService = CoreMLService.shared) {
         self.result = JournalModel(
             title: "",
             date: Date(),
@@ -27,6 +31,8 @@ class JournalViewModel: ObservableObject {
             score: 0
         )
         self.journalRepository = journalRepository
+        self.openRouterService = openRouterService
+        self.coreMLService = coreMLService
     }
     private func emoticon(for emotion: String) -> String {
         switch emotion.lowercased() {
@@ -41,30 +47,11 @@ class JournalViewModel: ObservableObject {
         default: return "❓"
         }
     }
-    //    func analyzeEmotion(userID : String) {
-    //        //call the coreML service
-    //        let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
-    //        let score = scoreForEmotion(emotion) // tambahkan scoring
-    //        DispatchQueue.main.async {
-    //            self.result = JournalModel(
-    //                title: emotion, date: Date(), description: self.userInput,
-    //                emotion: emotion, score: score, userID: userID)
-    //            self.emoticonSymbol = self.emoticon(for: emotion)
-    //            self.getRecommendations()
-    //            var addToDB = self.addJournal(journal: self.result)
-    //            if addToDB {
-    //                print( "berhasil")
-    //            }else {
-    //                print("gagal")
-    //            }
-    //
-    //
-    //        }
-    //    }
-    //
+    
     func analyzeEmotion(userID: String) {
         let emotion = CoreMLService.shared.classifyEmotion(from: userInput)
         let score = scoreForEmotion(emotion)
+        
         DispatchQueue.main.async {
             self.result = JournalModel(
                 title: emotion,
@@ -84,6 +71,7 @@ class JournalViewModel: ObservableObject {
                     print("gagal")
                 }
             }
+            
         }
     }
     func scoreForEmotion(_ emotion: String) -> Int {
@@ -100,28 +88,58 @@ class JournalViewModel: ObservableObject {
         }
     }
     
+//    func getRecommendations() {
+//        guard !result.emotion.isEmpty else { return }
+//
+//        isLoading = true
+//        errorMessage = nil
+//        recommendations = []
+//
+//        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
+//            DispatchQueue.main.async {
+//                //stop the loading
+//                self?.isLoading = false
+//
+//                //send the result
+//                switch result {
+//                case .success(let activities):
+//                    self?.recommendations = activities
+//                case .failure(let error):
+//                    self?.errorMessage = error.localizedDescription
+//                }
+//            }
+//        }
+//    }
+    
     func getRecommendations() {
         guard !result.emotion.isEmpty else { return }
         
         isLoading = true
         errorMessage = nil
-        recommendations = []
         
-        openRouterService.getActivityRecommendations(prompt: result.emotion) { [weak self] result in
-            DispatchQueue.main.async {
-                //stop the loading
-                self?.isLoading = false
-                
-                //send the result
-                switch result {
-                case .success(let activities):
-                    self?.recommendations = activities
-                case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+        Task {
+            do {
+                let userPrompt = """
+                 You are a helpful activity recommendation assistant. 
+                 Return exactly 5 activity recommendations based on Plutchik emotions.
+                 Only respond with valid JSON in this exact format:
+                 {
+                   "recommendation": ["Activity 1", "Activity 2", "Activity 3", "Activity 4", "Activity 5"]
+                 }
+                 The emotion is: \(result.emotion)
+                 """
+                let activities = try await openRouterService.getActivityRecommendations(prompt: userPrompt)
+                DispatchQueue.main.async {
+                    self.recommendations = activities
+                    self.isLoading = false
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.errorMessage = error.localizedDescription
+                    self.isLoading = false
                 }
             }
         }
     }
-    
-    
 }
+
