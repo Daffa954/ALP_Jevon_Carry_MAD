@@ -14,10 +14,7 @@ class HistoryViewModel: ObservableObject {
     @Published var historyList: [HistoryModel] = []
     private let historyRepository: HistoryRepository
     
-//    var openRouterService: OpenRouterService
-//    @Published var recommendations: [String] = []
-//    @Published var errorMessage: String?
-//    @Published var isLoading = false
+
 
 
     init(historyRepository: HistoryRepository = HistoryRepository()  /*, openRouterService: OpenRouterService = OpenRouterService()*/) {

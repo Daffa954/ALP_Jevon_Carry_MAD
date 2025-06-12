@@ -56,11 +56,11 @@ class OpenRouterService {
             throw NSError(domain: "", code: -2, userInfo: [NSLocalizedDescriptionKey: "No response content"])
         }
         
-        // Parse the JSON content from the message
+        // Parsing konten JSON
         guard let jsonData = responseContent.data(using: .utf8) else {
             throw NSError(domain: "", code: -3, userInfo: [NSLocalizedDescriptionKey: "Failed to convert content to data"])
         }
-        
+        //Merubah hasil parsing ke dalam list recomendations
         do {
             let activityResponse = try JSONDecoder().decode(ActivityRecommendationResponse.self, from: jsonData)
             return activityResponse.recommendations

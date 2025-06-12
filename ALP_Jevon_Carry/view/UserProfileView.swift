@@ -7,7 +7,6 @@ struct UserProfileView: View {
     @Binding var showLogin: Bool
     @State private var showLogoutAlert = false
     @State private var isLoading = false
-    @State private var showEditProfile = false
     @State private var showErrorAlert = false
     @State private var errorMessage = ""
     
